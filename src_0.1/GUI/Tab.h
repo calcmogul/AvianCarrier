@@ -19,14 +19,13 @@
 
 #include "RenderFile.h"
 #include "Button.h"
-#include "../Base.h"
-#include "../TextReceiver.h"
-#include "Clickable.h"
+#include "AutoResize.h"
 #include "TaperRectangleShape.h"
 
-class Tab : public Button {
+class Tab : public Button , public AutoResize {
 private:
 	static sf::Mutex tabMutex;
+	static sf::Clock tabCloseWait;
 
 	sf::Text title;
 	sf::Text closeX;
@@ -55,9 +54,13 @@ public:
 
 	bool isXHovered( sf::Window& referTo );
 
+	void updateSize( sf::Window& referTo );
+
 	static void newTab( sf::IpAddress address , unsigned short port , std::string fileName = "Untitled" ); // uses tabMutex; can block
 
 	static void draw( sf::RenderTarget& target ); // uses tabMutex; can block
+
+	static void checkTabClose( sf::Window& referTo ); // uses tabMutex; can block
 
 	void closeTab(); // uses tabMutex; can block
 };

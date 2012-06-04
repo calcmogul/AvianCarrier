@@ -14,9 +14,7 @@
 #include <SFML/Graphics/RectangleShape.hpp>
 #include <SFML/Graphics/RenderTarget.hpp>
 #include <SFML/Graphics/Text.hpp>
-#include "../Base.h"
 #include "../MenuSelect.h"
-#include "Clickable.h"
 #include "../TextReceiver.h"
 
 class InputBox : public TextReceiver {

@@ -12,7 +12,7 @@
 #include <SFML/Graphics/Drawable.hpp>
 #include <SFML/Graphics/RectangleShape.hpp>
 #include <SFML/Graphics/Text.hpp>
-#include "../Base.h"
+#include <SFML/Window/Keyboard.hpp>
 #include "../MenuSelect.h"
 #include "Clickable.h"
 
