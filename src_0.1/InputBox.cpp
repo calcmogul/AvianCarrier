@@ -6,6 +6,7 @@
 //Version: 0.1
 //=============================================================================
 
+#include "Base.h"
 #include "GUI/InputBox.h"
 
 InputBox::InputBox( const sf::Vector2f& size , std::vector<sf::Color> colors ) : TextReceiver( sf::Vector2f( size ) , colors ) , drawInput( "" , Base::segoeUI , 12 ) {

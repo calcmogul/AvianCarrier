@@ -6,6 +6,7 @@
 //Version: 0.1
 //=============================================================================
 
+#include "Base.h"
 #include "GUI/Editor.h"
 #include "GUI/Tab.h"
 
@@ -207,4 +208,8 @@ void Editor::setSize( const sf::Vector2f& size ) {
 	Clickable::setSize( size );
 	vScroll.setPosition( getSize().x - vScroll.getSize().x - 1 , getPosition().y + 1 );
 	vScroll.setSize( vScroll.getSize().x , getSize().y - 3 );
+}
+
+void Editor::updateSize( sf::Window& target ) {
+	setSize( sf::Vector2f( target.getSize().x , target.getSize().y - 16.f - 2.f - (Tab::tabBase.getPosition().y + Tab::tabBase.getSize().y + 1) ) );
 }

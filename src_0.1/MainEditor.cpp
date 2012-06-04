@@ -13,6 +13,7 @@
 
 #include <iostream>
 #include "Base.h"
+#include "GUI/AutoResize.h"
 
 #include <SFML/Graphics/ConvexShape.hpp>
 #include <SFML/Graphics/Sprite.hpp>
@@ -94,14 +95,13 @@ Editor editBackground;
 
 StatusBar statusBar;
 
-sf::Clock tabCloseWait;
-
 ChatWindow chatDialog( sf::Vector2f( 200.f , 600.f ) , { sf::Color( 45 , 45 , 45 ) , sf::Color( 100 , 100 , 100 ) , sf::Color( 100 , 100 , 100 ) , sf::Color( 45 , 45 , 45 ) } );
 
 std::string rootDirectory;
 std::string searchDir;
 
 void drawObjects() {
+	/* ===== Redraw objects ===== */
 	mainWin.clear( sf::Color( BACKGROUND_COLOR , BACKGROUND_COLOR , BACKGROUND_COLOR ) );
 
 	editBackground.activate( Tab::tabsOpen.size() > 0 ); // change background of editor
@@ -125,17 +125,8 @@ void drawObjects() {
 	if ( DropDown::currentOpen != NULL )
 		mainWin.draw( *DropDown::currentOpen ); // draw drop-down menu now that its events are processed
 
-	// Close any tabs that had their X clicked
-	for ( unsigned int index = 0 ; index < Tab::tabsOpen.size() ; index++ ) {
-		if ( tabCloseWait.getElapsedTime().asMilliseconds() > 200 && mousePressed( sf::Mouse::Left ) && Tab::tabsOpen[index]->isXHovered( mainWin ) ) {
-			Tab::tabsOpen[index]->closeTab();
-
-			tabCloseWait.restart();
-			break;
-		}
-	}
-
 	mainWin.display();
+	/* ========================== */
 }
 
 LRESULT CALLBACK OnEvent(HWND Handle, UINT Message, WPARAM WParam, LPARAM LParam) {
@@ -143,13 +134,7 @@ LRESULT CALLBACK OnEvent(HWND Handle, UINT Message, WPARAM WParam, LPARAM LParam
 	if ( Message == WM_SIZE || Message == WM_WINDOWPOSCHANGED ) {
 		mainWin.setView( sf::View( sf::FloatRect( 0 , 0 , mainWin.getSize().x , mainWin.getSize().y ) ) );
 
-		editBackground.setSize( sf::Vector2f( mainWin.getSize().x , statusBar.getPosition().y - 2 - (Tab::tabBase.getPosition().y + Tab::tabBase.getSize().y + 1) ) );
-
-		mainTools.updateSize( mainWin );
-		Tab::tabBase.setSize( sf::Vector2f( mainWin.getSize().x , Tab::tabBase.getSize().y ) );
-		statusBar.updateSize( mainWin );
-		chatDialog.updateSize( mainWin );
-
+		AutoResize::resizeAll( mainWin );
 		drawObjects();
 	}
 	else {
@@ -174,7 +159,7 @@ void syncServer() {
 			globalMutex.unlock();
 		}
 
-		sf::sleep( sf::Time( 100000 ) );
+		sf::sleep( sf::Time( 500000 ) );
 	}
 }
 
@@ -580,9 +565,11 @@ INT WINAPI WinMain( HINSTANCE Instance , HINSTANCE , LPSTR , INT ) {
 				}
 				/* =================================================== */
 
+				Tab::checkTabClose( mainWin );
 				drawObjects();
 			}
 
+			Tab::checkTabClose( mainWin );
 			drawObjects();
 		}
 

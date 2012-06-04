@@ -6,6 +6,7 @@
 //Version: 0.1
 //=============================================================================
 
+#include "Base.h"
 #include "GUI/ChatWindow.h"
 
 ChatWindow::ChatWindow( const sf::Vector2f& size , std::vector<sf::Color> borders ) : TextReceiver( size , borders ) , input( sf::Vector2f( 200.f , 60.f ) , std::vector<sf::Color>({ sf::Color( 45 , 45 , 45 ) , sf::Color( 100 , 100 , 100 ) , sf::Color( 100 , 100 , 100 ) , sf::Color( 45 , 45 , 45 ) }) ) {

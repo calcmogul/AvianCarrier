@@ -6,9 +6,11 @@
 //Version: 0.1
 //=============================================================================
 
+#include "Base.h"
 #include "GUI/Tab.h"
 
 sf::Mutex Tab::tabMutex;
+sf::Clock Tab::tabCloseWait;
 
 std::vector<Tab*> Tab::tabsOpen;
 Tab* Tab::current = NULL;
@@ -51,6 +53,10 @@ void Tab::saveLocal() {
 
 bool Tab::isXHovered( sf::Window& referTo ) {
 	return sf::Mouse::getPosition( referTo ).x >= closeX.getPosition().x && sf::Mouse::getPosition( referTo ).x <= closeX.findCharacterPos( 1 ).x && sf::Mouse::getPosition( referTo ).y >= closeX.getPosition().y + 6 && sf::Mouse::getPosition( referTo ).y <= closeX.getPosition().y + closeX.getCharacterSize() - 1;
+}
+
+void Tab::updateSize( sf::Window& referTo ) {
+	tabBase.setSize( sf::Vector2f( referTo.getSize().x , Tab::tabBase.getSize().y ) );
 }
 
 void Tab::newTab( sf::IpAddress address , unsigned short port , std::string fileName ) {
@@ -102,6 +108,22 @@ void Tab::draw( sf::RenderTarget& target ) {
 
 	for ( unsigned int index = 0 ; index < tabsOpen.size() ; index++ )
 		tabsOpen.at(index)->drawTab( target );
+
+	tabMutex.unlock();
+}
+
+void Tab::checkTabClose( sf::Window& referTo ) {
+	tabMutex.lock();
+
+	// Close any tabs that had their X clicked
+	for ( unsigned int index = 0 ; index < Tab::tabsOpen.size() ; index++ ) {
+		if ( tabCloseWait.getElapsedTime().asMilliseconds() > 200 && mousePressed( sf::Mouse::Left ) && Tab::tabsOpen[index]->isXHovered( referTo ) ) {
+			Tab::tabsOpen[index]->closeTab();
+
+			tabCloseWait.restart();
+			break;
+		}
+	}
 
 	tabMutex.unlock();
 }

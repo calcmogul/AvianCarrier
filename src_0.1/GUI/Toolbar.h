@@ -13,9 +13,10 @@
 
 #include <SFML/Graphics/RectangleShape.hpp>
 #include "Clickable.h"
+#include "AutoResize.h"
 #include "DropDown.h"
 
-class Toolbar : public Clickable {
+class Toolbar : public Clickable , public AutoResize {
 private:
 	float yPos;
 

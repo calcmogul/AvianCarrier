@@ -14,12 +14,11 @@
 
 #include <SFML/Graphics/RenderTarget.hpp>
 #include <SFML/Window/Window.hpp>
-#include "InputBox.h"
-#include "../Base.h"
 #include "../TextReceiver.h"
-#include "TaperRectangleShape.h"
+#include "AutoResize.h"
+#include "InputBox.h"
 
-class ChatWindow : public TextReceiver {
+class ChatWindow : public TextReceiver , public AutoResize {
 private:
 	std::vector<std::vector<sf::String>> history;
 	InputBox input;

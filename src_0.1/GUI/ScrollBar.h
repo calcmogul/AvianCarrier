@@ -10,22 +10,11 @@
 #define SCROLLBAR_H_
 
 #include <SFML/Graphics/ConvexShape.hpp>
-#include <SFML/Graphics/Drawable.hpp>
 #include <SFML/Graphics/RectangleShape.hpp>
 #include "Button.h"
 #include "Clickable.h"
 
 class ScrollBar : public Clickable {
-private:
-	sf::ConvexShape upScrollArrow;
-	sf::ConvexShape downScrollArrow;
-	sf::RectangleShape scrollTop;
-	sf::RectangleShape scrollBottom;
-
-	sf::RectangleShape bar;
-
-	void draw( sf::RenderTarget& target , sf::RenderStates states = sf::RenderStates::Default ) const;
-
 public:
 	Button topArrow;
 	Button bottomArrow;
@@ -40,6 +29,16 @@ public:
 	void setSize( float xSize , float ySize );
 
 	void setVisible( bool see );
+
+private:
+	sf::ConvexShape upScrollArrow;
+	sf::ConvexShape downScrollArrow;
+	sf::RectangleShape scrollTop;
+	sf::RectangleShape scrollBottom;
+
+	sf::RectangleShape bar;
+
+	void draw( sf::RenderTarget& target , sf::RenderStates states = sf::RenderStates::Default ) const;
 };
 
 #endif /* SCROLLBAR_H_ */

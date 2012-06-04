@@ -14,10 +14,9 @@
 #include "TaperRectangleShape.h"
 
 class Clickable : public TaperRectangleShape {
-protected:
+public:
 	bool m_visible;
 
-public:
 	Clickable( const sf::Vector2f& size = sf::Vector2f() , std::vector<sf::Color> borders = std::vector<sf::Color>({}) );
 	~Clickable();
 
@@ -26,6 +25,9 @@ public:
 
 	void setVisible( bool see );
 	bool isVisible();
+
+private:
+	//bool m_visible;
 };
 
 #endif /* CLICKABLE_H_ */

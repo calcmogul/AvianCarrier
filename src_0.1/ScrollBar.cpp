@@ -23,7 +23,7 @@ void ScrollBar::draw( sf::RenderTarget& target , sf::RenderStates states ) const
 	}
 }
 
-ScrollBar::ScrollBar( float xSize , float ySize ) : Clickable( sf::Vector2f( xSize , ySize ) ) , upScrollArrow( 3 ) , downScrollArrow( 3 ) , topArrow() , bottomArrow() {
+ScrollBar::ScrollBar( float xSize , float ySize ) : Clickable( sf::Vector2f( xSize , ySize ) ) , topArrow() , bottomArrow() , upScrollArrow( 3 ) , downScrollArrow( 3 ) {
 	setFillColor( sf::Color( 35 , 35 , 35 ) );
 
 	upScrollArrow.setFillColor( sf::Color( 139 , 139 , 139 ) );

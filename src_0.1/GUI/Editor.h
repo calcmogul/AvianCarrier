@@ -11,9 +11,10 @@
 
 #include <SFML/Graphics/RenderTarget.hpp>
 #include "../TextReceiver.h"
+#include "AutoResize.h"
 #include "ScrollBar.h"
 
-class Editor : public TextReceiver {
+class Editor : public TextReceiver , public AutoResize {
 private:
 	ScrollBar vScroll;
 
@@ -31,6 +32,8 @@ public:
 	void setPosition( const sf::Vector2f& position );
 
 	void setSize( const sf::Vector2f& size );
+
+	void updateSize( sf::Window& target );
 };
 
 #endif /* EDITOR_H_ */

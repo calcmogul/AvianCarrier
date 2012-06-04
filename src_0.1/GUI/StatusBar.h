@@ -10,9 +10,10 @@
 #define STATUSBAR_H_
 
 #include <SFML/Graphics/Text.hpp>
+#include "AutoResize.h"
 #include "TaperRectangleShape.h"
 
-class StatusBar : public sf::Drawable {
+class StatusBar : public sf::Drawable , public AutoResize {
 private:
 	sf::Text messageBuffer;
 	TaperRectangleShape statusBackground;
