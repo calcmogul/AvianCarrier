@@ -25,7 +25,6 @@ public:
 	virtual void updateSize( sf::Window& referTo ) = 0;
 
 	static void resizeAll( sf::Window& referTo );
-	//static void drawAll( sf::RenderWindow& referTo , sf::RenderStates states = sf::RenderStates::Default );
 };
 
 #endif /* AUTO_RESIZE_H_ */

@@ -20,13 +20,17 @@
 
 class ChatWindow : public TextReceiver , public AutoResize {
 private:
+	ChatWindow( const sf::Vector2f& size = sf::Vector2f() , std::vector<sf::Color> borders = std::vector<sf::Color>({}) );
+	static ChatWindow* instance;
+
 	std::vector<std::vector<sf::String>> history;
 	InputBox input;
 
 	void draw( sf::RenderTarget& target , sf::RenderStates states = sf::RenderStates::Default ) const;
 
 public:
-	ChatWindow( const sf::Vector2f& size = sf::Vector2f() , std::vector<sf::Color> borders = std::vector<sf::Color>({}) );
+	static void CreateInstance( const sf::Vector2f& size = sf::Vector2f() , std::vector<sf::Color> borders = std::vector<sf::Color>({}) );
+	static const ChatWindow* GetInstance();
 
 	void handleEvent( sf::Event& event );
 
@@ -37,6 +41,8 @@ public:
 	void setPosition( const sf::Vector2f& position );
 
 	void setVisible( bool visible );
+
+	static void startChat();
 
 	void sendToIP();
 	void receiveFromAny();

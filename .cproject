@@ -60,8 +60,8 @@
 					</folderInfo>
 					<fileInfo id="cdt.managedbuild.config.gnu.mingw.exe.debug.1391821195.954234359" name="serverResources.res" rcbsApplicability="disable" resourcePath="serverResources.res" toolsToInvoke=""/>
 					<fileInfo id="cdt.managedbuild.config.gnu.mingw.exe.debug.1391821195.1942776831" name="serverResources.rc" rcbsApplicability="disable" resourcePath="serverResources.rc" toolsToInvoke=""/>
-					<fileInfo id="cdt.managedbuild.config.gnu.mingw.exe.debug.1391821195.1470372515" name="diff_match_patch.h" rcbsApplicability="disable" resourcePath="src_0.1/diff_match_patch.h" toolsToInvoke=""/>
 					<fileInfo id="cdt.managedbuild.config.gnu.mingw.exe.debug.1391821195.636356798" name="setParameter.inl" rcbsApplicability="disable" resourcePath="src_0.1/setParameter.inl" toolsToInvoke=""/>
+					<fileInfo id="cdt.managedbuild.config.gnu.mingw.exe.debug.1391821195.1470372515" name="diff_match_patch.h" rcbsApplicability="disable" resourcePath="src_0.1/diff_match_patch.h" toolsToInvoke=""/>
 					<fileInfo id="cdt.managedbuild.config.gnu.mingw.exe.debug.1391821195.1445733004" name="clientResources.rc" rcbsApplicability="disable" resourcePath="clientResources.rc" toolsToInvoke=""/>
 					<sourceEntries>
 						<entry excluding="GUI|WindowTests|src_0.1|src_0.1_Server|Other Code Snippets|src_0.1_Console" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>

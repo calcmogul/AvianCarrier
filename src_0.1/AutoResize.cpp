@@ -29,8 +29,3 @@ void AutoResize::resizeAll( sf::Window& referTo ) {
 	for ( unsigned int index = 0 ; index < resizeables.size() ; index++ )
 		resizeables[index]->updateSize( referTo );
 }
-
-/*void AutoResize::drawAll( sf::RenderWindow& referTo , sf::RenderStates states ) {
-	for ( unsigned int index = 0 ; index < resizeables.size() ; index++ )
-		referTo.draw( *resizeables[index] , states );
-}*/
