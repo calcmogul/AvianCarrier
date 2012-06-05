@@ -9,10 +9,22 @@
 #include "Base.h"
 #include "GUI/ChatWindow.h"
 
+ChatWindow* ChatWindow::instance = NULL;
+
 ChatWindow::ChatWindow( const sf::Vector2f& size , std::vector<sf::Color> borders ) : TextReceiver( size , borders ) , input( sf::Vector2f( 200.f , 60.f ) , std::vector<sf::Color>({ sf::Color( 45 , 45 , 45 ) , sf::Color( 100 , 100 , 100 ) , sf::Color( 100 , 100 , 100 ) , sf::Color( 45 , 45 , 45 ) }) ) {
 	setOutlineThickness( 1.f );
 	setFillColor( sf::Color( 255 , 255 , 255 ) );
 	setOutlineColor( sf::Color( TAB_FOCUS , TAB_FOCUS , TAB_FOCUS ) );
+}
+
+void ChatWindow::CreateInstance( const sf::Vector2f& size , std::vector<sf::Color> borders ) {
+	if ( instance != NULL )
+		delete instance;
+	instance = new ChatWindow( size , borders );
+}
+
+const ChatWindow* ChatWindow::GetInstance() {
+	return instance;
 }
 
 void ChatWindow::draw( sf::RenderTarget& target , sf::RenderStates states ) const {
@@ -65,6 +77,17 @@ void ChatWindow::setPosition( const sf::Vector2f& position ) {
 void ChatWindow::setVisible( bool visible ) {
 	Clickable::setVisible( visible );
 	input.setVisible( visible );
+}
+
+void ChatWindow::startChat() {
+	if ( instance->isVisible() ) { // close chat window
+		instance->setVisible( false );
+		mainWin.setSize( sf::Vector2u( mainWin.getSize().x - instance->getSize().x , mainWin.getSize().y ) );
+	}
+	else { // open chat window
+		instance->setVisible( true );
+		mainWin.setSize( sf::Vector2u( mainWin.getSize().x + instance->getSize().x , mainWin.getSize().y ) );
+	}
 }
 
 void ChatWindow::sendToIP() {

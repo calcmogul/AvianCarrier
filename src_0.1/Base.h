@@ -16,6 +16,7 @@
 
 #include <SFML/Graphics/Font.hpp>
 #include <SFML/Graphics/Image.hpp>
+#include <SFML/Graphics/RenderWindow.hpp>
 
 #include <SFML/Window/Event.hpp>
 #include <SFML/Window/Keyboard.hpp>
@@ -29,6 +30,7 @@
 extern std::string rootDirectory;
 extern std::string searchDir;
 extern HINSTANCE globalInstance;
+extern sf::RenderWindow mainWin;
 /* =================================== */
 
 bool keyPressed( sf::Keyboard::Key );
