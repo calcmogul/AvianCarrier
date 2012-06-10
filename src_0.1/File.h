@@ -28,6 +28,7 @@ public:
 		received
 	};
 
+	std::string directory;
 	std::string fileName;
 	std::vector<std::string> input;
 	sf::Vector2u cursorPos;
@@ -40,8 +41,11 @@ public:
 	sf::IpAddress serverIP;
 	unsigned short serverPort;
 
-	explicit File( sf::IpAddress address , unsigned short port , std::string fileName = "" , std::string dir = "" );
+	explicit File( sf::IpAddress address , unsigned short port , std::string path = "" );
 	virtual ~File();
+
+	const std::string& getDirectory();
+	const std::string& getName();
 
 	template <typename T>
 	void insert( T newchar );

@@ -20,7 +20,7 @@ private:
 	void draw( sf::RenderTarget& target , sf::RenderStates states = sf::RenderStates::Default ) const;
 
 public:
-	RenderFile( sf::IpAddress address , unsigned short port , std::string fileName = "" , std::string dir = "" );
+	RenderFile( sf::IpAddress address , unsigned short port , std::string path = "" );
 	virtual ~RenderFile();
 
 	int lineRenderStart; // number of first line to display in editor window

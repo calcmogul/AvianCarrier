@@ -21,8 +21,8 @@ bool Base::isLoaded = false;
 std::vector<ServerEntry> serverList;
 /* ================================== */
 
-bool keyPressed( sf::Keyboard::Key key ) {
-	return sf::Keyboard::isKeyPressed( key );
+bool keyPressed( sf::Event& event , sf::Keyboard::Key key ) {
+	return ( event.type == sf::Event::KeyPressed && event.key.code == key );
 }
 
 bool keyReleased( sf::Event& event , sf::Keyboard::Key key ) {
@@ -33,20 +33,20 @@ bool mouseButtonReleased( sf::Event& event , sf::Mouse::Button button ) {
 	return ( event.type == sf::Event::MouseButtonReleased && event.mouseButton.button == button ); // true if mouse button was released and it was the one asked for
 }
 
-bool pressedControl() {
-	return ( keyPressed( sf::Keyboard::LControl ) || keyPressed( sf::Keyboard::RControl ) );
+bool pressedControl( sf::Event& event ) {
+	return ( keyPressed( event , sf::Keyboard::LControl ) || keyPressed( event , sf::Keyboard::RControl ) );
 }
 
-bool pressedShift() {
-	return ( keyPressed( sf::Keyboard::LShift ) || keyPressed( sf::Keyboard::RShift ) );
+bool pressedShift( sf::Event& event ) {
+	return ( keyPressed( event , sf::Keyboard::LShift ) || keyPressed( event , sf::Keyboard::RShift ) );
 }
 
-bool pressedAlt() {
-	return ( keyPressed( sf::Keyboard::LAlt ) || keyPressed( sf::Keyboard::RAlt ) );
+bool pressedAlt( sf::Event& event ) {
+	return ( keyPressed( event , sf::Keyboard::LAlt ) || keyPressed( event , sf::Keyboard::RAlt ) );
 }
 
-bool mousePressed( sf::Mouse::Button key ) {
-	return sf::Mouse::isButtonPressed( key );
+bool mousePressed( sf::Mouse::Button button ) {
+	return ( sf::Mouse::isButtonPressed( button ) );
 }
 
 Base::Base() {
@@ -92,10 +92,11 @@ Base::Base() {
 			fileImages[5].loadFromImage( txtFile );
 			fileImages[6].loadFromImage( unknownFile );
 
-			// Create list of servers from .ini file
+			/* ===== Create list of servers from .ini file ===== */
 			std::string line;
 			ServerEntry tempEntry;
-			std::ifstream servers( "servers.ini" );
+			std::ifstream servers( "Config/servers.ini" );
+
 			if ( servers.is_open() ) {
 				unsigned int index = 0; // increments to 3 then resets to 1 and repeats
 				while ( !servers.eof() ) {
@@ -124,6 +125,7 @@ Base::Base() {
 					}
 				}
 			}
+			/* ================================================= */
 		}
 
 		isLoaded = true;

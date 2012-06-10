@@ -10,7 +10,7 @@
 #include <SFML/Graphics/Text.hpp>
 #include "Base.h"
 
-RenderFile::RenderFile( sf::IpAddress address , unsigned short port , std::string fileName , std::string dir ) : File( address , port , fileName , dir ) {
+RenderFile::RenderFile( sf::IpAddress address , unsigned short port , std::string path ) : File( address , port , path ) {
 	lineRenderStart = 0;
 }
 
@@ -28,9 +28,7 @@ void RenderFile::draw( sf::RenderTarget& target , sf::RenderStates states ) cons
 		target.draw( drawMe , states );
 	}
 
-	// draw cursor
-	//std::string temp;
-	//temp += static_cast<unsigned char>(221);
+	/* ===== Draw cursor ===== */
 	drawMe.setString( "_" );
 
 	unsigned int xPos = 0;
@@ -42,4 +40,5 @@ void RenderFile::draw( sf::RenderTarget& target , sf::RenderStates states ) cons
 	}
 	drawMe.setPosition( 5 + 7 * xPos , 60 + 12 * (cursorPos.y - lineRenderStart) );
 	target.draw( drawMe , states );
+	/* ======================= */
 }

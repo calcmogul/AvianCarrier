@@ -256,24 +256,24 @@ void Button::draw( sf::RenderTarget& target , sf::RenderStates states ) const {
 		target.draw( sfText2 , states );
 }
 
-bool Button::hotKeyActivated() {
+bool Button::hotKeyActivated( sf::Event& event ) {
 	if ( useable && hotKeyList.size() > 0 ) {
 		bool activated = true;
 
 		for ( unsigned int index = 0 ; activated && index < hotKeyList.size() ; index++ ) {
 			if ( !sf::Keyboard::isKeyPressed( hotKeyList[index] ) ) {
 				if ( hotKeyList[index] == sf::Keyboard::LControl || hotKeyList[index] == sf::Keyboard::RControl ) {
-					if ( !pressedControl() )
+					if ( !pressedControl( event ) )
 						activated = false;
 				}
 
 				else if ( hotKeyList[index] == sf::Keyboard::LShift || hotKeyList[index] == sf::Keyboard::RShift ) {
-					if ( !pressedShift() )
+					if ( !pressedShift( event ) )
 						activated = false;
 				}
 
 				else if ( hotKeyList[index] == sf::Keyboard::LAlt || hotKeyList[index] == sf::Keyboard::RAlt ) {
-					if ( !pressedAlt() )
+					if ( !pressedAlt( event ) )
 						activated = false;
 				}
 

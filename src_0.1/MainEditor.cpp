@@ -11,7 +11,14 @@
 //TODO: Progress Bars
 //TODO: Ability to tab through buttons (button outline will be blue)
 
-#include <iostream>
+#include <iostream>//FIXME
+#include <atomic>
+
+#undef _WIN32_WINNT
+#define _WIN32_WINNT 0x0501
+#define WIN32_LEAN_AND_MEAN
+#include <windows.h>
+
 #include "Base.h"
 #include "GUI/AutoResize.h"
 
@@ -19,7 +26,6 @@
 #include <SFML/Graphics/Sprite.hpp>
 #include <SFML/Network/IpAddress.hpp>
 #include <SFML/Network/UdpSocket.hpp>
-#include <SFML/System/Mutex.hpp>
 #include <SFML/System/Thread.hpp>
 
 #include "GUI/Tab.h"
@@ -35,7 +41,6 @@
 #include "DirList.h"
 #include "MenuSelect.h"
 
-bool SetCurrentDirectoryA( std::string dir );
 void closeProgram();
 void openFile();
 void pullFile();
@@ -99,7 +104,7 @@ INT WINAPI WinMain( HINSTANCE Instance , HINSTANCE , LPSTR , INT ) {
 	Button buildRelease( "Release" , " " , "" , -1 , 40 , []{} );
 
 	Button collaborate( "Collaborate" , "" , "" , -1 , 30 , []{} );
-	Button chat( "Chat" , "Ctrl + T" , "Control T" , -1 , 40 , []{ ChatWindow::startChat(); } );
+	Button chat( "Chat" , "Ctrl + T" , "Control T" , -1 , 40 , []{ ChatWindow::toggleChat(); } );
 
 	Button options( "Options" , "" , "" , -1 , 30 , []{} );
 	Button settings( "Settings..." , " " , "" , -1 , 40 , []{} , false );
@@ -116,7 +121,8 @@ INT WINAPI WinMain( HINSTANCE Instance , HINSTANCE , LPSTR , INT ) {
 	Editor editBackground;
 
 	std::vector<sf::Color> temp = { sf::Color( 45 , 45 , 45 ) , sf::Color( 100 , 100 , 100 ) , sf::Color( 100 , 100 , 100 ) , sf::Color( 45 , 45 , 45 ) };
-	ChatWindow::CreateInstance( sf::Vector2f( 200.f , 600.f ) , temp );
+	ChatWindow::createInstance( sf::Vector2f( 200.f , 600.f ) , temp );
+	ChatWindow* chatWindow = ChatWindow::getInstance();
 
 	freopen( "error.log" , "w+" , stderr );
 
@@ -153,8 +159,24 @@ INT WINAPI WinMain( HINSTANCE Instance , HINSTANCE , LPSTR , INT ) {
 
 	mainWin.setIcon( appIcon.getSize().x , appIcon.getSize().y , appIcon.getPixelsPtr() );
 
-	char currentDirectory[GetCurrentDirectoryA( 0 , NULL )];
-	GetCurrentDirectoryA( sizeof(currentDirectory) , currentDirectory );
+	/* ===== Restore previous session ===== */
+	std::ifstream sessionStore( "Config/session.txt" );
+	if ( sessionStore.is_open() ) {
+		std::string temp;
+		while ( !sessionStore.eof() ) {
+			std::getline( sessionStore , temp );
+			if ( temp != "" )
+				Tab::newTab( sf::IpAddress( 127 , 0 , 0 , 1 ) , 50001 , temp );
+		}
+	}
+	else {
+		std::cerr << "'session.txt' failed to open\n";
+		std::cerr.flush();
+	}
+	/* ==================================== */
+
+	char currentDirectory[GetCurrentDirectory( 0 , NULL )];
+	GetCurrentDirectory( sizeof(currentDirectory) , currentDirectory );
 	rootDirectory = currentDirectory;
 	searchDir = rootDirectory + "\\Documents";
 
@@ -165,6 +187,8 @@ INT WINAPI WinMain( HINSTANCE Instance , HINSTANCE , LPSTR , INT ) {
 	mainTools.setVisible( true );
 
 	Tab::draw( mainWin );
+
+	TextReceiver::setReceiver( &editBackground );
 
 	sf::Thread networkThread( syncServer );
 	networkThread.launch();
@@ -178,6 +202,9 @@ INT WINAPI WinMain( HINSTANCE Instance , HINSTANCE , LPSTR , INT ) {
 			if ( updateSizes ) {
 				Tab::tabBase.setSize( sf::Vector2f( mainWin.getSize().x , Tab::tabBase.getSize().y ) );
 				AutoResize::resizeAll( mainWin );
+				if ( chatWindow->isVisible() )
+					editBackground.setSize( sf::Vector2f( editBackground.getSize().x - chatWindow->getSize().x - 1 , editBackground.getSize().y ) );
+
 				/* ===== Redraw objects ===== */
 				mainWin.clear( sf::Color( BACKGROUND_COLOR , BACKGROUND_COLOR , BACKGROUND_COLOR ) );
 
@@ -197,7 +224,7 @@ INT WINAPI WinMain( HINSTANCE Instance , HINSTANCE , LPSTR , INT ) {
 
 				mainWin.draw( statusBar );
 
-				mainWin.draw( *ChatWindow::GetInstance() );
+				mainWin.draw( *ChatWindow::getInstance() );
 
 				if ( DropDown::currentOpen != NULL )
 					mainWin.draw( *DropDown::currentOpen ); // draw drop-down menu now that its events are processed
@@ -211,7 +238,22 @@ INT WINAPI WinMain( HINSTANCE Instance , HINSTANCE , LPSTR , INT ) {
 		else {
 			while ( mainWin.pollEvent( event ) ) {
 				if ( event.type == sf::Event::Closed ) {
-					// TODO save/close open files here
+					/* ===== Save current session ===== */
+					std::ofstream sessionStore( "Config/session.txt" , std::ios_base::trunc );
+					if ( sessionStore.is_open() ) {
+						globalMutex.lock();
+						while ( Tab::tabsOpen.size() > 0 ) {
+							sessionStore << Tab::current->file->getDirectory() + "/" + Tab::current->file->getName() << "\n";
+							Tab::current->closeTab();
+						}
+						globalMutex.unlock();
+					}
+					else {
+						std::cerr << "failed to save session\n";
+						std::cerr.flush();
+					}
+					/* ================================ */
+
 					closeProgram();
 				}
 
@@ -249,12 +291,8 @@ INT WINAPI WinMain( HINSTANCE Instance , HINSTANCE , LPSTR , INT ) {
 
 				TextReceiver::checkSwitchReceiver( mainWin );
 
-				if ( TextReceiver::currentReceiver != NULL ) {
-					std::cout << "Receiver!= NULL\n";
+				if ( TextReceiver::currentReceiver != NULL )
 					TextReceiver::currentReceiver->handleEvent( event );
-				}
-				else
-					std::cout << "Receiver=NULL\n";
 
 				if ( Tab::tabsOpen.size() > 0 ) {
 					/* ===== Switch Tabs If Other Tab Clicked ===== */
@@ -308,179 +346,10 @@ INT WINAPI WinMain( HINSTANCE Instance , HINSTANCE , LPSTR , INT ) {
 					}
 					/* ================================================= */
 #endif
-					globalMutex.lock();
-
-#if 0
-					if ( event.type == sf::Event::TextEntered ) {
-						if ( chatDialog.isVisible() )
-							chatDialog.passEvent( event );
-
-						if ( event.text.unicode == 8 ) { //pressed Backspace
-							if ( Tab::current->file->cursorPos.y > 0 || Tab::current->file->cursorPos.x > 0 ) { //and cursor isn't at beginning of doc
-								if ( Tab::current->file->cursorPos.x == 0 ) { //if a newline will be erased
-									Tab::current->file->cursorPos.x = Tab::current->file->at( Tab::current->file->cursorPos.y - 1 ).length(); //move cursor to where it would be after line merging is done
-									Tab::current->file->at( Tab::current->file->cursorPos.y - 1 ) += Tab::current->file->at( Tab::current->file->cursorPos.y ); //since newline was eliminated, move contents of that line to line before it
-
-									Tab::current->file->erase( Tab::current->file->cursorPos.y ); //erase the line now that the content is moved
-
-									Tab::current->file->cursorPos.y--;
-								}
-								else { //otherwise do normal character deletion
-									if ( Tab::current->file->getCurrentCharacters( 1 , -1 ) == "{" )
-										Tab::current->file->bracketMatch--;
-									if ( Tab::current->file->getCurrentCharacters( 1 , -1 ) == "}" ) {
-										Tab::current->file->bracketMatch++;
-										Tab::current->file->tabSpaceCount++;
-									}
-
-									Tab::current->file->getCurrentLine() = Tab::current->file->getCurrentLine().substr( 0 , Tab::current->file->cursorPos.x - 1 ) + Tab::current->file->getCurrentLine().substr( Tab::current->file->cursorPos.x , Tab::current->file->getCurrentLine().length() - Tab::current->file->cursorPos.x );
-									Tab::current->file->cursorPos.x--;
-								}
-							}
-						}
-
-						else if ( keyPressed( sf::Keyboard::Return ) ) { //pressed Enter
-							Tab::current->file->insert( Tab::current->file->cursorPos.y + 1 , "" ); //add new line to file
-							Tab::current->file->at( Tab::current->file->cursorPos.y + 1 ) += Tab::current->file->at( Tab::current->file->cursorPos.y ).substr( Tab::current->file->cursorPos.x , Tab::current->file->at( Tab::current->file->cursorPos.y ).length() - Tab::current->file->cursorPos.x ); //add segment to next line
-							Tab::current->file->getCurrentLine() = Tab::current->file->at( Tab::current->file->cursorPos.y ).substr( 0 , Tab::current->file->cursorPos.x ); //delete leftovers from old line
-
-							Tab::current->file->cursorPos.x = 0; //move cursor to beginning of next row
-							Tab::current->file->cursorPos.y++; //move cursor to next line
-
-							Tab::current->file->addTabSpace();
-
-							/* === Add Closing Brace If Needed === */
-							if ( Tab::current->file->bracketMatch > 0 ) {
-								Tab::current->file->insert( Tab::current->file->cursorPos.y + 1 , "" ); //add line for bracket
-								Tab::current->file->cursorPos.x = 0;
-								Tab::current->file->cursorPos.y++;
-
-								Tab::current->file->tabSpaceCount--;
-								Tab::current->file->addTabSpace();
-								Tab::current->file->tabSpaceCount++;
-
-								Tab::current->file->insert( "}" );
-								Tab::current->file->bracketMatch--;
-
-								Tab::current->file->cursorPos.x = Tab::current->file->getCurrentLine().length();
-								Tab::current->file->cursorPos.y--;
-							}
-							/* =================================== */
-						}
-
-						else if ( !pressedControl() && (event.text.unicode >= 32 || event.text.unicode == 9) ) {
-							if ( event.text.unicode == 123 ) { // pressed {
-								Tab::current->file->bracketMatch++;
-								if ( Tab::current->file->bracketMatch > 0 ) // since some {'s were deleted, it should be replaced without shifting right
-									Tab::current->file->tabSpaceCount++;
-							}
-
-							else if ( event.text.unicode == 125 ) { // pressed }
-								if ( Tab::current->file->bracketMatch > 0 ) {
-									Tab::current->file->bracketMatch--;
-									Tab::current->file->tabSpaceCount--;
-								}
-							}
-
-							Tab::current->file->insert( event.text.unicode );
-						}
-					}
-
-					else if ( pressedControl() && ( (pressedShift() && keyPressed( sf::Keyboard::Tab )) || keyPressed( sf::Keyboard::PageUp ) ) ) { //pressed Ctrl + Shift + Tab OR Ctrl + PageUp
-						if ( Tab::tabIndex > 0 ) {
-							Tab::tabIndex--;
-							Tab::current = Tab::tabsOpen[Tab::tabIndex];
-						}
-
-						else { // loop around to back of tab list
-							Tab::tabIndex = Tab::tabsOpen.size() - 1;
-							Tab::current = Tab::tabsOpen[Tab::tabIndex];
-						}
-					}
-
-					else if ( pressedControl() && ( keyPressed( sf::Keyboard::Tab ) || keyPressed( sf::Keyboard::PageDown ) ) ) { //pressed Ctrl + Tab OR Ctrl + PageDown
-						if ( Tab::tabIndex < Tab::tabsOpen.size() - 1 ) {
-							Tab::tabIndex++;
-							Tab::current = Tab::tabsOpen[Tab::tabIndex];
-						}
-
-						else { // loop around to front of tab list
-							Tab::tabIndex = 0;
-							Tab::current = Tab::tabsOpen[0];
-						}
-					}
-
-					else if ( keyPressed( sf::Keyboard::Home ) )
-						Tab::current->file->cursorPos.x = 0;
-
-					else if ( keyPressed( sf::Keyboard::End ) )
-						Tab::current->file->cursorPos.x = Tab::current->file->getCurrentLine().length();
-
-					/* ===== Execute hotKeys that have no button ===== */
-					else if ( pressedControl() && keyPressed( sf::Keyboard::A ) ) { //pressed Ctrl + A
-						Tab::current->file->allSelected = true;
-					}
-
-					else if ( pressedControl() && keyPressed( sf::Keyboard::W ) ) { //pressed Ctrl + W
-						Tab::current->closeTab();
-					}
-					/* =============================================== */
-
-					else if ( keyPressed( sf::Keyboard::Right ) ) {
-						// adjust tab spacing when brackets are entered or left
-						if ( Tab::current->file->getCurrentCharacters( 1 , 0 ) == "{" )
-							Tab::current->file->tabSpaceCount++;
-						else if ( Tab::current->file->getCurrentCharacters( 1 , 0 ) == "}" )
-							Tab::current->file->tabSpaceCount--;
-
-						if ( Tab::current->file->cursorPos.x < Tab::current->file->at( Tab::current->file->cursorPos.y ).length() ) //if cursor isn't at end of row, move it normally
-							Tab::current->file->cursorPos.x++;
-
-						else if ( Tab::current->file->cursorPos.y < static_cast<short>(Tab::current->file->size() - 1) ) { //if there is another row beneath and the cursor is at end or row, move cursor to beginning of next row
-							Tab::current->file->cursorPos.x = 0;
-							Tab::current->file->cursorPos.y++;
-						}
-					}
-
-					else if ( keyPressed( sf::Keyboard::Left ) ) {
-						// adjust tab spacing when brackets are entered or left
-						if ( Tab::current->file->getCurrentCharacters( 1 , 0 ) == "{" )
-							Tab::current->file->tabSpaceCount--;
-						else if ( Tab::current->file->getCurrentCharacters( 1 , 0 ) == "}" )
-							Tab::current->file->tabSpaceCount++;
-
-						if ( Tab::current->file->cursorPos.x > 0 )
-							Tab::current->file->cursorPos.x--;
-
-						else if ( Tab::current->file->cursorPos.y > 0 && Tab::current->file->cursorPos.x == 0 ) { //if there is a row above and cursor is at beginning of row, move cursor to end of previous row
-							Tab::current->file->cursorPos.y--;
-							Tab::current->file->cursorPos.x = Tab::current->file->at( Tab::current->file->cursorPos.y ).length();
-						}
-					}
-
-					else if ( keyPressed( sf::Keyboard::Down ) ) {
-						if ( Tab::current->file->cursorPos.y < Tab::current->file->size() - 1 ) {
-							Tab::current->file->cursorPos.y++;
-
-							if ( static_cast<unsigned int>(Tab::current->file->cursorPos.x) > Tab::current->file->getCurrentLine().length() )
-								Tab::current->file->cursorPos.x = Tab::current->file->getCurrentLine().length();
-						}
-					}
-
-					else if ( keyPressed( sf::Keyboard::Up ) ) {
-						if ( Tab::current->file->cursorPos.y > 0 )
-							Tab::current->file->cursorPos.y--;
-
-						if ( static_cast<unsigned int>(Tab::current->file->cursorPos.x) > Tab::current->file->getCurrentLine().length() )
-							Tab::current->file->cursorPos.x = Tab::current->file->getCurrentLine().length();
-					}
-#endif
-
-					globalMutex.unlock();
 				}
 
 				for ( unsigned int index = 0 ; index < Button::allButtons.size() ; index++ ) { // handles all hotkeys that are assigned to buttons
-					if ( Button::allButtons[index]->hotKeyActivated() ) {
+					if ( Button::allButtons[index]->hotKeyActivated( event ) ) {
 						if ( Button::allButtons[index]->func != NULL )
 							Button::allButtons[index]->func();
 					}
@@ -540,7 +409,7 @@ INT WINAPI WinMain( HINSTANCE Instance , HINSTANCE , LPSTR , INT ) {
 								}
 							}
 
-							if ( DropDown::currentOpen != NULL && keyPressed( sf::Keyboard::Escape ) ) //if escape pressed, closes menu
+							if ( DropDown::currentOpen != NULL && keyPressed( event , sf::Keyboard::Escape ) ) //if escape pressed, closes menu
 								DropDown::currentOpen->closeMenu();
 						}
 					}
@@ -567,7 +436,7 @@ INT WINAPI WinMain( HINSTANCE Instance , HINSTANCE , LPSTR , INT ) {
 
 				mainWin.draw( statusBar );
 
-				mainWin.draw( *ChatWindow::GetInstance() );
+				mainWin.draw( *chatWindow );
 
 				if ( DropDown::currentOpen != NULL )
 					mainWin.draw( *DropDown::currentOpen ); // draw drop-down menu now that its events are processed
@@ -596,7 +465,7 @@ INT WINAPI WinMain( HINSTANCE Instance , HINSTANCE , LPSTR , INT ) {
 
 			mainWin.draw( statusBar );
 
-			mainWin.draw( *ChatWindow::GetInstance() );
+			mainWin.draw( *chatWindow );
 
 			if ( DropDown::currentOpen != NULL )
 				mainWin.draw( *DropDown::currentOpen ); // draw drop-down menu now that its events are processed
@@ -635,10 +504,6 @@ LRESULT CALLBACK OnEvent( HWND Handle , UINT Message , WPARAM WParam , LPARAM LP
 	}
 
 	return DefWindowProc(Handle, Message, WParam, LParam);
-}
-
-bool SetCurrentDirectoryA( std::string dir ) {
-	return SetCurrentDirectoryA( dir.c_str() );
 }
 
 enum fileIMG {
@@ -846,7 +711,7 @@ void openFile() {
 										selection = 0;
 								}
 								else {
-									Tab::newTab( sf::IpAddress( 127 , 0 , 0 , 1 ) , 50001 , (*fileList)[selection].getString() );
+									Tab::newTab( sf::IpAddress( 127 , 0 , 0 , 1 ) , 50001 , searchDir + "/" + (*fileList)[selection].getString() );
 									openBox.close();
 								}
 
@@ -924,7 +789,7 @@ void openFile() {
 				}
 			}
 
-			if ( (Cancel.isHovered( openBox ) && mouseButtonReleased( event , sf::Mouse::Left )) || keyPressed( sf::Keyboard::Escape ) )
+			if ( (Cancel.isHovered( openBox ) && mouseButtonReleased( event , sf::Mouse::Left )) || keyPressed( event , sf::Keyboard::Escape ) )
 				openBox.close();
 
 			if ( newEvent && ( (prevDir.isHovered( openBox ) && mouseButtonReleased( event , sf::Mouse::Left )) || keyReleased( event , sf::Keyboard::Back ) ) ) {

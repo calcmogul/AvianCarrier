@@ -10,9 +10,8 @@
 #define SCROLLBAR_H_
 
 #include <SFML/Graphics/ConvexShape.hpp>
-#include <SFML/Graphics/RectangleShape.hpp>
-#include "Button.h"
 #include "Clickable.h"
+#include "Button.h"
 
 class ScrollBar : public Clickable {
 public:
