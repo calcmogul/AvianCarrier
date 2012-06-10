@@ -29,8 +29,8 @@ private:
 	void draw( sf::RenderTarget& target , sf::RenderStates states = sf::RenderStates::Default ) const;
 
 public:
-	static void CreateInstance( const sf::Vector2f& size = sf::Vector2f() , std::vector<sf::Color> borders = std::vector<sf::Color>({}) );
-	static const ChatWindow* GetInstance();
+	static void createInstance( const sf::Vector2f& size = sf::Vector2f() , std::vector<sf::Color> borders = std::vector<sf::Color>({}) );
+	static ChatWindow* getInstance();
 
 	void handleEvent( sf::Event& event );
 
@@ -42,7 +42,7 @@ public:
 
 	void setVisible( bool visible );
 
-	static void startChat();
+	static void toggleChat();
 
 	void sendToIP();
 	void receiveFromAny();

@@ -8,6 +8,7 @@
 
 #include "Base.h"
 #include "GUI/Tab.h"
+#include <iostream> //FIXME
 
 sf::Mutex Tab::tabMutex;
 sf::Clock Tab::tabCloseWait;
@@ -20,8 +21,9 @@ TaperRectangleShape Tab::tabBase( sf::Vector2f() , std::vector<sf::Color>({ sf::
 bool Tab::baseInit = false;
 unsigned int Tab::tabIndex = 0;
 
-Tab::Tab( sf::IpAddress address , unsigned short port , std::string fileName ) : Button( fileName , "" , "" , BUTTON_SPACING / 2 , 15 , []{} ) , title( fileName , Base::segoeUI , 12 ) , closeX( "x" , Base::segoeUI , 13 ) {
-	file = new RenderFile( address , port , fileName , rootDirectory + "\\Documents" );
+Tab::Tab( sf::IpAddress address , unsigned short port , std::string fileName ) : Button( fileName.substr( fileName.rfind( "/" ) + 1 ) , "" , "" , BUTTON_SPACING / 2 , 15 , []{} ) , title( fileName , Base::segoeUI , 12 ) , closeX( "x" , Base::segoeUI , 13 ) {
+	std::cout << "TAB fileName=" << fileName << "\n";
+	file = new RenderFile( address , port , fileName );
 	closeX.setColor( sf::Color( 30 , 30 , 30 ) );
 
 	setSize( sf::Vector2f( getSize().x + BUTTON_SPACING / 2 + 7 , getSize().y - 1 ) );
@@ -48,7 +50,7 @@ std::string Tab::getTitle() {
 }
 
 void Tab::saveLocal() {
-	file->save( searchDir + "\\" + file->fileName );
+	file->save( rootDirectory + "/" + file->directory + "/" + file->fileName );
 }
 
 bool Tab::isXHovered( sf::Window& referTo ) {
@@ -60,6 +62,8 @@ void Tab::updateSize( sf::Window& referTo ) {
 }
 
 void Tab::newTab( sf::IpAddress address , unsigned short port , std::string fileName ) {
+	std::cout << "fileName=" << fileName << "\n";
+
 	tabMutex.lock();
 
 	tabsOpen.push_back( new Tab( address , port , fileName ) );

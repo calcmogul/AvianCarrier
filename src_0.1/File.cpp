@@ -7,10 +7,20 @@
 //=============================================================================
 
 #include "File.h"
+#include <iostream>//FIXME
 
-File::File( sf::IpAddress address , unsigned short port , std::string fileName , std::string dir ) : serverIP( address ) , serverPort( port ) {
+File::File( sf::IpAddress address , unsigned short port , std::string path ) : serverIP( address ) , serverPort( port ) {
+	std::cout << "path=" << path << "\n";
+	if ( path.rfind( "/" ) < fileName.length() )
+		directory = path.substr( 0 , path.rfind( "/" ) - 1 );
+	else
+		directory = "";
+	std::cout << "directory=" << directory << "\n";
+
+	fileName = path.substr( path.rfind( "/" ) + 1 );
+
 	if ( fileName != "" && fileName != "Untitled" )
-		loadFromFile( dir , fileName );
+		loadFromFile( directory , fileName );
 	else
 		input.push_back( "" );
 
@@ -22,6 +32,14 @@ File::File( sf::IpAddress address , unsigned short port , std::string fileName ,
 
 File::~File() {
 
+}
+
+const std::string& File::getDirectory() {
+	return directory;
+}
+
+const std::string& File::getName() {
+	return fileName;
 }
 
 unsigned int File::size() {
@@ -93,7 +111,7 @@ void File::addTabSpace() {
 }
 
 bool File::save( std::string fileName ) {
-	std::ofstream localFile ( fileName );
+	std::ofstream localFile( fileName );
 
 	if ( localFile.is_open() ) {
 		for ( unsigned int index = 0 ; index < size() ; index++ )
@@ -110,7 +128,7 @@ bool File::save( std::string fileName ) {
 void File::loadFromFile( std::string dir , std::string fileName ) {
 	clear();
 
-	std::fstream file( dir + "\\" + fileName );
+	std::fstream file( dir + "/" + fileName );
 
 	if ( !file.is_open() )
 		return;

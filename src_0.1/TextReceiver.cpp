@@ -7,7 +7,6 @@
 //=============================================================================
 
 #include "TextReceiver.h"
-#include <iostream> //FIXME
 
 std::vector<TextReceiver*> TextReceiver::textInterfaces;
 TextReceiver* TextReceiver::currentReceiver = NULL;
@@ -32,9 +31,15 @@ TextReceiver::~TextReceiver() {
 }
 
 void TextReceiver::checkSwitchReceiver( sf::Window& referTo ) {
-	for ( unsigned int index = 0 ; index < textInterfaces.size() ; index++ ) {
-		if ( textInterfaces[index]->isClicked( referTo ) && currentReceiver != textInterfaces[index] )
+	bool switched = false;
+
+	for ( unsigned int index = 0 ; index < textInterfaces.size() && !switched ; index++ ) {
+		if ( textInterfaces[index]->isClicked( referTo ) ) {
 			currentReceiver = textInterfaces[index];
+			switched = true;
+		}
+		else if ( sf::Mouse::isButtonPressed( sf::Mouse::Button::Left ) )
+			currentReceiver = NULL;
 	}
 }
 

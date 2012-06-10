@@ -33,12 +33,12 @@ void InputBox::draw( sf::RenderTarget& target , sf::RenderStates states ) const 
 		cursor.setColor( sf::Color( 0 , 0 , 0 ) );
 
 		unsigned int currentLine = 0;
-
 		unsigned int length = 0;
+
 		while ( length < std::string(drawInput.getString()).length() ) {
 
 			unsigned int index = 0;
-			while ( drawInput.findCharacterPos( index + 1 ).x < getSize().x && std::string(drawInput.getString()).substr( index , 1 ) != "\n" ) {
+			while ( drawInput.findCharacterPos( index + 1 ).x < getSize().x && std::string(drawInput.getString()).substr( index , 1 ) != "\n" && index < std::string(drawInput.getString()).length() ) {
 				if ( index < std::string(drawInput.getString()).length() - 1 ) {
 					subText.setString( std::string(drawInput.getString()).substr( length , index ) );
 					subText.setPosition( sf::Vector2f( 1.f , currentLine * subText.getCharacterSize() ) );
@@ -69,7 +69,7 @@ void InputBox::handleEvent( sf::Event& event ) {
 			}
 		}
 
-		else if ( pressedShift() && event.text.unicode == 10 ) { // pressed Shift + Enter
+		else if ( pressedShift( event ) && event.text.unicode == 10 ) { // pressed Shift + Enter
 			input.insert( cursorPos , "\n" );
 
 			cursorPos++;
@@ -78,7 +78,7 @@ void InputBox::handleEvent( sf::Event& event ) {
 		else if ( event.text.unicode == 10 ) // pressed Enter
 			sendToIP();
 
-		else if ( !pressedControl() && (event.text.unicode >= 32 || event.text.unicode == 9) ) {
+		else if ( !pressedControl( event ) && (event.text.unicode >= 32 || event.text.unicode == 9) ) {
 			std::string temp;
 			temp += event.text.unicode;
 			input.insert( cursorPos , temp );
@@ -88,21 +88,21 @@ void InputBox::handleEvent( sf::Event& event ) {
 		}
 	}
 
-	if ( keyDelay.updateMove( keyPressed( sf::Keyboard::Right ) , 0 ) ) {
+	if ( keyDelay.updateMove( keyPressed( event , sf::Keyboard::Right ) , 0 ) ) {
 		if ( cursorPos < input.length() ) // if cursor isn't at end of row, move it normally
 			cursorPos++;
 	}
 
-	else if ( keyDelay.updateMove( keyPressed( sf::Keyboard::Left ) , 0 ) ) {
+	else if ( keyDelay.updateMove( keyPressed( event , sf::Keyboard::Left ) , 0 ) ) {
 		if ( cursorPos > 0 )
 			cursorPos--;
 	}
 
-	else if ( keyPressed( sf::Keyboard::Down ) ) {
+	else if ( keyPressed( event , sf::Keyboard::Down ) ) {
 
 	}
 
-	else if ( keyPressed( sf::Keyboard::Up ) ) {
+	else if ( keyPressed( event , sf::Keyboard::Up ) ) {
 
 	}
 }

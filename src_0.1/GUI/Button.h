@@ -61,7 +61,7 @@ public:
 	void setUseable( bool use );
 	bool isUseable();
 
-	bool hotKeyActivated();
+	bool hotKeyActivated( sf::Event& event );
 };
 
 

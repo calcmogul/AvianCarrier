@@ -9,14 +9,9 @@
 #ifndef GUI_BASE_H_
 #define GUI_BASE_H_
 
-#undef _WIN32_WINNT
-#define _WIN32_WINNT 0x0501
-#define WIN32_LEAN_AND_MEAN
-#include <windows.h>
-
 #include <SFML/Graphics/Font.hpp>
-#include <SFML/Graphics/Image.hpp>
 #include <SFML/Graphics/RenderWindow.hpp>
+#include <SFML/Graphics/Texture.hpp>
 
 #include <SFML/Window/Event.hpp>
 #include <SFML/Window/Keyboard.hpp>
@@ -24,21 +19,23 @@
 
 #include <SFML/Network/IpAddress.hpp>
 
+#include <SFML/System/Mutex.hpp>
+
 #include "GUI/GUISettings.h"
 
 /* ===== STATIC VAR DECLARATIONS ===== */
 extern std::string rootDirectory;
 extern std::string searchDir;
-extern HINSTANCE globalInstance;
 extern sf::RenderWindow mainWin;
+extern sf::Mutex globalMutex;
 /* =================================== */
 
-bool keyPressed( sf::Keyboard::Key );
+bool keyPressed( sf::Event& event , sf::Keyboard::Key );
 bool keyReleased( sf::Event& event , sf::Keyboard::Key );
 bool mouseButtonReleased( sf::Event& event , sf::Mouse::Button button );
-bool pressedControl();
-bool pressedShift();
-bool pressedAlt();
+bool pressedControl( sf::Event& event );
+bool pressedShift( sf::Event& event );
+bool pressedAlt( sf::Event& event );
 bool mousePressed( sf::Mouse::Button );
 
 typedef struct ServerEntry {

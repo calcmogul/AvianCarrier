@@ -17,13 +17,13 @@ ChatWindow::ChatWindow( const sf::Vector2f& size , std::vector<sf::Color> border
 	setOutlineColor( sf::Color( TAB_FOCUS , TAB_FOCUS , TAB_FOCUS ) );
 }
 
-void ChatWindow::CreateInstance( const sf::Vector2f& size , std::vector<sf::Color> borders ) {
+void ChatWindow::createInstance( const sf::Vector2f& size , std::vector<sf::Color> borders ) {
 	if ( instance != NULL )
 		delete instance;
 	instance = new ChatWindow( size , borders );
 }
 
-const ChatWindow* ChatWindow::GetInstance() {
+ChatWindow* ChatWindow::getInstance() {
 	return instance;
 }
 
@@ -79,7 +79,7 @@ void ChatWindow::setVisible( bool visible ) {
 	input.setVisible( visible );
 }
 
-void ChatWindow::startChat() {
+void ChatWindow::toggleChat() {
 	if ( instance->isVisible() ) { // close chat window
 		instance->setVisible( false );
 		mainWin.setSize( sf::Vector2u( mainWin.getSize().x - instance->getSize().x , mainWin.getSize().y ) );
