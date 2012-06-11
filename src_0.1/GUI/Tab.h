@@ -24,7 +24,6 @@
 
 class Tab : public Button , public AutoResize {
 private:
-	static sf::Mutex tabMutex;
 	static sf::Clock tabCloseWait;
 
 	sf::Text title;
@@ -41,6 +40,8 @@ private:
 
 public:
 	RenderFile* file;
+
+	static sf::Mutex tabMutex;
 	static std::vector<Tab*> tabsOpen;
 	static Tab* current;
 	static TaperRectangleShape tabBase;

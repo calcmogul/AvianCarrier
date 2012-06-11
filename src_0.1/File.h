@@ -28,7 +28,7 @@ public:
 		received
 	};
 
-	std::string directory;
+	std::string fullPath;
 	std::string fileName;
 	std::vector<std::string> input;
 	sf::Vector2u cursorPos;
@@ -43,9 +43,6 @@ public:
 
 	explicit File( sf::IpAddress address , unsigned short port , std::string path = "" );
 	virtual ~File();
-
-	const std::string& getDirectory();
-	const std::string& getName();
 
 	template <typename T>
 	void insert( T newchar );
@@ -66,7 +63,7 @@ public:
 	void addTabSpace();
 
 	bool save( std::string fileName );
-	void loadFromFile( std::string dir , std::string fileName );
+	void loadFromFile( std::string path );
 
 	unsigned char sendToIP();
 	unsigned char receiveFromAny();

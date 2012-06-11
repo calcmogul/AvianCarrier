@@ -7,20 +7,17 @@
 //=============================================================================
 
 #include "File.h"
-#include <iostream>//FIXME
 
 File::File( sf::IpAddress address , unsigned short port , std::string path ) : serverIP( address ) , serverPort( port ) {
-	std::cout << "path=" << path << "\n";
-	if ( path.rfind( "/" ) < fileName.length() )
-		directory = path.substr( 0 , path.rfind( "/" ) - 1 );
-	else
-		directory = "";
-	std::cout << "directory=" << directory << "\n";
+	fullPath = path;
 
-	fileName = path.substr( path.rfind( "/" ) + 1 );
+	if ( path.rfind( "/" ) < path.length() )
+		fileName = path.substr( path.rfind( "/" ) + 1 );
+	else
+		fileName = path;
 
 	if ( fileName != "" && fileName != "Untitled" )
-		loadFromFile( directory , fileName );
+		loadFromFile( fullPath );
 	else
 		input.push_back( "" );
 
@@ -32,14 +29,6 @@ File::File( sf::IpAddress address , unsigned short port , std::string path ) : s
 
 File::~File() {
 
-}
-
-const std::string& File::getDirectory() {
-	return directory;
-}
-
-const std::string& File::getName() {
-	return fileName;
 }
 
 unsigned int File::size() {
@@ -125,10 +114,10 @@ bool File::save( std::string fileName ) {
 	return true;
 }
 
-void File::loadFromFile( std::string dir , std::string fileName ) {
+void File::loadFromFile( std::string path ) {
 	clear();
 
-	std::fstream file( dir + "/" + fileName );
+	std::fstream file( "Documents/" + path );
 
 	if ( !file.is_open() )
 		return;

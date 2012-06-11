@@ -28,16 +28,16 @@ Editor::~Editor() {
 
 void Editor::draw( sf::RenderTarget& target , sf::RenderStates states ) const {
 	target.draw( static_cast<sf::RectangleShape>(*this) , states );
-	globalMutex.lock();
+	Tab::tabMutex.lock();
 	if ( Tab::current != NULL )
 		target.draw( vScroll , states );
-	globalMutex.unlock();
+	Tab::tabMutex.unlock();
 }
 
 void Editor::handleEvent( sf::Event& event ) {
-	if ( Tab::current != NULL ) {
-		globalMutex.lock();
+	Tab::tabMutex.lock();
 
+	if ( Tab::current != NULL ) {
 		if ( event.type == sf::Event::TextEntered ) {
 			if ( event.text.unicode == 8 ) { //pressed Backspace
 				if ( Tab::current->file->cursorPos.y > 0 || Tab::current->file->cursorPos.x > 0 ) { //and cursor isn't at beginning of doc
@@ -63,7 +63,7 @@ void Editor::handleEvent( sf::Event& event ) {
 				}
 			}
 
-			else if ( keyPressed( event , sf::Keyboard::Return ) ) { //pressed Enter
+			else if ( event.text.unicode == 13 ) { //pressed Enter
 				Tab::current->file->insert( Tab::current->file->cursorPos.y + 1 , "" ); //add new line to file
 				Tab::current->file->at( Tab::current->file->cursorPos.y + 1 ) += Tab::current->file->at( Tab::current->file->cursorPos.y ).substr( Tab::current->file->cursorPos.x , Tab::current->file->at( Tab::current->file->cursorPos.y ).length() - Tab::current->file->cursorPos.x ); //add segment to next line
 				Tab::current->file->getCurrentLine() = Tab::current->file->at( Tab::current->file->cursorPos.y ).substr( 0 , Tab::current->file->cursorPos.x ); //delete leftovers from old line
@@ -198,9 +198,9 @@ void Editor::handleEvent( sf::Event& event ) {
 			if ( static_cast<unsigned int>(Tab::current->file->cursorPos.x) > Tab::current->file->getCurrentLine().length() )
 				Tab::current->file->cursorPos.x = Tab::current->file->getCurrentLine().length();
 		}
-
-		globalMutex.unlock();
 	}
+
+	Tab::tabMutex.unlock();
 }
 
 void Editor::activate( bool active ) {

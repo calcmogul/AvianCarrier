@@ -27,18 +27,4 @@ void RenderFile::draw( sf::RenderTarget& target , sf::RenderStates states ) cons
 		drawMe.setPosition( 5 , 60 + (drawIndex - lineRenderStart) * drawMe.getCharacterSize() );
 		target.draw( drawMe , states );
 	}
-
-	/* ===== Draw cursor ===== */
-	drawMe.setString( "_" );
-
-	unsigned int xPos = 0;
-	for ( unsigned int index = 0 ; index < cursorPos.x ; index++ ) {
-		if ( input.at(cursorPos.y).substr( index , 1 ) == "\t" )
-			xPos += 4;
-		else
-			xPos++;
-	}
-	drawMe.setPosition( 5 + 7 * xPos , 60 + 12 * (cursorPos.y - lineRenderStart) );
-	target.draw( drawMe , states );
-	/* ======================= */
 }
