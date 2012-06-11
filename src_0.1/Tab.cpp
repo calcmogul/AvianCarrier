@@ -8,7 +8,6 @@
 
 #include "Base.h"
 #include "GUI/Tab.h"
-#include <iostream> //FIXME
 
 sf::Mutex Tab::tabMutex;
 sf::Clock Tab::tabCloseWait;
@@ -22,7 +21,6 @@ bool Tab::baseInit = false;
 unsigned int Tab::tabIndex = 0;
 
 Tab::Tab( sf::IpAddress address , unsigned short port , std::string fileName ) : Button( fileName.substr( fileName.rfind( "/" ) + 1 ) , "" , "" , BUTTON_SPACING / 2 , 15 , []{} ) , title( fileName , Base::segoeUI , 12 ) , closeX( "x" , Base::segoeUI , 13 ) {
-	std::cout << "TAB fileName=" << fileName << "\n";
 	file = new RenderFile( address , port , fileName );
 	closeX.setColor( sf::Color( 30 , 30 , 30 ) );
 
@@ -50,7 +48,7 @@ std::string Tab::getTitle() {
 }
 
 void Tab::saveLocal() {
-	file->save( rootDirectory + "/" + file->directory + "/" + file->fileName );
+	file->save( "Documents/" + file->fullPath );
 }
 
 bool Tab::isXHovered( sf::Window& referTo ) {
@@ -62,8 +60,6 @@ void Tab::updateSize( sf::Window& referTo ) {
 }
 
 void Tab::newTab( sf::IpAddress address , unsigned short port , std::string fileName ) {
-	std::cout << "fileName=" << fileName << "\n";
-
 	tabMutex.lock();
 
 	tabsOpen.push_back( new Tab( address , port , fileName ) );

@@ -11,7 +11,6 @@
 
 #include <SFML/Graphics/Font.hpp>
 #include <SFML/Graphics/RenderWindow.hpp>
-#include <SFML/Graphics/Texture.hpp>
 
 #include <SFML/Window/Event.hpp>
 #include <SFML/Window/Keyboard.hpp>
@@ -19,15 +18,10 @@
 
 #include <SFML/Network/IpAddress.hpp>
 
-#include <SFML/System/Mutex.hpp>
-
 #include "GUI/GUISettings.h"
 
 /* ===== STATIC VAR DECLARATIONS ===== */
-extern std::string rootDirectory;
-extern std::string searchDir;
 extern sf::RenderWindow mainWin;
-extern sf::Mutex globalMutex;
 /* =================================== */
 
 bool keyPressed( sf::Event& event , sf::Keyboard::Key );

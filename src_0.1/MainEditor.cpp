@@ -9,10 +9,10 @@
 //TODO: Implement text selection with highlighting (Ctrl + A flag will be special case of this) -> send this to copy function
 
 //TODO: Progress Bars
+//TODO: Save Dialog
 //TODO: Ability to tab through buttons (button outline will be blue)
 
 #include <iostream>//FIXME
-#include <atomic>
 
 #undef _WIN32_WINNT
 #define _WIN32_WINNT 0x0501
@@ -55,16 +55,13 @@ sf::Thread buildThread( buildEXE );
 sf::Thread aboutThread( displayAbout );
 
 sf::RenderWindow mainWin;
-HINSTANCE globalInstance;
-MSG Message;
-sf::Mutex globalMutex;
+HINSTANCE globalInstance; //FIXME win32
 bool CLOSE_THREADS = false;
 
 Base temp; //loads all files for base class
 
 StatusBar statusBar;
 
-std::string rootDirectory;
 std::string searchDir;
 
 bool updateSizes = false;
@@ -73,12 +70,14 @@ LRESULT CALLBACK OnEvent( HWND Handle , UINT Message , WPARAM WParam , LPARAM LP
 
 void syncServer() {
 	while ( !CLOSE_THREADS ) {
+		Tab::tabMutex.lock();
+
 		if ( Tab::current != NULL ) {
-			globalMutex.lock();
 			Tab::current->file->sendToIP();
 			Tab::current->file->receiveFromAny();
-			globalMutex.unlock();
 		}
+
+		Tab::tabMutex.unlock();
 
 		sf::sleep( sf::Time( 500000 ) );
 	}
@@ -113,10 +112,10 @@ INT WINAPI WinMain( HINSTANCE Instance , HINSTANCE , LPSTR , INT ) {
 	DropDown fileMenu( 0 , 4 , { &file , &newFile , &open , &save , &pull , &exitButton } );
 	DropDown editMenu( 0 , 4 , { &edit , &undo , &redo , &cut , &copy , &paste } );
 	DropDown buildMenu( 0 , 4 , { &build , &buildDebug , &buildRelease } );
-	DropDown collaborateMenu( 0 , 4 , { &collaborate , &chat } );
+	//DropDown collaborateMenu( 0 , 4 , { &collaborate , &chat } );
 	DropDown optionMenu( 0 , 4 , { &options , &settings , &about } );
 
-	Toolbar mainTools( 0.f , 0.f , mainWin.getSize().x , 24.f , { &fileMenu , &editMenu , &buildMenu , &collaborateMenu , &optionMenu } );
+	Toolbar mainTools( 0.f , 0.f , mainWin.getSize().x , 24.f , { &fileMenu , &editMenu , &buildMenu /*, &collaborateMenu*/ , &optionMenu } );
 
 	Editor editBackground;
 
@@ -134,7 +133,7 @@ INT WINAPI WinMain( HINSTANCE Instance , HINSTANCE , LPSTR , INT ) {
 	WindowClass.cbWndExtra    = 0;
 	WindowClass.hInstance     = Instance;
 	WindowClass.hIcon         = NULL;
-	WindowClass.hCursor       = 0;
+	WindowClass.hCursor       = NULL;
 	WindowClass.hbrBackground = reinterpret_cast<HBRUSH>(COLOR_BACKGROUND);
 	WindowClass.lpszMenuName  = NULL;
 	WindowClass.lpszClassName = mainClassName;
@@ -159,6 +158,8 @@ INT WINAPI WinMain( HINSTANCE Instance , HINSTANCE , LPSTR , INT ) {
 
 	mainWin.setIcon( appIcon.getSize().x , appIcon.getSize().y , appIcon.getPixelsPtr() );
 
+	searchDir = "Documents";
+
 	/* ===== Restore previous session ===== */
 	std::ifstream sessionStore( "Config/session.txt" );
 	if ( sessionStore.is_open() ) {
@@ -169,16 +170,9 @@ INT WINAPI WinMain( HINSTANCE Instance , HINSTANCE , LPSTR , INT ) {
 				Tab::newTab( sf::IpAddress( 127 , 0 , 0 , 1 ) , 50001 , temp );
 		}
 	}
-	else {
+	else
 		std::cerr << "'session.txt' failed to open\n";
-		std::cerr.flush();
-	}
 	/* ==================================== */
-
-	char currentDirectory[GetCurrentDirectory( 0 , NULL )];
-	GetCurrentDirectory( sizeof(currentDirectory) , currentDirectory );
-	rootDirectory = currentDirectory;
-	searchDir = rootDirectory + "\\Documents";
 
 	sf::Event event;
 
@@ -193,7 +187,9 @@ INT WINAPI WinMain( HINSTANCE Instance , HINSTANCE , LPSTR , INT ) {
 	sf::Thread networkThread( syncServer );
 	networkThread.launch();
 
+	MSG Message; // FIXME win32
 	while ( mainWin.isOpen() ) {
+		// FIXME win32
 		if ( PeekMessage( &Message , NULL , 0 , 0 , PM_REMOVE ) ) {
 			// If a message was waiting in the message queue, process it
 			TranslateMessage( &Message );
@@ -212,12 +208,12 @@ INT WINAPI WinMain( HINSTANCE Instance , HINSTANCE , LPSTR , INT ) {
 
 				mainWin.draw( editBackground );
 
-				globalMutex.lock();
+				Tab::tabMutex.lock();
 
 				if ( Tab::current != NULL )
 					mainWin.draw( *Tab::current->file );
 
-				globalMutex.unlock();
+				Tab::tabMutex.unlock();
 
 				mainWin.draw( mainTools );
 				Tab::draw( mainWin );
@@ -241,17 +237,15 @@ INT WINAPI WinMain( HINSTANCE Instance , HINSTANCE , LPSTR , INT ) {
 					/* ===== Save current session ===== */
 					std::ofstream sessionStore( "Config/session.txt" , std::ios_base::trunc );
 					if ( sessionStore.is_open() ) {
-						globalMutex.lock();
+						Tab::tabMutex.lock();
 						while ( Tab::tabsOpen.size() > 0 ) {
-							sessionStore << Tab::current->file->getDirectory() + "/" + Tab::current->file->getName() << "\n";
+							sessionStore << Tab::current->file->fullPath << "\n";
 							Tab::current->closeTab();
 						}
-						globalMutex.unlock();
+						Tab::tabMutex.unlock();
 					}
-					else {
+					else
 						std::cerr << "failed to save session\n";
-						std::cerr.flush();
-					}
 					/* ================================ */
 
 					closeProgram();
@@ -298,54 +292,12 @@ INT WINAPI WinMain( HINSTANCE Instance , HINSTANCE , LPSTR , INT ) {
 					/* ===== Switch Tabs If Other Tab Clicked ===== */
 					for ( unsigned int index = 0 ; index < Tab::tabsOpen.size() ; index++ ) {
 						if ( Tab::tabsOpen[index]->isHovered( mainWin ) && mouseButtonReleased( event , sf::Mouse::Button::Left ) ) {
-							globalMutex.lock();
+							Tab::tabMutex.lock();
 							Tab::current = Tab::tabsOpen[index];
-							globalMutex.unlock();
+							Tab::tabMutex.unlock();
 						}
 					}
 					/* ============================================ */
-#if 0
-					/* ===== Handle selecting item in menu : ARROW ===== *///FIXME Delay here
-					if ( !(vScrollEdit.topArrow.isPressed( mainWin ) || scrollBar.bottomArrow.isPressed( mainWin )) )
-						scrollArrowWaitTime = 0;
-
-					if ( scrollArrowRepeatTime.getElapsedTime().asMilliseconds() >= scrollArrowWaitTime ) {
-						upNewARROWPressed = scrollBar.topArrow.isPressed( openView );
-						downNewARROWPressed = scrollBar.bottomArrow.isPressed( openView );
-
-						if ( (!upOldARROWPressed && upNewARROWPressed) || (!downOldARROWPressed && downNewARROWPressed) )
-							scrollArrowWaitTime = 400;
-						else if ( (upNewARROWPressed && upOldARROWPressed) || (downNewARROWPressed && downOldARROWPressed) )
-							scrollArrowWaitTime = 100;
-						else if ( !(upNewARROWPressed || downNewARROWPressed) )
-							scrollArrowWaitTime = 0;
-
-						if ( upNewARROWPressed || downNewARROWPressed ) {
-							scrollArrowRepeatTime.restart();
-
-							if ( selection >= 0 && selection < static_cast<int>(fileList->size()) )
-								(*fileList)[selection].setColor( sf::Color( 0 , 0 , 0 ) );
-						}
-
-						if ( upNewARROWPressed ) {
-							if ( selection > 0 )
-								selection--;
-							else
-								selection = fileList->size() - 1;
-						}
-
-						else if ( downNewARROWPressed ) {
-							if ( selection < static_cast<int>(fileList->size()) - 1 )
-								selection++;
-							else
-								selection = 0;
-						}
-
-						upOldARROWPressed = upNewARROWPressed;
-						downOldARROWPressed = downNewARROWPressed;
-					}
-					/* ================================================= */
-#endif
 				}
 
 				for ( unsigned int index = 0 ; index < Button::allButtons.size() ; index++ ) { // handles all hotkeys that are assigned to buttons
@@ -424,12 +376,32 @@ INT WINAPI WinMain( HINSTANCE Instance , HINSTANCE , LPSTR , INT ) {
 
 				mainWin.draw( editBackground );
 
-				globalMutex.lock();
+				Tab::tabMutex.lock();
 
-				if ( Tab::current != NULL )
+				if ( Tab::current != NULL ) {
 					mainWin.draw( *Tab::current->file );
 
-				globalMutex.unlock();
+					if ( editBackground.isReceiving() ) {
+						sf::Text drawMe( "" , Base::consolas , 12 );
+						drawMe.setColor( sf::Color( 0 , 0 , 0 ) );
+
+						/* ===== Draw cursor ===== */
+						drawMe.setString( "_" );
+
+						unsigned int xPos = 0;
+						for ( unsigned int index = 0 ; index < Tab::current->file->cursorPos.x ; index++ ) {
+							if ( Tab::current->file->input.at(Tab::current->file->cursorPos.y).substr( index , 1 ) == "\t" )
+								xPos += 4;
+							else
+								xPos++;
+						}
+						drawMe.setPosition( 5 + 7 * xPos , 60 + 12 * (Tab::current->file->cursorPos.y - Tab::current->file->lineRenderStart) );
+						mainWin.draw( drawMe );
+						/* ======================= */
+					}
+				}
+
+				Tab::tabMutex.unlock();
 
 				mainWin.draw( mainTools );
 				Tab::draw( mainWin );
@@ -453,12 +425,32 @@ INT WINAPI WinMain( HINSTANCE Instance , HINSTANCE , LPSTR , INT ) {
 
 			mainWin.draw( editBackground );
 
-			globalMutex.lock();
+			Tab::tabMutex.lock();
 
-			if ( Tab::current != NULL )
+			if ( Tab::current != NULL ) {
 				mainWin.draw( *Tab::current->file );
 
-			globalMutex.unlock();
+				if ( editBackground.isReceiving() ) {
+					sf::Text drawMe( "" , Base::consolas , 12 );
+					drawMe.setColor( sf::Color( 0 , 0 , 0 ) );
+
+					/* ===== Draw cursor ===== */
+					drawMe.setString( "_" );
+
+					unsigned int xPos = 0;
+					for ( unsigned int index = 0 ; index < Tab::current->file->cursorPos.x ; index++ ) {
+						if ( Tab::current->file->input.at(Tab::current->file->cursorPos.y).substr( index , 1 ) == "\t" )
+							xPos += 4;
+						else
+							xPos++;
+					}
+					drawMe.setPosition( 5 + 7 * xPos , 60 + 12 * (Tab::current->file->cursorPos.y - Tab::current->file->lineRenderStart) );
+					mainWin.draw( drawMe );
+					/* ======================= */
+				}
+			}
+
+			Tab::tabMutex.unlock();
 
 			mainWin.draw( mainTools );
 			Tab::draw( mainWin );
@@ -486,6 +478,7 @@ INT WINAPI WinMain( HINSTANCE Instance , HINSTANCE , LPSTR , INT ) {
 	return EXIT_SUCCESS;
 }
 
+// FIXME win32
 LRESULT CALLBACK OnEvent( HWND Handle , UINT Message , WPARAM WParam , LPARAM LParam ) {
 	// Redraw GUI elements when window is resized or moved
 	if ( Message == WM_SIZE || Message == WM_WINDOWPOSCHANGED ) {
@@ -531,7 +524,7 @@ void selectFileIMG( sf::Sprite& spriteOut , std::string name ) {
 	std::string extension = getExtension( name );
 
 	if ( extension == "" ) {
-		if ( getList( searchDir + "\\" + name ) != NULL )
+		if ( getList( searchDir + "/" + name ) != NULL )
 			spriteOut.setTexture( Base::fileImages[fileIMG::folder] );
 		else
 			spriteOut.setTexture( Base::fileImages[fileIMG::unknownFile] );
@@ -569,12 +562,13 @@ std::vector<sf::Text>* getTextList( std::string path ) {
 }
 
 void closeProgram() {
-	globalMutex.unlock();
+	Tab::tabMutex.unlock();
 	CLOSE_THREADS = true;
 
 	mainWin.close();
 }
 
+// FIXME win32
 void openFile() {
 	HWND openHWND = CreateWindow( mainClassName , "Browse For File" , WS_SYSMENU | WS_VISIBLE , mainWin.getPosition().x + ( mainWin.getSize().x - 322 ) / 2 , mainWin.getPosition().y + ( mainWin.getSize().y - 332 ) / 2 , 322 , 332 , mainWin.getSystemHandle() , NULL , globalInstance , NULL );
 
@@ -697,7 +691,7 @@ void openFile() {
 							/* ================================ */
 
 							if ( clickCount == 2 ) {
-								std::string temp = searchDir + "\\" + (*fileList)[selection].getString();
+								std::string temp = searchDir + "/" + (*fileList)[selection].getString();
 
 								if ( getExtension( (*fileList)[selection].getString() ) == "" && getList( temp ) != NULL ) {
 									delete fileList;
@@ -711,6 +705,10 @@ void openFile() {
 										selection = 0;
 								}
 								else {
+									searchDir = searchDir.substr( 9/* length of "Documents" */ ); //eliminates "Documents" from beginning of file directory because all files are there anyway
+
+									if ( searchDir.substr( 0 , 1 ) == "/" )
+										searchDir = searchDir.substr( 1 );
 									Tab::newTab( sf::IpAddress( 127 , 0 , 0 , 1 ) , 50001 , searchDir + "/" + (*fileList)[selection].getString() );
 									openBox.close();
 								}
@@ -770,7 +768,7 @@ void openFile() {
 
 			if ( (OK.isHovered( openBox ) && mouseButtonReleased( event , sf::Mouse::Left )) || (newEvent &&  keyReleased( event , sf::Keyboard::Return )) ) {
 				if ( selection >= 0 ) {
-					std::string temp = searchDir + "\\" + (*fileList)[selection].getString();
+					std::string temp = searchDir + "/" + (*fileList)[selection].getString();
 
 					if ( getExtension( (*fileList)[selection].getString() ) == "" && getList( temp ) != NULL ) {
 						delete fileList;
@@ -783,7 +781,11 @@ void openFile() {
 							selection = 0;
 					}
 					else {
-						Tab::newTab( sf::IpAddress( 127 , 0 , 0 , 1 ) , 50001 , (*fileList)[selection].getString() );
+						searchDir = searchDir.substr( 9/* length of "Documents" */ ); //eliminates "Documents" from beginning of file directory because all files are there anyway
+
+						if ( searchDir.substr( 0 , 1 ) == "/" )
+							searchDir = searchDir.substr( 1 );
+						Tab::newTab( sf::IpAddress( 127 , 0 , 0 , 1 ) , 50001 , searchDir + "/" + (*fileList)[selection].getString() );
 						openBox.close();
 					}
 				}
@@ -793,9 +795,9 @@ void openFile() {
 				openBox.close();
 
 			if ( newEvent && ( (prevDir.isHovered( openBox ) && mouseButtonReleased( event , sf::Mouse::Left )) || keyReleased( event , sf::Keyboard::Back ) ) ) {
-				if ( searchDir != rootDirectory + "\\Documents" ) {
+				if ( searchDir != "Documents" ) {
 					delete fileList;
-					searchDir = searchDir = searchDir.substr( 0 , searchDir.rfind( "\\" ) ); // update search directory to parent folder
+					searchDir = searchDir = searchDir.substr( 0 , searchDir.rfind( "/" ) ); // update search directory to parent folder
 					fileList = getTextList( searchDir ); // gets list of files in directory and prepares them for drawing
 
 					selection = 0;
@@ -838,7 +840,7 @@ void openFile() {
 		}
 	}
 
-	searchDir = rootDirectory + "\\Documents"; // reset starting directory in open dialog
+	searchDir = "Documents"; // reset starting directory in open dialog
 
 	DestroyWindow( openView.getSystemHandle() );
 	DestroyWindow( openHWND );
@@ -866,13 +868,14 @@ void pasteText() {
 
 void buildEXE() {
 	Tab::current->saveLocal();
-	AllocConsole(); // create console for GCC output
+	AllocConsole(); // create console for GCC output // FIXME win32
 	statusBar.setStatus( "Building..." );
 	mainWin.draw( statusBar );
 	mainWin.display();
-	std::cout << "Tab::current->file->fileName=" << Tab::current->file->fileName << "\n";
-	if ( !sysRun( "C:/Users/Tyler/Downloads/EclipseCDT/mingw/bin/g++.exe" , "-O3 -Os -Wall -c -fmessage-length=0 -std=c++0x -o " + searchDir + "\\" + changeExtension( Tab::current->file->fileName , "o" ) + " " + searchDir + "\\" + changeExtension( Tab::current->file->fileName , "cpp" ) ) )
-		sysRun( "C:/Users/Tyler/Downloads/EclipseCDT/mingw/bin/g++.exe" , "-s -static -o " + searchDir + "\\" + changeExtension( Tab::current->file->fileName , "exe" ) + " " + searchDir + "\\" + changeExtension( Tab::current->file->fileName , "o" ) );
+
+	std::string tempDir = searchDir;
+	if ( !sysRun( "C:/Users/Tyler/Downloads/EclipseCDT/mingw/bin/g++.exe" , "-O3 -Os -Wall -c -fmessage-length=0 -std=c++0x -o " + tempDir + "/" + changeExtension( Tab::current->file->fileName , "o" ) + " " + tempDir + "/" + changeExtension( Tab::current->file->fileName , "cpp" ) ) )
+		sysRun( "C:/Users/Tyler/Downloads/EclipseCDT/mingw/bin/g++.exe" , "-s -static -o " + tempDir + "/" + changeExtension( Tab::current->file->fileName , "exe" ) + " " + tempDir + "/" + changeExtension( Tab::current->file->fileName , "o" ) );
 
 	statusBar.setStatus( "Done" );
 }
@@ -883,6 +886,7 @@ void displayAbout() {
 	splash.waitForExitClick();
 }
 
+// FIXME win32
 int sysRun( std::string programAndDir , std::string args ) {
 	std::cout << "{" << programAndDir << " " << args << "}\n";
 
