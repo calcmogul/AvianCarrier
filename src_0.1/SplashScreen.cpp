@@ -16,7 +16,7 @@ SplashScreen::SplashScreen( const std::string& imageName ) : RenderWindow() {
 	if ( imageName != "" ) {
 		backTexture.loadFromFile( "Resource/" + imageName );
 		backDraw.setTexture( backTexture );
-		backDraw.setPosition( Vector2f( 0 , 0 ) );
+		backDraw.setPosition( Vector2f( 0.f , 0.f ) );
 	}
 }
 
@@ -24,7 +24,7 @@ SplashScreen::SplashScreen( unsigned int modeX , unsigned int modeY , const std:
 	if ( imageName != "" ) {
 		backTexture.loadFromFile( "Resource/" + imageName );
 		backDraw.setTexture( backTexture );
-		backDraw.setPosition( Vector2f( 0 , 0 ) );
+		backDraw.setPosition( Vector2f( 0.f , 0.f ) );
 	}
 	else {
 		backTexture.create( modeX , modeY );
@@ -42,7 +42,7 @@ void SplashScreen::create( unsigned int modeX , unsigned int modeY , const std::
 	if ( imageName != "" ) {
 		backTexture.loadFromFile( "Resource/" + imageName );
 		backDraw.setTexture( backTexture );
-		backDraw.setPosition( Vector2f( 0 , 0 ) );
+		backDraw.setPosition( Vector2f( 0.f , 0.f ) );
 	}
 	else {
 		backTexture.create( modeX , modeY );
@@ -54,7 +54,6 @@ void SplashScreen::create( unsigned int modeX , unsigned int modeY , const std::
 
 void SplashScreen::drawAll() {
 	draw( backDraw );
-	display();
 }
 
 void SplashScreen::waitForExitClick() {

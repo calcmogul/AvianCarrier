@@ -160,7 +160,7 @@ void Editor::handleEvent( sf::Event& event ) {
 			if ( Tab::current->file->cursorPos.x < Tab::current->file->at( Tab::current->file->cursorPos.y ).length() ) //if cursor isn't at end of row, move it normally
 				Tab::current->file->cursorPos.x++;
 
-			else if ( Tab::current->file->cursorPos.y < static_cast<short>(Tab::current->file->size() - 1) ) { //if there is another row beneath and the cursor is at end or row, move cursor to beginning of next row
+			else if ( Tab::current->file->cursorPos.y < Tab::current->file->size() - 1 ) { //if there is another row beneath and the cursor is at end or row, move cursor to beginning of next row
 				Tab::current->file->cursorPos.x = 0;
 				Tab::current->file->cursorPos.y++;
 			}

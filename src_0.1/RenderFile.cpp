@@ -9,6 +9,7 @@
 #include "GUI/RenderFile.h"
 #include <SFML/Graphics/Text.hpp>
 #include "Base.h"
+#include "GUI/Tab.h"
 
 RenderFile::RenderFile( sf::IpAddress address , unsigned short port , std::string path ) : File( address , port , path ) {
 	lineRenderStart = 0;
@@ -24,7 +25,7 @@ void RenderFile::draw( sf::RenderTarget& target , sf::RenderStates states ) cons
 
 	for ( int drawIndex = lineRenderStart , lineIndex = lineRenderStart ; lineIndex < static_cast<int>(input.size()) ; lineIndex++ , drawIndex++ ) {
 		drawMe.setString( input.at( lineIndex ) );
-		drawMe.setPosition( 5 , 60 + (drawIndex - lineRenderStart) * drawMe.getCharacterSize() );
+		drawMe.setPosition( 5 , Tab::tabBase.getPosition().y + Tab::tabBase.getSize().y + 2 + (drawIndex - lineRenderStart) * drawMe.getCharacterSize() );
 		target.draw( drawMe , states );
 	}
 }
