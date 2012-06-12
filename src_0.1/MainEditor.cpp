@@ -8,7 +8,7 @@
 
 //TODO: Implement text selection with highlighting (Ctrl + A flag will be special case of this) -> send this to copy function
 
-//TODO: Progress Bars
+//TODO: Progress Bars (not needed yet)
 //TODO: Save Dialog
 //TODO: Ability to tab through buttons (button outline will be blue)
 
@@ -55,7 +55,7 @@ sf::Thread buildThread( buildEXE );
 sf::Thread aboutThread( displayAbout );
 
 sf::RenderWindow mainWin;
-HINSTANCE globalInstance; //FIXME win32
+HINSTANCE globalInstance; //FIXME win32 HINSTANCE
 bool CLOSE_THREADS = false;
 
 Base temp; //loads all files for base class
@@ -187,9 +187,9 @@ INT WINAPI WinMain( HINSTANCE Instance , HINSTANCE , LPSTR , INT ) {
 	sf::Thread networkThread( syncServer );
 	networkThread.launch();
 
-	MSG Message; // FIXME win32
+	MSG Message; // FIXME win32 MSG
 	while ( mainWin.isOpen() ) {
-		// FIXME win32
+		// FIXME win32 message handler
 		if ( PeekMessage( &Message , NULL , 0 , 0 , PM_REMOVE ) ) {
 			// If a message was waiting in the message queue, process it
 			TranslateMessage( &Message );
@@ -395,7 +395,7 @@ INT WINAPI WinMain( HINSTANCE Instance , HINSTANCE , LPSTR , INT ) {
 							else
 								xPos++;
 						}
-						drawMe.setPosition( 5 + 7 * xPos , 60 + 12 * (Tab::current->file->cursorPos.y - Tab::current->file->lineRenderStart) );
+						drawMe.setPosition( 5 + 7 * xPos , Tab::tabBase.getPosition().y + Tab::tabBase.getSize().y + 2 + 12 * (Tab::current->file->cursorPos.y - Tab::current->file->lineRenderStart) );
 						mainWin.draw( drawMe );
 						/* ======================= */
 					}
@@ -444,7 +444,7 @@ INT WINAPI WinMain( HINSTANCE Instance , HINSTANCE , LPSTR , INT ) {
 						else
 							xPos++;
 					}
-					drawMe.setPosition( 5 + 7 * xPos , 60 + 12 * (Tab::current->file->cursorPos.y - Tab::current->file->lineRenderStart) );
+					drawMe.setPosition( 5 + 7 * xPos , Tab::tabBase.getPosition().y + Tab::tabBase.getSize().y + 2 + 12 * (Tab::current->file->cursorPos.y - Tab::current->file->lineRenderStart) );
 					mainWin.draw( drawMe );
 					/* ======================= */
 				}
@@ -478,7 +478,7 @@ INT WINAPI WinMain( HINSTANCE Instance , HINSTANCE , LPSTR , INT ) {
 	return EXIT_SUCCESS;
 }
 
-// FIXME win32
+// FIXME win32 callback function
 LRESULT CALLBACK OnEvent( HWND Handle , UINT Message , WPARAM WParam , LPARAM LParam ) {
 	// Redraw GUI elements when window is resized or moved
 	if ( Message == WM_SIZE || Message == WM_WINDOWPOSCHANGED ) {
@@ -568,7 +568,7 @@ void closeProgram() {
 	mainWin.close();
 }
 
-// FIXME win32
+// FIXME win32 openFile uses child window
 void openFile() {
 	HWND openHWND = CreateWindow( mainClassName , "Browse For File" , WS_SYSMENU | WS_VISIBLE , mainWin.getPosition().x + ( mainWin.getSize().x - 322 ) / 2 , mainWin.getPosition().y + ( mainWin.getSize().y - 332 ) / 2 , 322 , 332 , mainWin.getSystemHandle() , NULL , globalInstance , NULL );
 
@@ -868,14 +868,18 @@ void pasteText() {
 
 void buildEXE() {
 	Tab::current->saveLocal();
-	AllocConsole(); // create console for GCC output // FIXME win32
+	AllocConsole(); // create console for GCC output // FIXME win32 AllocConsole
 	statusBar.setStatus( "Building..." );
 	mainWin.draw( statusBar );
 	mainWin.display();
 
 	std::string tempDir = searchDir;
-	if ( !sysRun( "C:/Users/Tyler/Downloads/EclipseCDT/mingw/bin/g++.exe" , "-O3 -Os -Wall -c -fmessage-length=0 -std=c++0x -o " + tempDir + "/" + changeExtension( Tab::current->file->fileName , "o" ) + " " + tempDir + "/" + changeExtension( Tab::current->file->fileName , "cpp" ) ) )
+	std::cout << "\n>";
+	if ( !sysRun( "C:/Users/Tyler/Downloads/EclipseCDT/mingw/bin/g++.exe" , "-O3 -Wall -c -fmessage-length=0 -std=c++0x -o " + tempDir + "/" + changeExtension( Tab::current->file->fileName , "o" ) + " " + tempDir + "/" + changeExtension( Tab::current->file->fileName , "cpp" ) ) ) {
+		std::cout << "\n>";
 		sysRun( "C:/Users/Tyler/Downloads/EclipseCDT/mingw/bin/g++.exe" , "-s -static -o " + tempDir + "/" + changeExtension( Tab::current->file->fileName , "exe" ) + " " + tempDir + "/" + changeExtension( Tab::current->file->fileName , "o" ) );
+		std::cout << "\n>";
+	}
 
 	statusBar.setStatus( "Done" );
 }
@@ -883,12 +887,20 @@ void buildEXE() {
 void displayAbout() {
 	sf::SplashScreen splash( 400 , 250 , "" , sf::Style::Titlebar , "Pigeot Splash.png" );
 
+	sf::Texture sfmlLogo;
+	if ( sfmlLogo.loadFromFile( "Resource/sfml.png" ) ) {
+		sf::Sprite sfml( sfmlLogo );
+		sfml.setPosition( sf::Vector2f( splash.getSize().x - sfml.getTexture()->getSize().x - 8.f , splash.getSize().y - sfml.getTexture()->getSize().y - 8.f ) );
+		splash.draw( sfml );
+		splash.display();
+	}
+
 	splash.waitForExitClick();
 }
 
-// FIXME win32
+// FIXME win32 sysRun creates process with Win32 API
 int sysRun( std::string programAndDir , std::string args ) {
-	std::cout << "{" << programAndDir << " " << args << "}\n";
+	std::cout << programAndDir << " " << args << "\n";
 
 	STARTUPINFO si;
 	PROCESS_INFORMATION pi;
