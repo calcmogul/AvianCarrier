@@ -7,7 +7,7 @@
 //=============================================================================
 
 #include <SFML/Graphics/RenderTarget.hpp>
-#include "GUI/Toolbar.h"
+#include "Toolbar.h"
 
 Toolbar::Toolbar( float x , float y , float width , float height , std::vector<DropDown*> bar ) : Clickable( sf::Vector2f( width , height ) ) , backgroundEdge( sf::Vector2f( width , height ) ) , tools( bar ) {
 	yPos = y;

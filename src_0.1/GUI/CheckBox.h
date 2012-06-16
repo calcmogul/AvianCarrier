@@ -11,9 +11,8 @@
 
 #include <SFML/Graphics/RectangleShape.hpp>
 #include <SFML/Graphics/Text.hpp>
-#include "../Base.h"
 
-class CheckBox : public Base {
+class CheckBox {
 private:
 	sf::RectangleShape box;
 	sf::Text mark;

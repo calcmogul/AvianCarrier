@@ -6,7 +6,7 @@
 //Version: 0.1
 //=============================================================================
 
-#include "GUI/Clickable.h"
+#include "Clickable.h"
 
 Clickable::Clickable( const sf::Vector2f& size , std::vector<sf::Color> borders ) : TaperRectangleShape( size , borders ) {
 	m_visible = false;

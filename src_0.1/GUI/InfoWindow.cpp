@@ -8,8 +8,8 @@
 
 #include <SFML/Graphics/RectangleShape.hpp>
 #include <SFML/Graphics/Text.hpp>
-#include "GUI/InfoWindow.h"
-#include "Base.h"
+#include "InfoWindow.h"
+#include "../Base.h"
 
 namespace sf {
 

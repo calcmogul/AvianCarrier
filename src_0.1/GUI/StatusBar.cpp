@@ -8,8 +8,8 @@
 
 #include <SFML/Graphics/RenderTarget.hpp>
 #include <SFML/Window/Window.hpp>
-#include "GUI/StatusBar.h"
-#include "Base.h"
+#include "StatusBar.h"
+#include "../Base.h"
 
 StatusBar::StatusBar() : messageBuffer( "Done" , Base::segoeUI , 13 ) {
 	statusBackground.pushEdge( sf::Vector2f() , sf::Color( 45 , 45 , 45 ) );

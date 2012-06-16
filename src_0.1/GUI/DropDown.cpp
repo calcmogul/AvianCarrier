@@ -7,9 +7,9 @@
 //=============================================================================
 
 #include <SFML/Graphics/RenderTarget.hpp>
-#include "Base.h"
-#include "GUI/DropDown.h"
-#include "GUI/Button.h"
+#include "../Base.h"
+#include "DropDown.h"
+#include "Button.h"
 
 std::vector<DropDown*> DropDown::dropDowns;
 DropDown* DropDown::currentOpen = NULL;

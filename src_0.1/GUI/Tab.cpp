@@ -6,8 +6,8 @@
 //Version: 0.1
 //=============================================================================
 
-#include "Base.h"
-#include "GUI/Tab.h"
+#include "../Base.h"
+#include "Tab.h"
 
 sf::Mutex Tab::tabMutex;
 sf::Clock Tab::tabCloseWait;

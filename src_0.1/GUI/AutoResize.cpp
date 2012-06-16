@@ -7,7 +7,7 @@
 //Version: 0.1
 //=============================================================================
 
-#include "GUI/AutoResize.h"
+#include "AutoResize.h"
 
 std::vector<AutoResize*> AutoResize::resizeables;
 

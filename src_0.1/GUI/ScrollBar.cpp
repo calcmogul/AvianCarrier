@@ -6,8 +6,8 @@
 //Version: 0.1
 //=============================================================================
 
-#include "GUI/ScrollBar.h"
 #include <SFML/Graphics/RenderTarget.hpp>
+#include "ScrollBar.h"
 
 void ScrollBar::draw( sf::RenderTarget& target , sf::RenderStates states ) const {
 	if ( m_visible ) {

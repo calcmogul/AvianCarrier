@@ -6,8 +6,8 @@
 //Version: 0.1
 //=============================================================================
 
-#include "Base.h"
-#include "GUI/Dialog.h"
+#include "../Base.h"
+#include "Dialog.h"
 
 Dialog::Dialog( const sf::Vector2f& size , std::vector<sf::Color> colors ) {
 

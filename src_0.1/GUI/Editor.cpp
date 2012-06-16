@@ -6,9 +6,9 @@
 //Version: 0.1
 //=============================================================================
 
-#include "Base.h"
-#include "GUI/Editor.h"
-#include "GUI/Tab.h"
+#include "../Base.h"
+#include "Editor.h"
+#include "Tab.h"
 
 Editor::Editor() : TextReceiver( sf::Vector2f( 0.f , 0.f ) ) , vScroll( 15.f , 0.f ) {
 	setFillColor( sf::Color( 80 , 80 , 80 ) );
