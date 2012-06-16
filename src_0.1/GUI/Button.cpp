@@ -7,8 +7,8 @@
 //=============================================================================
 
 #include <SFML/Graphics/RenderTarget.hpp>
-#include "Base.h"
-#include "GUI/Button.h"
+#include "../Base.h"
+#include "Button.h"
 
 const unsigned char Button::colorXOR = BUTTON_HOVER ^ BUTTON_OFF;
 std::vector<Button*> Button::allButtons;

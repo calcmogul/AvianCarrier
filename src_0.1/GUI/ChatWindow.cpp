@@ -6,8 +6,8 @@
 //Version: 0.1
 //=============================================================================
 
-#include "Base.h"
-#include "GUI/ChatWindow.h"
+#include "../Base.h"
+#include "ChatWindow.h"
 
 ChatWindow* ChatWindow::instance = NULL;
 

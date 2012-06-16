@@ -6,10 +6,10 @@
 //Version: 0.1
 //=============================================================================
 
-#include "GUI/RenderFile.h"
 #include <SFML/Graphics/Text.hpp>
-#include "Base.h"
-#include "GUI/Tab.h"
+#include "../Base.h"
+#include "RenderFile.h"
+#include "Tab.h"
 
 RenderFile::RenderFile( sf::IpAddress address , unsigned short port , std::string path ) : File( address , port , path ) {
 	lineRenderStart = 0;

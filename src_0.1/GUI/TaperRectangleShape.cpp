@@ -7,7 +7,7 @@
 //=============================================================================
 
 #include <SFML/Graphics/RenderTarget.hpp>
-#include "GUI/TaperRectangleShape.h"
+#include "TaperRectangleShape.h"
 
 void TaperRectangleShape::draw( sf::RenderTarget& target , sf::RenderStates states ) const {
 	for ( unsigned int index = 0 ; index < edges.size() ; index++ )

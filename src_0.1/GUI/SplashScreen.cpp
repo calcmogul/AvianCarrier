@@ -6,8 +6,8 @@
 //Version: 0.1
 //=============================================================================
 
-#include "GUI/SplashScreen.h"
-#include "Base.h"
+#include "SplashScreen.h"
+#include "../Base.h"
 #include <SFML/Window/Mouse.hpp>
 
 namespace sf {

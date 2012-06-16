@@ -7,7 +7,8 @@
 //=============================================================================
 
 #include <SFML/Graphics/RenderTarget.hpp>
-#include "GUI/CheckBox.h"
+#include "CheckBox.h"
+#include "../Base.h"
 
 CheckBox::CheckBox( float x , float y , bool on , bool see ) : box( sf::Vector2f( 12.f , 12.f ) ) {
 	box.setPosition( x , y );
