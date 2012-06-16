@@ -102,8 +102,8 @@ INT WINAPI WinMain( HINSTANCE Instance , HINSTANCE , LPSTR , INT ) {
 	Button buildDebug( "Debug" , "Ctrl + B" , "Control B" , -1 , 40 , []{ buildThread.launch(); } );
 	Button buildRelease( "Release" , " " , "" , -1 , 40 , []{} );
 
-	Button collaborate( "Collaborate" , "" , "" , -1 , 30 , []{} );
-	Button chat( "Chat" , "Ctrl + T" , "Control T" , -1 , 40 , []{ ChatWindow::toggleChat(); } );
+	//Button collaborate( "Collaborate" , "" , "" , -1 , 30 , []{} );
+	//Button chat( "Chat" , "Ctrl + T" , "Control T" , -1 , 40 , []{ ChatWindow::toggleChat(); } );
 
 	Button options( "Options" , "" , "" , -1 , 30 , []{} );
 	Button settings( "Settings..." , " " , "" , -1 , 40 , []{} , false );
