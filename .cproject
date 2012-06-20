@@ -16,12 +16,7 @@
 					<folderInfo id="cdt.managedbuild.config.gnu.mingw.exe.debug.1391821195." name="/" resourcePath="">
 						<toolChain id="cdt.managedbuild.toolchain.gnu.mingw.exe.debug.1429621807" name="MinGW GCC" superClass="cdt.managedbuild.toolchain.gnu.mingw.exe.debug">
 							<targetPlatform id="cdt.managedbuild.target.gnu.platform.mingw.exe.debug.1153950095" name="Debug Platform" superClass="cdt.managedbuild.target.gnu.platform.mingw.exe.debug"/>
-							<builder buildPath="${workspace_loc:/SpartaCoder/Debug}" id="cdt.managedbuild.tool.gnu.builder.mingw.base.186820802" keepEnvironmentInBuildfile="false" managedBuildOn="true" name="CDT Internal Builder" superClass="cdt.managedbuild.tool.gnu.builder.mingw.base">
-								<outputEntries>
-									<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="outputPath" name="Debug"/>
-									<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="outputPath" name="Release"/>
-								</outputEntries>
-							</builder>
+							<builder buildPath="${workspace_loc:/AvianCarrier/Debug}" id="org.eclipse.cdt.build.core.internal.builder.1609553090" parallelBuildOn="true" parallelizationNumber="optimal" superClass="org.eclipse.cdt.build.core.internal.builder"/>
 							<tool id="cdt.managedbuild.tool.gnu.assembler.mingw.exe.debug.597046674" name="GCC Assembler" superClass="cdt.managedbuild.tool.gnu.assembler.mingw.exe.debug">
 								<inputType id="cdt.managedbuild.tool.gnu.assembler.input.453669650" superClass="cdt.managedbuild.tool.gnu.assembler.input"/>
 							</tool>
@@ -85,7 +80,7 @@
 					<folderInfo id="cdt.managedbuild.config.gnu.mingw.exe.release.1372150565." name="/" resourcePath="">
 						<toolChain id="cdt.managedbuild.toolchain.gnu.mingw.exe.release.2068185345" name="MinGW GCC" superClass="cdt.managedbuild.toolchain.gnu.mingw.exe.release">
 							<targetPlatform id="cdt.managedbuild.target.gnu.platform.mingw.exe.release.535931548" name="Debug Platform" superClass="cdt.managedbuild.target.gnu.platform.mingw.exe.release"/>
-							<builder buildPath="${workspace_loc:/SpartaCoder/Release}" id="cdt.managedbuild.tool.gnu.builder.mingw.base.2025859729" keepEnvironmentInBuildfile="false" managedBuildOn="true" name="CDT Internal Builder" superClass="cdt.managedbuild.tool.gnu.builder.mingw.base"/>
+							<builder buildPath="${workspace_loc:/AvianCarrier/Release}" id="org.eclipse.cdt.build.core.internal.builder.2113043660" parallelBuildOn="true" parallelizationNumber="optimal" superClass="org.eclipse.cdt.build.core.internal.builder"/>
 							<tool id="cdt.managedbuild.tool.gnu.assembler.mingw.exe.release.2106082006" name="GCC Assembler" superClass="cdt.managedbuild.tool.gnu.assembler.mingw.exe.release">
 								<inputType id="cdt.managedbuild.tool.gnu.assembler.input.1989237312" superClass="cdt.managedbuild.tool.gnu.assembler.input"/>
 							</tool>
@@ -156,7 +151,7 @@
 					<folderInfo id="cdt.managedbuild.config.gnu.mingw.exe.debug.1391821195.90150044." name="/" resourcePath="">
 						<toolChain id="cdt.managedbuild.toolchain.gnu.mingw.exe.debug.56430455" name="MinGW GCC" superClass="cdt.managedbuild.toolchain.gnu.mingw.exe.debug">
 							<targetPlatform id="cdt.managedbuild.target.gnu.platform.mingw.exe.debug.964189965" name="Debug Platform" superClass="cdt.managedbuild.target.gnu.platform.mingw.exe.debug"/>
-							<builder buildPath="${workspace_loc:/SpartaCoder/Debug}" id="cdt.managedbuild.tool.gnu.builder.mingw.base.1349364983" keepEnvironmentInBuildfile="false" managedBuildOn="true" name="CDT Internal Builder" superClass="cdt.managedbuild.tool.gnu.builder.mingw.base">
+							<builder buildPath="${workspace_loc:/SpartaCoder/Debug}" id="cdt.managedbuild.tool.gnu.builder.mingw.base.1349364983" keepEnvironmentInBuildfile="false" managedBuildOn="true" name="CDT Internal Builder" parallelBuildOn="true" parallelizationNumber="optimal" superClass="cdt.managedbuild.tool.gnu.builder.mingw.base">
 								<outputEntries>
 									<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="outputPath" name="Debug"/>
 									<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="outputPath" name="Release"/>
@@ -195,8 +190,8 @@
 							</tool>
 						</toolChain>
 					</folderInfo>
-					<fileInfo id="cdt.managedbuild.config.gnu.mingw.exe.debug.1391821195.90150044.1013494070" name="clientResources.res" rcbsApplicability="disable" resourcePath="clientResources.res" toolsToInvoke=""/>
 					<fileInfo id="cdt.managedbuild.config.gnu.mingw.exe.debug.1391821195.90150044.2105796644" name="serverResources.res" rcbsApplicability="disable" resourcePath="serverResources.res" toolsToInvoke=""/>
+					<fileInfo id="cdt.managedbuild.config.gnu.mingw.exe.debug.1391821195.90150044.1013494070" name="clientResources.res" rcbsApplicability="disable" resourcePath="clientResources.res" toolsToInvoke=""/>
 					<fileInfo id="cdt.managedbuild.config.gnu.mingw.exe.debug.1391821195.90150044.95461479" name="serverResources.rc" rcbsApplicability="disable" resourcePath="serverResources.rc" toolsToInvoke=""/>
 					<fileInfo id="cdt.managedbuild.config.gnu.mingw.exe.debug.1391821195.90150044.1933358745" name="SplashScreen.h" rcbsApplicability="disable" resourcePath="src_0.1/GUI/SplashScreen.h" toolsToInvoke=""/>
 					<fileInfo id="cdt.managedbuild.config.gnu.mingw.exe.debug.1391821195.90150044.770087889" name="StatusBar.h" rcbsApplicability="disable" resourcePath="src_0.1/GUI/StatusBar.h" toolsToInvoke=""/>
@@ -226,7 +221,7 @@
 					<folderInfo id="cdt.managedbuild.config.gnu.mingw.exe.release.1372150565.956275897." name="/" resourcePath="">
 						<toolChain id="cdt.managedbuild.toolchain.gnu.mingw.exe.release.1759048489" name="MinGW GCC" superClass="cdt.managedbuild.toolchain.gnu.mingw.exe.release">
 							<targetPlatform id="cdt.managedbuild.target.gnu.platform.mingw.exe.release.1970371206" name="Debug Platform" superClass="cdt.managedbuild.target.gnu.platform.mingw.exe.release"/>
-							<builder buildPath="${workspace_loc:/SpartaCoder/Release}" id="cdt.managedbuild.tool.gnu.builder.mingw.base.483671144" keepEnvironmentInBuildfile="false" managedBuildOn="true" name="CDT Internal Builder" superClass="cdt.managedbuild.tool.gnu.builder.mingw.base"/>
+							<builder buildPath="${workspace_loc:/SpartaCoder/Release}" id="cdt.managedbuild.tool.gnu.builder.mingw.base.483671144" keepEnvironmentInBuildfile="false" managedBuildOn="true" name="CDT Internal Builder" parallelBuildOn="true" parallelizationNumber="optimal" superClass="cdt.managedbuild.tool.gnu.builder.mingw.base"/>
 							<tool id="cdt.managedbuild.tool.gnu.assembler.mingw.exe.release.601615590" name="GCC Assembler" superClass="cdt.managedbuild.tool.gnu.assembler.mingw.exe.release">
 								<inputType id="cdt.managedbuild.tool.gnu.assembler.input.1596016924" superClass="cdt.managedbuild.tool.gnu.assembler.input"/>
 							</tool>
@@ -278,23 +273,19 @@
 	<storageModule moduleId="cdtBuildSystem" version="4.0.0">
 		<project id="SpartaCoder.cdt.managedbuild.target.gnu.mingw.exe.599491867" name="Executable" projectType="cdt.managedbuild.target.gnu.mingw.exe"/>
 	</storageModule>
-	<storageModule moduleId="refreshScope" versionNumber="1">
-		<resource resourceType="PROJECT" workspacePath="/AvianCarrier"/>
-	</storageModule>
-	<storageModule moduleId="scannerConfiguration">
-		<autodiscovery enabled="true" problemReportingEnabled="true" selectedProfileId=""/>
-		<scannerConfigBuildInfo instanceId="cdt.managedbuild.config.gnu.mingw.exe.debug.1391821195;cdt.managedbuild.config.gnu.mingw.exe.debug.1391821195.;cdt.managedbuild.tool.gnu.c.compiler.mingw.exe.debug.2028007856;cdt.managedbuild.tool.gnu.c.compiler.input.1899374198">
-			<autodiscovery enabled="true" problemReportingEnabled="true" selectedProfileId="org.eclipse.cdt.managedbuilder.core.GCCManagedMakePerProjectProfileC"/>
-		</scannerConfigBuildInfo>
-		<scannerConfigBuildInfo instanceId="cdt.managedbuild.config.gnu.mingw.exe.release.1372150565;cdt.managedbuild.config.gnu.mingw.exe.release.1372150565.;cdt.managedbuild.tool.gnu.c.compiler.mingw.exe.release.2066568599;cdt.managedbuild.tool.gnu.c.compiler.input.1164883683">
-			<autodiscovery enabled="true" problemReportingEnabled="true" selectedProfileId="org.eclipse.cdt.managedbuilder.core.GCCManagedMakePerProjectProfileC"/>
-		</scannerConfigBuildInfo>
-		<scannerConfigBuildInfo instanceId="cdt.managedbuild.config.gnu.mingw.exe.debug.1391821195;cdt.managedbuild.config.gnu.mingw.exe.debug.1391821195.;cdt.managedbuild.tool.gnu.cpp.compiler.mingw.exe.debug.2049178653;cdt.managedbuild.tool.gnu.cpp.compiler.input.474378419">
-			<autodiscovery enabled="true" problemReportingEnabled="true" selectedProfileId="org.eclipse.cdt.managedbuilder.core.GCCManagedMakePerProjectProfileCPP"/>
-		</scannerConfigBuildInfo>
-		<scannerConfigBuildInfo instanceId="cdt.managedbuild.config.gnu.mingw.exe.release.1372150565;cdt.managedbuild.config.gnu.mingw.exe.release.1372150565.;cdt.managedbuild.tool.gnu.cpp.compiler.mingw.exe.release.131477899;cdt.managedbuild.tool.gnu.cpp.compiler.input.508171907">
-			<autodiscovery enabled="true" problemReportingEnabled="true" selectedProfileId="org.eclipse.cdt.managedbuilder.core.GCCManagedMakePerProjectProfileCPP"/>
-		</scannerConfigBuildInfo>
+	<storageModule moduleId="refreshScope" versionNumber="2">
+		<configuration configurationName="Release">
+			<resource resourceType="PROJECT" workspacePath="/AvianCarrier"/>
+		</configuration>
+		<configuration configurationName="ServerRelease">
+			<resource resourceType="PROJECT" workspacePath="/AvianCarrier"/>
+		</configuration>
+		<configuration configurationName="ServerDebug">
+			<resource resourceType="PROJECT" workspacePath="/AvianCarrier"/>
+		</configuration>
+		<configuration configurationName="Debug">
+			<resource resourceType="PROJECT" workspacePath="/AvianCarrier"/>
+		</configuration>
 	</storageModule>
 	<storageModule moduleId="org.eclipse.cdt.core.LanguageSettingsProviders"/>
 	<storageModule moduleId="org.eclipse.cdt.make.core.buildtargets">
@@ -451,5 +442,20 @@
 				<runAllBuilders>true</runAllBuilders>
 			</target>
 		</buildTargets>
+	</storageModule>
+	<storageModule moduleId="scannerConfiguration">
+		<autodiscovery enabled="true" problemReportingEnabled="true" selectedProfileId=""/>
+		<scannerConfigBuildInfo instanceId="cdt.managedbuild.config.gnu.mingw.exe.debug.1391821195;cdt.managedbuild.config.gnu.mingw.exe.debug.1391821195.;cdt.managedbuild.tool.gnu.c.compiler.mingw.exe.debug.2028007856;cdt.managedbuild.tool.gnu.c.compiler.input.1899374198">
+			<autodiscovery enabled="true" problemReportingEnabled="true" selectedProfileId="org.eclipse.cdt.managedbuilder.core.GCCManagedMakePerProjectProfileC"/>
+		</scannerConfigBuildInfo>
+		<scannerConfigBuildInfo instanceId="cdt.managedbuild.config.gnu.mingw.exe.release.1372150565;cdt.managedbuild.config.gnu.mingw.exe.release.1372150565.;cdt.managedbuild.tool.gnu.c.compiler.mingw.exe.release.2066568599;cdt.managedbuild.tool.gnu.c.compiler.input.1164883683">
+			<autodiscovery enabled="true" problemReportingEnabled="true" selectedProfileId="org.eclipse.cdt.managedbuilder.core.GCCManagedMakePerProjectProfileC"/>
+		</scannerConfigBuildInfo>
+		<scannerConfigBuildInfo instanceId="cdt.managedbuild.config.gnu.mingw.exe.release.1372150565;cdt.managedbuild.config.gnu.mingw.exe.release.1372150565.;cdt.managedbuild.tool.gnu.cpp.compiler.mingw.exe.release.131477899;cdt.managedbuild.tool.gnu.cpp.compiler.input.508171907">
+			<autodiscovery enabled="true" problemReportingEnabled="true" selectedProfileId="org.eclipse.cdt.managedbuilder.core.GCCManagedMakePerProjectProfileCPP"/>
+		</scannerConfigBuildInfo>
+		<scannerConfigBuildInfo instanceId="cdt.managedbuild.config.gnu.mingw.exe.debug.1391821195;cdt.managedbuild.config.gnu.mingw.exe.debug.1391821195.;cdt.managedbuild.tool.gnu.cpp.compiler.mingw.exe.debug.2049178653;cdt.managedbuild.tool.gnu.cpp.compiler.input.474378419">
+			<autodiscovery enabled="true" problemReportingEnabled="true" selectedProfileId="org.eclipse.cdt.managedbuilder.core.GCCManagedMakePerProjectProfileCPP"/>
+		</scannerConfigBuildInfo>
 	</storageModule>
 </cproject>
