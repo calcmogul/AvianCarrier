@@ -7,6 +7,7 @@
 //=============================================================================
 
 #include "TextReceiver.h"
+#include <iostream> //FIXME
 
 std::vector<TextReceiver*> TextReceiver::textInterfaces;
 TextReceiver* TextReceiver::currentReceiver = NULL;
@@ -16,6 +17,7 @@ TextReceiver::TextReceiver( const sf::Vector2f& size , std::vector<sf::Color> bo
 }
 
 TextReceiver::~TextReceiver() {
+	std::cout << "destructor\n";
 	if ( textInterfaces.size() > 0 ) {
 		std::vector<TextReceiver*>::iterator index;
 		for ( index = textInterfaces.begin() ; *index != this ; index++ ) {
