@@ -11,8 +11,6 @@
 #include "File.h"
 
 int main() {
-	bool running = true;
-
 	sf::UdpSocket socket;
 	socket.bind( 50001 );
 
@@ -20,14 +18,14 @@ int main() {
 	unsigned short senderPort;
 	sf::Packet packet;
 
-	while ( running ) {
+	while ( 1 ) {
 		if ( socket.receive( packet , senderIP , senderPort ) == sf::Socket::Done ) {
 			File temp( senderIP , senderPort );
 			packet >> temp;
 
 			temp.clear();
 			packet.clear();
-			temp.insert( "Hello!" );
+			temp.insert( "The server says hello!" );
 
 			packet << temp;
 

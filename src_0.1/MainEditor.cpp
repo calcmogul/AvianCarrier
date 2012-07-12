@@ -83,7 +83,43 @@ void syncServer() {
 	}
 }
 
+Button file( "File" , "" , "" , -1 , 30 , []{} );
+Button newFile( "New" , "Ctrl + N" , "Control N" , -1 , 40 , []{ Tab::newTab( sf::IpAddress( 127 , 0 , 0 , 1 ) , 50001 ); } );
+Button open( "Open" , "Ctrl + O" , "Control O" , -1 , 40 , []{ openThread.launch(); } );
+Button save( "Save" , "Ctrl + S" , "Control S" , -1 , 40 , []{ Tab::current->saveLocal(); } , false );
+Button pull( "Pull" , "Ctrl + P" , "Control P" , -1 , 40 , []{ pullFile(); } , false );
+Button exitButton( "Exit" , " " , "" , -1 , 40 , []{ closeProgram(); } );
+
+Button edit( "Edit" , "" , "" , -1 , 30 , []{} );
+Button undo( "Undo" , "Ctrl + Z" , "Control Z" , -1 , 40 , []{} , false );
+Button redo( "Redo" , "Ctrl + Y" , "Control Y" , -1 , 40 , []{} , false );
+Button cut( "Cut" , "Ctrl + X" , "Control X" , -1 , 40 , []{} , false );
+Button copy( "Copy" , "Ctrl + C" , "Control C" , -1 , 40 , []{ copyText(); } , false );
+Button paste( "Paste" , "Ctrl + V" , "Control V" , -1 , 40 , []{ pasteText(); } );
+
+Button build( "Build" , "" , "" , -1 , 30 , []{} );
+Button buildDebug( "Debug" , "Ctrl + B" , "Control B" , -1 , 40 , []{ buildThread.launch(); } );
+Button buildRelease( "Release" , " " , "" , -1 , 40 , []{} );
+
+//Button collaborate( "Collaborate" , "" , "" , -1 , 30 , []{} );
+//Button chat( "Chat" , "Ctrl + T" , "Control T" , -1 , 40 , []{ ChatWindow::toggleChat(); } );
+
+Button options( "Options" , "" , "" , -1 , 30 , []{} );
+Button settings( "Settings..." , " " , "" , -1 , 40 , []{} , false );
+Button about( "About" , " " , "" , -1 , 40 , []{ aboutThread.launch(); } );
+
+DropDown fileMenu( 0 , 4 , { &file , &newFile , &open , &save , &pull , &exitButton } );
+DropDown editMenu( 0 , 4 , { &edit , &undo , &redo , &cut , &copy , &paste } );
+DropDown buildMenu( 0 , 4 , { &build , &buildDebug , &buildRelease } );
+//DropDown collaborateMenu( 0 , 4 , { &collaborate , &chat } );
+DropDown optionMenu( 0 , 4 , { &options , &settings , &about } );
+
+Toolbar mainTools( 0.f , 0.f , mainWin.getSize().x , 24.f , { &fileMenu , &editMenu , &buildMenu /*, &collaborateMenu*/ , &optionMenu } );
+
+Editor editBackground;
+
 INT WINAPI WinMain( HINSTANCE Instance , HINSTANCE , LPSTR , INT ) {
+#if 0
 	Button file( "File" , "" , "" , -1 , 30 , []{} );
 	Button newFile( "New" , "Ctrl + N" , "Control N" , -1 , 40 , []{ Tab::newTab( sf::IpAddress( 127 , 0 , 0 , 1 ) , 50001 ); } );
 	Button open( "Open" , "Ctrl + O" , "Control O" , -1 , 40 , []{ openThread.launch(); } );
@@ -118,6 +154,7 @@ INT WINAPI WinMain( HINSTANCE Instance , HINSTANCE , LPSTR , INT ) {
 	Toolbar mainTools( 0.f , 0.f , mainWin.getSize().x , 24.f , { &fileMenu , &editMenu , &buildMenu /*, &collaborateMenu*/ , &optionMenu } );
 
 	Editor editBackground;
+#endif
 
 	std::vector<sf::Color> temp = { sf::Color( 45 , 45 , 45 ) , sf::Color( 100 , 100 , 100 ) , sf::Color( 100 , 100 , 100 ) , sf::Color( 45 , 45 , 45 ) };
 	ChatWindow::createInstance( sf::Vector2f( 200.f , 600.f ) , temp );
@@ -239,8 +276,8 @@ INT WINAPI WinMain( HINSTANCE Instance , HINSTANCE , LPSTR , INT ) {
 					if ( sessionStore.is_open() ) {
 						Tab::tabMutex.lock();
 						while ( Tab::tabsOpen.size() > 0 ) {
-							sessionStore << Tab::current->file->fullPath << "\n";
-							Tab::current->closeTab();
+							sessionStore << Tab::tabsOpen[0]->file->fullPath << "\n";
+							Tab::tabsOpen[0]->closeTab();
 						}
 						Tab::tabMutex.unlock();
 					}
