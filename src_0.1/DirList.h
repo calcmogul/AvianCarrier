@@ -2,7 +2,7 @@
 //File Name: DirList.h
 //Description: Declares functions for creating a list of files from a directory
 //Author: Tyler Veness
-//Last Modified: 5/27/2012
+//Last Modified: 7/13/2012
 //Version: 0.1
 //=============================================================================
 
@@ -10,7 +10,7 @@
 #define DIR_LIST_H_
 
 #include <string>
-#include <SFML/Graphics/Text.hpp>
+#include <vector>
 
 typedef struct FileList {
 	std::string name;

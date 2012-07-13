@@ -2,7 +2,7 @@
 //File Name: MainEditor.cpp
 //Description: Handles main editor and window
 //Author: Tyler Veness
-//Last Modified: 5/27/2012
+//Last Modified: 7/14/2012
 //Version: 0.1
 //=============================================================================
 
