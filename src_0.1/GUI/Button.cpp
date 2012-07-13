@@ -77,7 +77,7 @@ Button::Button( std::string message , std::string note , std::string hotkeys , s
 		hotKeyConverter.insert( std::pair<std::string , sf::Keyboard::Key>( "Dash" , sf::Keyboard::Dash ) );
 		hotKeyConverter.insert( std::pair<std::string , sf::Keyboard::Key>( "Space" , sf::Keyboard::Space ) );
 		hotKeyConverter.insert( std::pair<std::string , sf::Keyboard::Key>( "Return" , sf::Keyboard::Return ) );
-		hotKeyConverter.insert( std::pair<std::string , sf::Keyboard::Key>( "Back" , sf::Keyboard::Back ) );
+		hotKeyConverter.insert( std::pair<std::string , sf::Keyboard::Key>( "Back" , sf::Keyboard::BackSpace ) );
 		hotKeyConverter.insert( std::pair<std::string , sf::Keyboard::Key>( "Tab" , sf::Keyboard::Tab ) );
 		hotKeyConverter.insert( std::pair<std::string , sf::Keyboard::Key>( "PageUp" , sf::Keyboard::PageUp ) );
 		hotKeyConverter.insert( std::pair<std::string , sf::Keyboard::Key>( "PageDown" , sf::Keyboard::PageDown ) );

@@ -201,10 +201,20 @@ INT WINAPI WinMain( HINSTANCE Instance , HINSTANCE , LPSTR , INT ) {
 	std::ifstream sessionStore( "Config/session.txt" );
 	if ( sessionStore.is_open() ) {
 		std::string temp;
-		while ( !sessionStore.eof() ) {
-			std::getline( sessionStore , temp );
-			if ( temp != "" )
-				Tab::newTab( sf::IpAddress( 127 , 0 , 0 , 1 ) , 50001 , temp );
+		unsigned int currentTabPos;
+
+		if ( !sessionStore.eof() ) { // if there are saved tabs to open
+			sessionStore >> currentTabPos; // extract position of current tab, to be set later
+
+			while ( !sessionStore.eof() ) { // while there are still saved tabs to open
+				std::getline( sessionStore , temp );
+				if ( temp != "" )
+					Tab::newTab( sf::IpAddress( 127 , 0 , 0 , 1 ) , 50001 , temp );
+			}
+
+			Tab::tabMutex.lock();
+			Tab::current = Tab::tabsOpen[currentTabPos]; // restore which tab is current from last session
+			Tab::tabMutex.unlock();
 		}
 	}
 	else
@@ -275,11 +285,21 @@ INT WINAPI WinMain( HINSTANCE Instance , HINSTANCE , LPSTR , INT ) {
 					std::ofstream sessionStore( "Config/session.txt" , std::ios_base::trunc );
 					if ( sessionStore.is_open() ) {
 						Tab::tabMutex.lock();
-						while ( Tab::tabsOpen.size() > 0 ) {
-							sessionStore << Tab::tabsOpen[0]->file->fullPath << "\n";
-							Tab::tabsOpen[0]->closeTab();
+
+						if ( Tab::tabsOpen.size() > 0 ) { // if there is a current tab (which means there are also tabs to save)
+							unsigned int index = 0;
+							while ( Tab::current != Tab::tabsOpen[index] )
+								index++;
+							sessionStore << index << "\n"; // store position of current tab once found
+
+							while ( Tab::tabsOpen.size() > 0 ) {
+								sessionStore << Tab::tabsOpen[0]->file->fullPath << "\n";
+								Tab::tabsOpen[0]->closeTab();
+							}
 						}
+
 						Tab::tabMutex.unlock();
+						sessionStore.close();
 					}
 					else
 						std::cerr << "failed to save session\n";
@@ -831,7 +851,7 @@ void openFile() {
 			if ( (Cancel.isHovered( openBox ) && mouseButtonReleased( event , sf::Mouse::Left )) || keyPressed( event , sf::Keyboard::Escape ) )
 				openBox.close();
 
-			if ( newEvent && ( (prevDir.isHovered( openBox ) && mouseButtonReleased( event , sf::Mouse::Left )) || keyReleased( event , sf::Keyboard::Back ) ) ) {
+			if ( newEvent && ( (prevDir.isHovered( openBox ) && mouseButtonReleased( event , sf::Mouse::Left )) || keyReleased( event , sf::Keyboard::BackSpace ) ) ) {
 				if ( searchDir != "Documents" ) {
 					delete fileList;
 					searchDir = searchDir = searchDir.substr( 0 , searchDir.rfind( "/" ) ); // update search directory to parent folder
