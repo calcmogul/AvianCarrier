@@ -19,15 +19,14 @@
 #define WIN32_LEAN_AND_MEAN
 #include <windows.h>
 
-#include "Base.h"
-#include "GUI/AutoResize.h"
-
 #include <SFML/Graphics/ConvexShape.hpp>
 #include <SFML/Graphics/Sprite.hpp>
 #include <SFML/Network/IpAddress.hpp>
 #include <SFML/Network/UdpSocket.hpp>
 #include <SFML/System/Thread.hpp>
 
+#include "Base.h"
+#include "GUI/AutoResize.h"
 #include "GUI/Tab.h"
 #include "GUI/Button.h"
 #include "GUI/DropDown.h"
@@ -206,15 +205,17 @@ INT WINAPI WinMain( HINSTANCE Instance , HINSTANCE , LPSTR , INT ) {
 		if ( !sessionStore.eof() ) { // if there are saved tabs to open
 			sessionStore >> currentTabPos; // extract position of current tab, to be set later
 
-			while ( !sessionStore.eof() ) { // while there are still saved tabs to open
-				std::getline( sessionStore , temp );
-				if ( temp != "" )
-					Tab::newTab( sf::IpAddress( 127 , 0 , 0 , 1 ) , 50001 , temp );
-			}
+			if ( !sessionStore.eof() ) { // if number extracted for current tab isn't bogus
+				while ( !sessionStore.eof() ) { // while there are still saved tabs to open
+					std::getline( sessionStore , temp );
+					if ( temp != "" )
+						Tab::newTab( sf::IpAddress( 127 , 0 , 0 , 1 ) , 50001 , temp );
+				}
 
-			Tab::tabMutex.lock();
-			Tab::current = Tab::tabsOpen[currentTabPos]; // restore which tab is current from last session
-			Tab::tabMutex.unlock();
+				Tab::tabMutex.lock();
+				Tab::current = Tab::tabsOpen[currentTabPos]; // restore which tab is current from last session
+				Tab::tabMutex.unlock();
+			}
 		}
 	}
 	else
@@ -925,7 +926,6 @@ void pasteText() {
 
 void buildEXE() {
 	Tab::current->saveLocal();
-	AllocConsole(); // create console for GCC output // FIXME win32 AllocConsole
 	statusBar.setStatus( "Building..." );
 	mainWin.draw( statusBar );
 	mainWin.display();
@@ -967,16 +967,16 @@ int sysRun( std::string programAndDir , std::string args ) {
 	ZeroMemory( &pi, sizeof(pi) );
 
 	// Start the child process.
-	if( !CreateProcess( programAndDir.c_str(),   // No module name (use command line)
-		const_cast<char*>( args.c_str() ),   // Command line
-		NULL,                                // Process handle not inheritable
-		NULL,                                // Thread handle not inheritable
-		FALSE,                               // Set handle inheritance to FALSE
-		0,                                   // No creation flags
-		NULL,                                // Use parent's environment block
-		NULL,                                // Use parent's starting directory
-		&si,                                 // Pointer to STARTUPINFO structure
-		&pi )                                // Pointer to PROCESS_INFORMATION structure
+	if( !CreateProcess( programAndDir.c_str(),  // No module name (use command line)
+		const_cast<char*>( args.c_str() ),      // Command line
+		NULL,                                   // Process handle not inheritable
+		NULL,                                   // Thread handle not inheritable
+		TRUE,                                   // Set handle inheritance to FALSE
+		CREATE_NEW_CONSOLE,                     // Open program in new console window
+		NULL,                                   // Use parent's environment block
+		NULL,                                   // Use parent's starting directory
+		&si,                                    // Pointer to STARTUPINFO structure
+		&pi )                                   // Pointer to PROCESS_INFORMATION structure
 	)
 	{
 		std::cout << "CreateProcess failed: ";
