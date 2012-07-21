@@ -17,6 +17,10 @@ ChatWindow::ChatWindow( const sf::Vector2f& size , std::vector<sf::Color> border
 	setOutlineColor( sf::Color( TAB_FOCUS , TAB_FOCUS , TAB_FOCUS ) );
 }
 
+ChatWindow::~ChatWindow() {
+
+}
+
 void ChatWindow::createInstance( const sf::Vector2f& size , std::vector<sf::Color> borders ) {
 	if ( instance != NULL )
 		delete instance;

@@ -103,8 +103,12 @@ bool File::save( std::string fileName ) {
 	std::ofstream localFile( fileName );
 
 	if ( localFile.is_open() ) {
-		for ( unsigned int index = 0 ; index < size() ; index++ )
-			localFile << at(index) + "\n";
+		for ( unsigned int index = 0 ; index < size() ; index++ ) {
+			localFile << at(index);
+
+			if ( index < size() - 1 ) // only add newline if there is another line after current one
+				localFile << "\n";
+		}
 
 		localFile.close();
 	}

@@ -63,8 +63,6 @@ StatusBar statusBar;
 
 std::string searchDir;
 
-bool updateSizes = false;
-
 LRESULT CALLBACK OnEvent( HWND Handle , UINT Message , WPARAM WParam , LPARAM LParam );
 
 void syncServer() {
@@ -100,8 +98,8 @@ Button build( "Build" , "" , "" , -1 , 30 , []{} );
 Button buildDebug( "Debug" , "Ctrl + B" , "Control B" , -1 , 40 , []{ buildThread.launch(); } );
 Button buildRelease( "Release" , " " , "" , -1 , 40 , []{} );
 
-//Button collaborate( "Collaborate" , "" , "" , -1 , 30 , []{} );
-//Button chat( "Chat" , "Ctrl + T" , "Control T" , -1 , 40 , []{ ChatWindow::toggleChat(); } );
+Button collaborate( "Collaborate" , "" , "" , -1 , 30 , []{} );
+Button chat( "Chat" , "Ctrl + T" , "Control T" , -1 , 40 , []{ ChatWindow::toggleChat(); } , false );
 
 Button options( "Options" , "" , "" , -1 , 30 , []{} );
 Button settings( "Settings..." , " " , "" , -1 , 40 , []{} , false );
@@ -110,50 +108,15 @@ Button about( "About" , " " , "" , -1 , 40 , []{ aboutThread.launch(); } );
 DropDown fileMenu( 0 , 4 , { &file , &newFile , &open , &save , &pull , &exitButton } );
 DropDown editMenu( 0 , 4 , { &edit , &undo , &redo , &cut , &copy , &paste } );
 DropDown buildMenu( 0 , 4 , { &build , &buildDebug , &buildRelease } );
-//DropDown collaborateMenu( 0 , 4 , { &collaborate , &chat } );
+DropDown collaborateMenu( 0 , 4 , { &collaborate , &chat } );
 DropDown optionMenu( 0 , 4 , { &options , &settings , &about } );
 
-Toolbar mainTools( 0.f , 0.f , mainWin.getSize().x , 24.f , { &fileMenu , &editMenu , &buildMenu /*, &collaborateMenu*/ , &optionMenu } );
+Toolbar mainTools( 0.f , 0.f , mainWin.getSize().x , 24.f , { &fileMenu , &editMenu , &buildMenu , &collaborateMenu , &optionMenu } );
 
 Editor editBackground;
 
 INT WINAPI WinMain( HINSTANCE Instance , HINSTANCE , LPSTR , INT ) {
-#if 0
-	Button file( "File" , "" , "" , -1 , 30 , []{} );
-	Button newFile( "New" , "Ctrl + N" , "Control N" , -1 , 40 , []{ Tab::newTab( sf::IpAddress( 127 , 0 , 0 , 1 ) , 50001 ); } );
-	Button open( "Open" , "Ctrl + O" , "Control O" , -1 , 40 , []{ openThread.launch(); } );
-	Button save( "Save" , "Ctrl + S" , "Control S" , -1 , 40 , []{ Tab::current->saveLocal(); } , false );
-	Button pull( "Pull" , "Ctrl + P" , "Control P" , -1 , 40 , []{ pullFile(); } , false );
-	Button exitButton( "Exit" , " " , "" , -1 , 40 , []{ closeProgram(); } );
-
-	Button edit( "Edit" , "" , "" , -1 , 30 , []{} );
-	Button undo( "Undo" , "Ctrl + Z" , "Control Z" , -1 , 40 , []{} , false );
-	Button redo( "Redo" , "Ctrl + Y" , "Control Y" , -1 , 40 , []{} , false );
-	Button cut( "Cut" , "Ctrl + X" , "Control X" , -1 , 40 , []{} , false );
-	Button copy( "Copy" , "Ctrl + C" , "Control C" , -1 , 40 , []{ copyText(); } , false );
-	Button paste( "Paste" , "Ctrl + V" , "Control V" , -1 , 40 , []{ pasteText(); } );
-
-	Button build( "Build" , "" , "" , -1 , 30 , []{} );
-	Button buildDebug( "Debug" , "Ctrl + B" , "Control B" , -1 , 40 , []{ buildThread.launch(); } );
-	Button buildRelease( "Release" , " " , "" , -1 , 40 , []{} );
-
-	//Button collaborate( "Collaborate" , "" , "" , -1 , 30 , []{} );
-	//Button chat( "Chat" , "Ctrl + T" , "Control T" , -1 , 40 , []{ ChatWindow::toggleChat(); } );
-
-	Button options( "Options" , "" , "" , -1 , 30 , []{} );
-	Button settings( "Settings..." , " " , "" , -1 , 40 , []{} , false );
-	Button about( "About" , " " , "" , -1 , 40 , []{ aboutThread.launch(); } );
-
-	DropDown fileMenu( 0 , 4 , { &file , &newFile , &open , &save , &pull , &exitButton } );
-	DropDown editMenu( 0 , 4 , { &edit , &undo , &redo , &cut , &copy , &paste } );
-	DropDown buildMenu( 0 , 4 , { &build , &buildDebug , &buildRelease } );
-	//DropDown collaborateMenu( 0 , 4 , { &collaborate , &chat } );
-	DropDown optionMenu( 0 , 4 , { &options , &settings , &about } );
-
-	Toolbar mainTools( 0.f , 0.f , mainWin.getSize().x , 24.f , { &fileMenu , &editMenu , &buildMenu /*, &collaborateMenu*/ , &optionMenu } );
-
-	Editor editBackground;
-#endif
+	TextReceiver::textInterfaces.push_back( &editBackground ); // add editor back to textReceiver array because it was mysteriously removed after entering Main...
 
 	std::vector<sf::Color> temp = { sf::Color( 45 , 45 , 45 ) , sf::Color( 100 , 100 , 100 ) , sf::Color( 100 , 100 , 100 ) , sf::Color( 45 , 45 , 45 ) };
 	ChatWindow::createInstance( sf::Vector2f( 200.f , 600.f ) , temp );
@@ -230,58 +193,25 @@ INT WINAPI WinMain( HINSTANCE Instance , HINSTANCE , LPSTR , INT ) {
 
 	Tab::draw( mainWin );
 
-	TextReceiver::setReceiver( &editBackground );
-
 	sf::Thread networkThread( syncServer );
 	networkThread.launch();
 
 	MSG Message; // FIXME win32 MSG
+
+	PostMessage( Window , WM_SIZE , 0 , 0 ); // Sent resize message to window so all GUI elements draw at least once
+
 	while ( mainWin.isOpen() ) {
 		// FIXME win32 message handler
 		if ( PeekMessage( &Message , NULL , 0 , 0 , PM_REMOVE ) ) {
 			// If a message was waiting in the message queue, process it
 			TranslateMessage( &Message );
 			DispatchMessage( &Message );
-
-			if ( updateSizes ) {
-				Tab::tabBase.setSize( sf::Vector2f( mainWin.getSize().x , Tab::tabBase.getSize().y ) );
-				AutoResize::resizeAll( mainWin );
-				if ( chatWindow->isVisible() )
-					editBackground.setSize( sf::Vector2f( editBackground.getSize().x - chatWindow->getSize().x - 1 , editBackground.getSize().y ) );
-
-				/* ===== Redraw objects ===== */
-				mainWin.clear( sf::Color( BACKGROUND_COLOR , BACKGROUND_COLOR , BACKGROUND_COLOR ) );
-
-				editBackground.activate( Tab::tabsOpen.size() > 0 ); // change background of editor
-
-				mainWin.draw( editBackground );
-
-				Tab::tabMutex.lock();
-
-				if ( Tab::current != NULL )
-					mainWin.draw( *Tab::current->file );
-
-				Tab::tabMutex.unlock();
-
-				mainWin.draw( mainTools );
-				Tab::draw( mainWin );
-
-				mainWin.draw( statusBar );
-
-				mainWin.draw( *ChatWindow::getInstance() );
-
-				if ( DropDown::currentOpen != NULL )
-					mainWin.draw( *DropDown::currentOpen ); // draw drop-down menu now that its events are processed
-
-				mainWin.display();
-				/* ========================== */
-
-				updateSizes = false;
-			}
 		}
 		else {
 			while ( mainWin.pollEvent( event ) ) {
 				if ( event.type == sf::Event::Closed ) {
+					delete ChatWindow::getInstance();
+
 					/* ===== Save current session ===== */
 					std::ofstream sessionStore( "Config/session.txt" , std::ios_base::trunc );
 					if ( sessionStore.is_open() ) {
@@ -307,6 +237,7 @@ INT WINAPI WinMain( HINSTANCE Instance , HINSTANCE , LPSTR , INT ) {
 					/* ================================ */
 
 					closeProgram();
+					return 0;
 				}
 
 				else if ( event.type == sf::Event::MouseWheelMoved ) {
@@ -542,7 +473,38 @@ LRESULT CALLBACK OnEvent( HWND Handle , UINT Message , WPARAM WParam , LPARAM LP
 	if ( Message == WM_SIZE || Message == WM_WINDOWPOSCHANGED ) {
 		mainWin.setView( sf::View( sf::FloatRect( 0 , 0 , mainWin.getSize().x , mainWin.getSize().y ) ) );
 		AutoResize::resizeAll( mainWin );
-		updateSizes = true;
+
+		Tab::tabBase.setSize( sf::Vector2f( mainWin.getSize().x , Tab::tabBase.getSize().y ) );
+		AutoResize::resizeAll( mainWin );
+		if ( ChatWindow::getInstance()->isVisible() )
+			editBackground.setSize( sf::Vector2f( editBackground.getSize().x - ChatWindow::getInstance()->getSize().x - 1 , editBackground.getSize().y ) );
+
+		/* ===== Redraw objects ===== */
+		mainWin.clear( sf::Color( BACKGROUND_COLOR , BACKGROUND_COLOR , BACKGROUND_COLOR ) );
+
+		editBackground.activate( Tab::tabsOpen.size() > 0 ); // change background of editor
+
+		mainWin.draw( editBackground );
+
+		Tab::tabMutex.lock();
+
+		if ( Tab::current != NULL )
+			mainWin.draw( *Tab::current->file );
+
+		Tab::tabMutex.unlock();
+
+		mainWin.draw( mainTools );
+		Tab::draw( mainWin );
+
+		mainWin.draw( statusBar );
+
+		mainWin.draw( *ChatWindow::getInstance() );
+
+		if ( DropDown::currentOpen != NULL )
+			mainWin.draw( *DropDown::currentOpen ); // draw drop-down menu now that its events are processed
+
+		mainWin.display();
+		/* ========================== */
 	}
 	else {
 		switch ( Message ) {
@@ -931,11 +893,8 @@ void buildEXE() {
 	mainWin.display();
 
 	std::string tempDir = searchDir;
-	std::cout << "\n>";
 	if ( !sysRun( "C:/Users/Tyler/Downloads/EclipseCDT/mingw/bin/g++.exe" , "-O3 -Wall -c -fmessage-length=0 -std=c++0x -o " + tempDir + "/" + changeExtension( Tab::current->file->fileName , "o" ) + " " + tempDir + "/" + changeExtension( Tab::current->file->fileName , "cpp" ) ) ) {
-		std::cout << "\n>";
 		sysRun( "C:/Users/Tyler/Downloads/EclipseCDT/mingw/bin/g++.exe" , "-s -static -o " + tempDir + "/" + changeExtension( Tab::current->file->fileName , "exe" ) + " " + tempDir + "/" + changeExtension( Tab::current->file->fileName , "o" ) );
-		std::cout << "\n>";
 	}
 
 	statusBar.setStatus( "Done" );
@@ -957,8 +916,6 @@ void displayAbout() {
 
 // FIXME win32 sysRun creates process with Win32 API
 int sysRun( std::string programAndDir , std::string args ) {
-	std::cout << programAndDir << " " << args << "\n";
-
 	STARTUPINFO si;
 	PROCESS_INFORMATION pi;
 
@@ -979,15 +936,15 @@ int sysRun( std::string programAndDir , std::string args ) {
 		&pi )                                   // Pointer to PROCESS_INFORMATION structure
 	)
 	{
-		std::cout << "CreateProcess failed: ";
+		std::cerr << "CreateProcess failed: ";
 
 		int error = GetLastError();
 		if ( error == 2 )
-			std::cout << "Application '" << programAndDir << "' not found\n";
+			std::cerr << "Application '" << programAndDir << "' not found\n";
 		else if ( error == 3 )
-			std::cout << "Path not found\n";
+			std::cerr << "Path not found\n";
 		else
-			std::cout << "Error " << error << '\n';
+			std::cerr << "Error " << error << '\n';
 
 		return EXIT_FAILURE;
 	}
