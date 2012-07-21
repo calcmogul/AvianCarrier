@@ -18,6 +18,7 @@ Editor::Editor() : TextReceiver( sf::Vector2f( 0.f , 0.f ) ) , vScroll( 15.f , 0
 
 Editor::Editor( unsigned int x , unsigned int y , unsigned int width , unsigned int height ) : TextReceiver( sf::Vector2f( width , height ) ) , vScroll( 15.f , 0.f ) {
 	setFillColor( sf::Color( 80 , 80 , 80 ) );
+	setVisible( true );
 	vScroll.setVisible( true );
 	vScroll.setSize( sf::Vector2f( 15.f , 0.f ) );
 }

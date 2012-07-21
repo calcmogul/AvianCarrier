@@ -29,6 +29,7 @@ private:
 	void draw( sf::RenderTarget& target , sf::RenderStates states = sf::RenderStates::Default ) const;
 
 public:
+	virtual ~ChatWindow();
 	static void createInstance( const sf::Vector2f& size = sf::Vector2f() , std::vector<sf::Color> borders = std::vector<sf::Color>({}) );
 	static ChatWindow* getInstance();
 
