@@ -14,7 +14,6 @@
 
 #include <iostream>//FIXME
 
-#undef _WIN32_WINNT
 #define _WIN32_WINNT 0x0501
 #define WIN32_LEAN_AND_MEAN
 #include <windows.h>
@@ -76,7 +75,7 @@ void syncServer() {
 
 		Tab::tabMutex.unlock();
 
-		sf::sleep( sf::Time( 500000 ) );
+		sf::sleep( sf::milliseconds( 500 ) );
 	}
 }
 
@@ -147,7 +146,6 @@ INT WINAPI WinMain( HINSTANCE Instance , HINSTANCE , LPSTR , INT ) {
 	HWND Window = CreateWindow( mainClassName , "Avian Carrier" , WS_SYSMENU | WS_VISIBLE | WS_MAXIMIZEBOX | WS_MINIMIZEBOX | WS_THICKFRAME , centerWin.getPosition().x - ( 800 - centerWin.getSize().x ) / 2 , centerWin.getPosition().y - ( 600 - centerWin.getSize().y ) / 2 , 800 , 600 , NULL , NULL , Instance , NULL );
 
 	centerWin.close();
-	//mainWin.create( sf::VideoMode() , "Avian Carrier" , sf::Style::Resize | sf::Style::Close );
 	mainWin.create( Window );
 
 	sf::Image appIcon;
@@ -211,6 +209,7 @@ INT WINAPI WinMain( HINSTANCE Instance , HINSTANCE , LPSTR , INT ) {
 			while ( mainWin.pollEvent( event ) ) {
 				if ( event.type == sf::Event::Closed ) {
 					delete ChatWindow::getInstance();
+					chatWindow = NULL;
 
 					/* ===== Save current session ===== */
 					std::ofstream sessionStore( "Config/session.txt" , std::ios_base::trunc );
@@ -237,7 +236,6 @@ INT WINAPI WinMain( HINSTANCE Instance , HINSTANCE , LPSTR , INT ) {
 					/* ================================ */
 
 					closeProgram();
-					return 0;
 				}
 
 				else if ( event.type == sf::Event::MouseWheelMoved ) {
@@ -397,7 +395,8 @@ INT WINAPI WinMain( HINSTANCE Instance , HINSTANCE , LPSTR , INT ) {
 
 				mainWin.draw( statusBar );
 
-				mainWin.draw( *chatWindow );
+				if ( chatWindow != NULL )
+					mainWin.draw( *chatWindow );
 
 				if ( DropDown::currentOpen != NULL )
 					mainWin.draw( *DropDown::currentOpen ); // draw drop-down menu now that its events are processed
@@ -446,7 +445,8 @@ INT WINAPI WinMain( HINSTANCE Instance , HINSTANCE , LPSTR , INT ) {
 
 			mainWin.draw( statusBar );
 
-			mainWin.draw( *chatWindow );
+			if ( chatWindow != NULL )
+				mainWin.draw( *chatWindow );
 
 			if ( DropDown::currentOpen != NULL )
 				mainWin.draw( *DropDown::currentOpen ); // draw drop-down menu now that its events are processed
@@ -455,7 +455,7 @@ INT WINAPI WinMain( HINSTANCE Instance , HINSTANCE , LPSTR , INT ) {
 			/* ========================== */
 		}
 
-		sf::sleep( sf::Time( 1000 ) );
+		sf::sleep( sf::milliseconds( 1 ) );
 	}
 
 	// Clean up window
@@ -471,52 +471,57 @@ INT WINAPI WinMain( HINSTANCE Instance , HINSTANCE , LPSTR , INT ) {
 LRESULT CALLBACK OnEvent( HWND Handle , UINT Message , WPARAM WParam , LPARAM LParam ) {
 	// Redraw GUI elements when window is resized or moved
 	if ( Message == WM_SIZE || Message == WM_WINDOWPOSCHANGED ) {
-		mainWin.setView( sf::View( sf::FloatRect( 0 , 0 , mainWin.getSize().x , mainWin.getSize().y ) ) );
-		AutoResize::resizeAll( mainWin );
+		if ( mainWin.isOpen() ) {
+			mainWin.setView( sf::View( sf::FloatRect( 0 , 0 , mainWin.getSize().x , mainWin.getSize().y ) ) );
+			AutoResize::resizeAll( mainWin );
 
-		Tab::tabBase.setSize( sf::Vector2f( mainWin.getSize().x , Tab::tabBase.getSize().y ) );
-		AutoResize::resizeAll( mainWin );
-		if ( ChatWindow::getInstance()->isVisible() )
-			editBackground.setSize( sf::Vector2f( editBackground.getSize().x - ChatWindow::getInstance()->getSize().x - 1 , editBackground.getSize().y ) );
+			Tab::tabBase.setSize( sf::Vector2f( mainWin.getSize().x , Tab::tabBase.getSize().y ) );
+			AutoResize::resizeAll( mainWin );
+			if ( ChatWindow::getInstance()->isVisible() )
+				editBackground.setSize( sf::Vector2f( editBackground.getSize().x - ChatWindow::getInstance()->getSize().x - 1 , editBackground.getSize().y ) );
 
-		/* ===== Redraw objects ===== */
-		mainWin.clear( sf::Color( BACKGROUND_COLOR , BACKGROUND_COLOR , BACKGROUND_COLOR ) );
+			/* ===== Redraw objects ===== */
+			mainWin.clear( sf::Color( BACKGROUND_COLOR , BACKGROUND_COLOR , BACKGROUND_COLOR ) );
 
-		editBackground.activate( Tab::tabsOpen.size() > 0 ); // change background of editor
+			editBackground.activate( Tab::tabsOpen.size() > 0 ); // change background of editor
 
-		mainWin.draw( editBackground );
+			mainWin.draw( editBackground );
 
-		Tab::tabMutex.lock();
+			Tab::tabMutex.lock();
 
-		if ( Tab::current != NULL )
-			mainWin.draw( *Tab::current->file );
+			if ( Tab::current != NULL )
+				mainWin.draw( *Tab::current->file );
 
-		Tab::tabMutex.unlock();
+			Tab::tabMutex.unlock();
 
-		mainWin.draw( mainTools );
-		Tab::draw( mainWin );
+			mainWin.draw( mainTools );
+			Tab::draw( mainWin );
 
-		mainWin.draw( statusBar );
+			mainWin.draw( statusBar );
 
-		mainWin.draw( *ChatWindow::getInstance() );
+			mainWin.draw( *ChatWindow::getInstance() );
 
-		if ( DropDown::currentOpen != NULL )
-			mainWin.draw( *DropDown::currentOpen ); // draw drop-down menu now that its events are processed
+			if ( DropDown::currentOpen != NULL )
+				mainWin.draw( *DropDown::currentOpen ); // draw drop-down menu now that its events are processed
 
-		mainWin.display();
-		/* ========================== */
+			mainWin.display();
+			/* ========================== */
+		}
 	}
 	else {
 		switch ( Message ) {
 		// Quit when we close the main window
 		case WM_CLOSE: {
 			PostQuitMessage(0);
-			return 0;
+			break;
+		}
+		default: {
+			return DefWindowProc(Handle, Message, WParam, LParam);
 		}
 		}
 	}
 
-	return DefWindowProc(Handle, Message, WParam, LParam);
+	return 0;
 }
 
 enum fileIMG {

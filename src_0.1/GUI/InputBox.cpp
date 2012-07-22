@@ -27,7 +27,7 @@ void InputBox::draw( sf::RenderTarget& target , sf::RenderStates states ) const 
 		target.draw( static_cast<sf::RectangleShape>(*this) , states );
 		target.draw( drawInput , states );
 
-		sf::Text subText( "" , Base::segoeUI , 12 );
+		sf::Text subText( "" , Base::segoeUI , 12 ); // helps alignment of cursor within text being editted
 
 		sf::Text cursor( "_" , Base::segoeUI , 12 );
 		cursor.setColor( sf::Color( 0 , 0 , 0 ) );
