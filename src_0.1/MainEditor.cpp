@@ -38,6 +38,7 @@
 #include "GUI/Editor.h"
 #include "DirList.h"
 #include "MenuSelect.h"
+#include "dtl/dtl.hpp"
 
 void closeProgram();
 void openFile();
@@ -65,17 +66,25 @@ std::string searchDir;
 LRESULT CALLBACK OnEvent( HWND Handle , UINT Message , WPARAM WParam , LPARAM LParam );
 
 void syncServer() {
+	std::string myFile;
+	std::string myFileShadow;
+
 	while ( !CLOSE_THREADS ) {
 		Tab::tabMutex.lock();
 
 		if ( Tab::current != NULL ) {
+			myFile = Tab::current->file->convertToString();
+
+			dtl::Diff<char , std::string> fileDiff( myFileShadow , myFile );
+			fileDiff.compose();
+
 			Tab::current->file->sendToIP();
 			Tab::current->file->receiveFromAny();
 		}
 
 		Tab::tabMutex.unlock();
 
-		sf::sleep( sf::milliseconds( 500 ) );
+		sf::sleep( sf::milliseconds( 250 ) );
 	}
 }
 
