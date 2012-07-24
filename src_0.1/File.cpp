@@ -51,6 +51,34 @@ std::string& File::getCurrentLine() {
 	return at( cursorPos.y );
 }
 
+const std::string& File::convertToString() {
+	std::string temp;
+
+	for ( unsigned int index = 0 ; index < size() ; index++ ) { // add all lines of file's vector to single string with newline chars in between each
+		temp += at( index );
+		if ( index < size() - 1 )
+			temp += "\n";
+	}
+
+	return temp;
+}
+
+void File::convertToFile( std::string& fileString ) {
+	input = {};
+
+	unsigned int index = 0;
+	while ( index < fileString.length() ) {
+		input.push_back( fileString.substr( index , fileString.find( "\n" , index ) - index ) ); // fills vector with substrings using newlines as delimiter (newline non-inclusive)
+		index = fileString.find( "\n" , index ) + 1;
+	}
+
+	// make sure cursor isn't put in invalid position within new file
+	if ( cursorPos.y >= input.size() )
+		cursorPos.y = input.size() - 1;
+	if ( cursorPos.x > getCurrentLine().length() )
+		cursorPos.x = getCurrentLine().length();
+}
+
 std::vector<std::string>::iterator File::insert( unsigned int position , std::string insertMe ) {
 	return input.insert( input.begin() + position , insertMe );
 }
