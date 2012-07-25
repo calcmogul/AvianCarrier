@@ -2,8 +2,6 @@
 //File Name: Editor.cpp
 //Description: Holds definitions for Editor class
 //Author: Tyler Veness
-//Last Modified: 5/27/2012
-//Version: 0.1
 //=============================================================================
 
 #include "../Base.h"

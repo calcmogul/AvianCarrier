@@ -2,8 +2,6 @@
 //File Name: TextReceiver.cpp
 //Description: Holds definitions for TextReceiver class
 //Author: Tyler Veness
-//Last Modified: 5/27/2012
-//Version: 0.1
 //=============================================================================
 
 #include "TextReceiver.h"

@@ -2,8 +2,6 @@
 //File Name: InfoWindow.h
 //Description: Holds declarations for InfoWindow class
 //Author: Tyler Veness
-//Last Modified: 5/27/2012
-//Version: 0.1
 //=============================================================================
 
 #ifndef INFO_WINDOW_H

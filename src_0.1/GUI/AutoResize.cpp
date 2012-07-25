@@ -1,10 +1,8 @@
 //=============================================================================
 //File Name: AutoResize.cpp
-//Description: Gives class instance ability to automatically resize when the
-//             window is resized
+//Description: Gives derived class instance the ability to automatically resize
+//             when the window is resized
 //Author: Tyler Veness
-//Last Modified: 6/3/2012
-//Version: 0.1
 //=============================================================================
 
 #include "AutoResize.h"

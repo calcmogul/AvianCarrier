@@ -2,8 +2,6 @@
 //File Name: DirList.h
 //Description: Declares functions for creating a list of files from a directory
 //Author: Tyler Veness
-//Last Modified: 7/13/2012
-//Version: 0.1
 //=============================================================================
 
 #ifndef DIR_LIST_H_

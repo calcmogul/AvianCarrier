@@ -2,8 +2,6 @@
 //File Name: Toolbar.h
 //Description: Holds declarations of Toolbar GUI class
 //Author: Tyler Veness
-//Last Modified: 5/27/2012
-//Version: 0.1
 //=============================================================================
 
 #ifndef GUI_TOOLBAR_H_

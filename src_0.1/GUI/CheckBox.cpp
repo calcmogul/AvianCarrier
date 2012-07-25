@@ -2,8 +2,6 @@
 //File Name: CheckBox.cpp
 //Description: Holds definitions for CheckBox class
 //Author: Tyler Veness
-//Last Modified: 5/27/2012
-//Version: 0.1
 //=============================================================================
 
 #include <SFML/Graphics/RenderTarget.hpp>

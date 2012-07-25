@@ -2,8 +2,6 @@
 //File Name: MainEditor.cpp
 //Description: Handles main editor and window
 //Author: Tyler Veness
-//Last Modified: 7/14/2012
-//Version: 0.1
 //=============================================================================
 
 //TODO: Implement text selection with highlighting (Ctrl + A flag will be special case of this) -> send this to copy function

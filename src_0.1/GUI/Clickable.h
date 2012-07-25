@@ -2,8 +2,6 @@
 //File Name: Clickable.h
 //Description: Deriving from this class gives derived class clickable nature
 //Author: Tyler Veness
-//Last Modified: 5/27/2012
-//Version: 0.1
 //=============================================================================
 
 #ifndef CLICKABLE_H_

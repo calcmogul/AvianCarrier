@@ -2,8 +2,6 @@
 //File Name: DropDown.h
 //Description: Holds definitions of Button GUI class
 //Author: Tyler Veness
-//Last Modified: 7/13/2012
-//Version: 0.1
 //=============================================================================
 
 #include <SFML/Graphics/RenderTarget.hpp>

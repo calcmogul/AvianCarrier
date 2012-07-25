@@ -2,8 +2,6 @@
 //File Name: CheckBox.h
 //Description: Holds declarations for CheckBox class
 //Author: Tyler Veness
-//Last Modified: 5/27/2012
-//Version: 0.1
 //=============================================================================
 
 #ifndef CHECKBOX_H_

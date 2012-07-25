@@ -2,8 +2,6 @@
 //File Name: Button.h
 //Description: Holds declarations of Button GUI class
 //Author: Tyler Veness
-//Last Modified: 5/27/2012
-//Version: 0.1
 //=============================================================================
 
 #ifndef GUI_BUTTON_H_
