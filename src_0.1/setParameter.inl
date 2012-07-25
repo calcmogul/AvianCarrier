@@ -3,8 +3,6 @@
 //Description: Holds definition for template function "setParameter" from
 //             InfoWindow class
 //Author: Tyler Veness
-//Last Modified: 5/27/2012
-//Version: 0.1
 //=============================================================================
 
 #ifndef SETPARAMETER_INL_

@@ -2,8 +2,6 @@
 //File Name: Dialog.h
 //Description: Holds declarations for Dialog class
 //Author: Tyler Veness
-//Last Modified: 6/11/2012
-//Version: 0.1
 //=============================================================================
 
 #ifndef DIALOG_H_

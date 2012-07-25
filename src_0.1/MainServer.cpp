@@ -2,8 +2,6 @@
 //File Name: MainServer.cpp
 //Description: Handles syncing of files on server within AvianCarrier system
 //Author: Tyler Veness
-//Last Modified: 5/27/2012
-//Version: 0.1
 //=============================================================================
 
 #include <SFML/Network/UdpSocket.hpp>

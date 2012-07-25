@@ -2,8 +2,6 @@
 //File Name: RenderFile.h
 //Description: Holds declarations for RenderFile derived class
 //Author: Tyler Veness
-//Last Modified: 5/27/2012
-//Version: 0.1
 //=============================================================================
 
 #ifndef RENDERFILE_H_

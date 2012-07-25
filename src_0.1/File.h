@@ -2,8 +2,6 @@
 //File Name: File.h
 //Description: Holds declarations for File class
 //Author: Tyler Veness
-//Last Modified: 5/27/2012
-//Version: 0.1
 //=============================================================================
 
 #ifndef FILE_H_

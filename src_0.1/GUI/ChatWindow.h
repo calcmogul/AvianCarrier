@@ -2,8 +2,6 @@
 //File Name: ChatWindow.h
 //Description: Holds declarations for ChatWindow class
 //Author: Tyler Veness
-//Last Modified: 5/27/2012
-//Version: 0.1
 //=============================================================================
 
 #ifndef CHATWINDOW_H_

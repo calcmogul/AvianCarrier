@@ -1,9 +1,7 @@
 //=============================================================================
-//File Name: Settings.cpp
+//File Name: GUISettings.cpp
 //Description: Holds settings for UI component positions
 //Author: Tyler Veness
-//Last Modified: 5/27/2012
-//Version: 0.1
 //=============================================================================
 
 unsigned char BUTTON_OFF = 50;
@@ -18,6 +16,3 @@ unsigned int TAB_SPACING = 16;
 unsigned char TAB_FOCUS = 100;
 
 const char* mainClassName = "AvianCarrier";
-
-//=================================
-

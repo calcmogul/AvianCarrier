@@ -2,8 +2,6 @@
 //File Name: Base.h
 //Description: Holds declarations for Base class
 //Author: Tyler Veness
-//Last Modified: 5/27/2012
-//Version: 0.1
 //=============================================================================
 
 #ifndef GUI_BASE_H_

@@ -2,8 +2,6 @@
 //File Name: ScrollBar.h
 //Description: Holds declarations for ScrollBar class
 //Author: Tyler Veness
-//Last Modified: 5/27/2012
-//Version: 0.1
 //=============================================================================
 
 #ifndef SCROLLBAR_H_

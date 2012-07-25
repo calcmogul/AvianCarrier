@@ -2,8 +2,6 @@
 //File Name: DirList.cpp
 //Description: Defines functions for creating a list of files from a directory
 //Author: Tyler Veness
-//Last Modified: 5/27/2012
-//Version: 0.1
 //=============================================================================
 
 #include "DirList.h"

@@ -2,8 +2,6 @@
 //File Name: Tab.h
 //Description: Holds declarations for Tab class
 //Author: Tyler Veness
-//Last Modified: 5/27/2012
-//Version: 0.1
 //=============================================================================
 
 #ifndef TAB_H_

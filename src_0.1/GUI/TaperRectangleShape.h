@@ -2,8 +2,6 @@
 //File Name: TaperRectangleShape.h
 //Description: Holds declarations for TaperRectangleShape class
 //Author: Tyler Veness
-//Last Modified: 5/28/2012
-//Version: 0.1
 //=============================================================================
 
 #ifndef TAPER_RECTANGLE_SHAPE_H_

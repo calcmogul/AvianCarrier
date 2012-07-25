@@ -1,9 +1,7 @@
 //=============================================================================
-//File Name: Settings.h
+//File Name: GUISettings.h
 //Description: Holds declarations for UI component settings
 //Author: Tyler Veness
-//Last Modified: 5/27/2012
-//Version: 0.1
 //=============================================================================
 
 extern const unsigned char BUTTON_OFF;
