@@ -9,6 +9,9 @@
 MenuSelect::MenuSelect( unsigned int size ) {
 	listSize = size;
 
+	lastSelection = 0;
+	selection = 0;
+
 	keyPressWaitTime = 0;
 
 	upOldPressed = false;
