@@ -49,7 +49,7 @@ std::string& File::getCurrentLine() {
 	return at( cursorPos.y );
 }
 
-const std::string& File::convertToString() {
+const std::string File::convertToString() {
 	std::string temp;
 
 	for ( unsigned int index = 0 ; index < size() ; index++ ) { // add all lines of file's vector to single string with newline chars in between each
