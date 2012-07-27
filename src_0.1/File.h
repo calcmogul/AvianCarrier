@@ -51,7 +51,7 @@ public:
 	std::string getCurrentCharacters( unsigned int length , int offset = 0 );
 	std::string& getCurrentLine();
 
-	const std::string& convertToString(); // add all lines of file's vector to single string with newline chars in between each ; used in diff
+	const std::string convertToString(); // add all lines of file's vector to single string with newline chars in between each ; used in diff
 	void convertToFile( std::string& fileString ); // converts string back to file after patch is performed
 
 	std::vector<std::string>::iterator insert( unsigned int position , std::string insertMe );

@@ -314,7 +314,9 @@ INT WINAPI WinMain( HINSTANCE Instance , HINSTANCE , LPSTR , INT ) {
 							else
 								DropDown::currentOpen->menu[index]->setFillColor( DropDown::currentOpen->menu[index]->getFillColor() );
 
-							DropDown::currentOpen->menu[index]->setVisible( true );
+							// makes current DropDown menu visible if it isn't already
+							if ( !DropDown::currentOpen->menu[index]->isVisible() )
+								DropDown::currentOpen->menu[index]->setVisible( true );
 						}
 
 						// Determines if any button from currently open DropDown menu is pressed
