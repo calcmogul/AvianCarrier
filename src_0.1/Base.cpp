@@ -99,8 +99,8 @@ Base::Base() {
 				unsigned int index = 0; // increments to 3 then resets to 1 and repeats
 				while ( !servers.eof() ) {
 					// change what to do with each line extracted
+					index %= 3;
 					index++;
-					index %= 4;
 
 					std::getline( servers , line );
 

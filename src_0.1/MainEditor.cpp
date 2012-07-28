@@ -309,21 +309,28 @@ INT WINAPI WinMain( HINSTANCE Instance , HINSTANCE , LPSTR , INT ) {
 						// Changes color of button currently hovered over
 						for ( unsigned int index = 1 ; index < DropDown::currentOpen->menu.size() ; index++ ) {
 
+							// if button color is wrong for current hover state, switch it to other color
 							if ( DropDown::currentOpen->menu[index]->isHovered( mainWin ) ^ ( DropDown::currentOpen->menu[index]->getFillColor().r == BUTTON_HOVER ) )
-								DropDown::currentOpen->menu[index]->setFillColor( DropDown::currentOpen->menu[index]->getFillColor().r ^ Button::colorXOR );
-							else
-								DropDown::currentOpen->menu[index]->setFillColor( DropDown::currentOpen->menu[index]->getFillColor() );
+								DropDown::currentOpen->menu[index]->setFillColor( DropDown::currentOpen->menu[index]->getFillColor().r ^ Button::colorXOR ); // "r" chosen is arbitrary since r, g, and b components are all equal
 
 							// makes current DropDown menu visible if it isn't already
 							if ( !DropDown::currentOpen->menu[index]->isVisible() )
 								DropDown::currentOpen->menu[index]->setVisible( true );
 						}
 
-						// Determines if any button from currently open DropDown menu is pressed
-						currentButtonHovered = NULL;
-						for ( unsigned int hoverIndex = 0 ; currentButtonHovered == NULL && hoverIndex < DropDown::currentOpen->menu.size() ; hoverIndex++ ) {
-							if ( DropDown::currentOpen->menu[hoverIndex]->isHovered( mainWin ) )
-								currentButtonHovered = DropDown::currentOpen->menu[hoverIndex];
+						// Determines which button from currently open DropDown menu is hovered, if it changed
+						if ( currentButtonHovered == NULL ) {
+							for ( unsigned int hoverIndex = 0 ; currentButtonHovered == NULL && hoverIndex < DropDown::currentOpen->menu.size() ; hoverIndex++ ) {
+								if ( DropDown::currentOpen->menu[hoverIndex]->isHovered( mainWin ) )
+									currentButtonHovered = DropDown::currentOpen->menu[hoverIndex];
+							}
+						}
+						else if ( !currentButtonHovered->isHovered( mainWin ) ) {
+							currentButtonHovered = NULL;
+							for ( unsigned int hoverIndex = 0 ; currentButtonHovered == NULL && hoverIndex < DropDown::currentOpen->menu.size() ; hoverIndex++ ) {
+								if ( DropDown::currentOpen->menu[hoverIndex]->isHovered( mainWin ) )
+									currentButtonHovered = DropDown::currentOpen->menu[hoverIndex];
+							}
 						}
 
 						// Changes DropDown menu when cursor is hovered over header of different one
@@ -464,7 +471,7 @@ INT WINAPI WinMain( HINSTANCE Instance , HINSTANCE , LPSTR , INT ) {
 			/* ========================== */
 		}
 
-		sf::sleep( sf::milliseconds( 1 ) );
+		sf::sleep( sf::milliseconds( 0 ) );
 	}
 
 	// Clean up window
