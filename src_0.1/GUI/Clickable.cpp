@@ -5,6 +5,7 @@
 //=============================================================================
 
 #include "Clickable.h"
+#include <SFML/Window/Mouse.hpp>
 
 Clickable::Clickable( const sf::Vector2f& size , std::vector<sf::Color> borders ) : TaperRectangleShape( size , borders ) {
 	m_visible = false;

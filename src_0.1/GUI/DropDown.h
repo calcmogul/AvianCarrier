@@ -9,7 +9,6 @@
 
 #include <vector>
 
-#include <SFML/Graphics/Drawable.hpp>
 #include "../Base.h"
 #include <SFML/Window.hpp>
 #include "Button.h"

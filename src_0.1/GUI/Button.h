@@ -7,8 +7,6 @@
 #ifndef GUI_BUTTON_H_
 #define GUI_BUTTON_H_
 
-#include <SFML/Graphics/Drawable.hpp>
-#include <SFML/Graphics/RectangleShape.hpp>
 #include <SFML/Graphics/Text.hpp>
 #include <SFML/Window/Keyboard.hpp>
 #include "../MenuSelect.h"

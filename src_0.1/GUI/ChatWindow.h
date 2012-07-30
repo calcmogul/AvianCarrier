@@ -8,7 +8,6 @@
 #define CHATWINDOW_H_
 
 #include <vector>
-#include <string>
 
 #include <SFML/Graphics/RenderTarget.hpp>
 #include <SFML/Window/Window.hpp>

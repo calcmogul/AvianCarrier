@@ -21,6 +21,7 @@
 #include <SFML/Network/IpAddress.hpp>
 #include <SFML/Network/UdpSocket.hpp>
 #include <SFML/System/Thread.hpp>
+#include <SFML/System/Sleep.hpp>
 
 #include "Base.h"
 #include "GUI/AutoResize.h"

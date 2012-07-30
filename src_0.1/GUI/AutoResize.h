@@ -9,8 +9,7 @@
 #define AUTO_RESIZE_H_
 
 #include <vector>
-#include <SFML/Graphics/Drawable.hpp>
-#include <SFML/Graphics/RenderWindow.hpp>
+#include <SFML/Window/Window.hpp>
 
 class AutoResize {
 public:

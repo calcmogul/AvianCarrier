@@ -9,7 +9,6 @@
 
 #include <string>
 
-#include <SFML/Graphics/RectangleShape.hpp>
 #include <SFML/Graphics/RenderTarget.hpp>
 #include <SFML/Graphics/Text.hpp>
 #include "../MenuSelect.h"
