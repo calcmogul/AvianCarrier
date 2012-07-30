@@ -9,11 +9,19 @@
 
 #include <fstream>
 #include <vector>
+#include <queue>
 
 #include <SFML/Network/UdpSocket.hpp>
 #include <SFML/Network/IpAddress.hpp>
 #include <SFML/Network/Packet.hpp>
 #include <SFML/System/Vector2.hpp>
+
+#include "dtl/dtl.hpp"
+
+struct Edit {
+	dtl::Diff<char , std::string> fileDiff;
+	unsigned long long clientVersion;
+};
 
 class File {
 protected:
@@ -25,6 +33,12 @@ public:
 		sent,
 		received
 	};
+
+	std::string inputString;
+	std::string inputStringShadow;
+	unsigned long long clientVersion;
+	unsigned long long serverVersion;
+	std::queue<Edit> editQueue;
 
 	std::string fullPath;
 	std::string fileName;

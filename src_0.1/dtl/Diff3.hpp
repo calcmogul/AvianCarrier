@@ -60,7 +60,9 @@ namespace dtl {
         elem                               csepa;
         elem                               csepaend;
     public :
-        Diff3 () {}
+        Diff3 () {
+        	conflict = false;
+        }
         Diff3 (const sequence& a, 
                const sequence& b, 
                const sequence& c) : A(a), B(b), C(c), 

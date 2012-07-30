@@ -68,7 +68,18 @@ namespace dtl {
         uniHunkVec         uniHunks;
         comparator         cmp;
     public :
-        Diff () {}
+        Diff () {
+        	M = 0;
+        	N = 0;
+        	delta = 0;
+        	offset = 0;
+        	fp = NULL;
+        	editDistance = 0;
+        	reverse = false;
+        	huge = false;
+        	unserious = false;
+        	onlyEditDistance = false;
+        }
         
         Diff (const sequence& a, 
               const sequence& b) : A(a), B(b) {
@@ -453,7 +464,7 @@ namespace dtl {
             Ses< elem > ret;
             long long   x_idx, y_idx;
             x_idx = y_idx = 1;
-            while (getline(st, line)) {
+            while (std::getline(st, line)) {
                 elem mark(line.begin(), line.begin() + 1);
                 elem e(line.begin() + 1, line.end());
                 if (mark == SES_MARK_DELETE) {
