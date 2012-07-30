@@ -7,7 +7,6 @@
 #ifndef CLICKABLE_H_
 #define CLICKABLE_H_
 
-#include <SFML/Window/Mouse.hpp>
 #include <SFML/Window/Window.hpp>
 #include "TaperRectangleShape.h"
 

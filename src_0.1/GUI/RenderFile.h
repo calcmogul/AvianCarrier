@@ -8,9 +8,6 @@
 #define RENDERFILE_H_
 
 #include "../File.h"
-
-#include <SFML/Graphics/Drawable.hpp>
-#include <SFML/Graphics/RenderStates.hpp>
 #include <SFML/Graphics/RenderTarget.hpp>
 
 class RenderFile : public File , public sf::Drawable {

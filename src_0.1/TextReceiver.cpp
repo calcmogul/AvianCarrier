@@ -5,6 +5,7 @@
 //=============================================================================
 
 #include "TextReceiver.h"
+#include <SFML/Window/Mouse.hpp>
 
 std::vector<TextReceiver*> TextReceiver::textInterfaces;
 TextReceiver* TextReceiver::currentReceiver = NULL;

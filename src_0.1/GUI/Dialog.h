@@ -15,7 +15,7 @@
 #include "../MenuSelect.h"
 #include "../TextReceiver.h"
 
-class Dialog {
+class Dialog : public TextReceiver {
 private:
 	MenuSelect keyDelay;
 
