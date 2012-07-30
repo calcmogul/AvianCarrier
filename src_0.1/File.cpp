@@ -168,6 +168,11 @@ void File::loadFromFile( std::string path ) {
 unsigned char File::sendToIP() {
 	unsigned char status = 0;
 
+	// Compute diff
+	inputString = convertToString();
+	dtl::Diff<char , std::string> fileDiff( inputStringShadow , inputString );
+	fileDiff.compose();
+
 	// Put file into packet for transmission over network
 	fileTransport.clear();
 	fileTransport << *this;

@@ -63,17 +63,26 @@ std::string searchDir;
 
 LRESULT CALLBACK OnEvent( HWND Handle , UINT Message , WPARAM WParam , LPARAM LParam );
 
+struct fileData {
+	std::string file;
+	unsigned long long clientVersion;
+	unsigned long long serverVersion;
+};
+
 void syncServer() {
-	std::string myFile;
-	std::string myFileShadow;
+	fileData myData;
+	fileData myDataShadow;
+	myData.clientVersion = 0;
+	myData.serverVersion = 0;
+	myDataShadow = myData;
 
 	while ( !CLOSE_THREADS ) {
 		Tab::tabMutex.lock();
 
 		if ( Tab::current != NULL ) {
-			myFile = Tab::current->file->convertToString();
+			myData.file = Tab::current->file->convertToString();
 
-			dtl::Diff<char , std::string> fileDiff( myFileShadow , myFile );
+			dtl::Diff<char , std::string> fileDiff( myDataShadow.file , myData.file );
 			fileDiff.compose();
 
 			Tab::current->file->sendToIP();
