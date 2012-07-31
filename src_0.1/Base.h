@@ -28,7 +28,6 @@ bool mouseButtonReleased( sf::Event& event , sf::Mouse::Button button );
 bool pressedControl( sf::Event& event );
 bool pressedShift( sf::Event& event );
 bool pressedAlt( sf::Event& event );
-bool mousePressed( sf::Mouse::Button );
 
 typedef struct ServerEntry {
 	std::string name;

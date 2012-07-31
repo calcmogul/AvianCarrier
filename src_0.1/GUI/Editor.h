@@ -25,8 +25,6 @@ public:
 
 	void handleEvent( sf::Event& event );
 
-	void activate( bool active ); // changes background of editor : white = active , gray = inactive
-
 	void setPosition( const sf::Vector2f& position );
 
 	void setSize( const sf::Vector2f& size );

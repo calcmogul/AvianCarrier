@@ -43,10 +43,6 @@ bool pressedAlt( sf::Event& event ) {
 	return ( keyPressed( event , sf::Keyboard::LAlt ) || keyPressed( event , sf::Keyboard::RAlt ) );
 }
 
-bool mousePressed( sf::Mouse::Button button ) {
-	return ( sf::Mouse::isButtonPressed( button ) );
-}
-
 Base::Base() {
 	if ( !isLoaded ) {
 		sf::Image folder;
