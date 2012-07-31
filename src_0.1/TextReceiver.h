@@ -11,10 +11,11 @@
 #include "GUI/Clickable.h"
 
 class TextReceiver : public Clickable {
-public:
-	static std::vector<TextReceiver*> textInterfaces;
+protected:
+	bool m_active;
 
 public:
+	static std::vector<TextReceiver*> textInterfaces;
 	static TextReceiver* currentReceiver;
 
 	TextReceiver( const sf::Vector2f& size = sf::Vector2f() , std::vector<sf::Color> borders = std::vector<sf::Color>({}) );
@@ -26,6 +27,9 @@ public:
 	virtual void handleEvent( sf::Event& event ) = 0;
 
 	bool isReceiving();
+
+	void activate( bool active ); // changes background of editor : white = active , gray = inactive
+	bool isActive();
 };
 
 #endif /* TEXT_RECEIVER_H_ */

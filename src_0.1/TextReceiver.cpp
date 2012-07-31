@@ -12,6 +12,7 @@ TextReceiver* TextReceiver::currentReceiver = NULL;
 
 TextReceiver::TextReceiver( const sf::Vector2f& size , std::vector<sf::Color> borders ) : Clickable( size , borders ) {
 	textInterfaces.push_back( this );
+	m_active = true;
 }
 
 TextReceiver::~TextReceiver() {
@@ -48,4 +49,17 @@ void TextReceiver::setReceiver( TextReceiver* activated ) {
 
 bool TextReceiver::isReceiving() {
 	return currentReceiver == this;
+}
+
+void TextReceiver::activate( bool active ) {
+	m_active = active;
+
+	if ( active )
+		setFillColor( sf::Color( 255 , 255 , 255 ) );
+	else
+		setFillColor( sf::Color( 80 , 80 , 80 ) );
+}
+
+bool TextReceiver::isActive() {
+	return m_active;
 }

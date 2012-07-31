@@ -197,16 +197,14 @@ void Editor::handleEvent( sf::Event& event ) {
 			if ( static_cast<unsigned int>(Tab::current->file->cursorPos.x) > Tab::current->file->getCurrentLine().length() )
 				Tab::current->file->cursorPos.x = Tab::current->file->getCurrentLine().length();
 		}
+
+		else if ( sf::Mouse::isButtonPressed( sf::Mouse::Left ) ) {
+			// TODO implement cursor movement with mouse
+
+		}
 	}
 
 	Tab::tabMutex.unlock();
-}
-
-void Editor::activate( bool active ) {
-	if ( active )
-		setFillColor( sf::Color( 255 , 255 , 255 ) );
-	else
-		setFillColor( sf::Color( 80 , 80 , 80 ) );
 }
 
 void Editor::setPosition( const sf::Vector2f& position ) {

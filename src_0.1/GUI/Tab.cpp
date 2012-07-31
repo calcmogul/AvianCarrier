@@ -115,7 +115,7 @@ void Tab::checkTabClose( sf::Window& referTo ) {
 
 	// Close any tabs that had their X clicked
 	for ( unsigned int index = 0 ; index < Tab::tabsOpen.size() ; index++ ) {
-		if ( tabCloseWait.getElapsedTime().asMilliseconds() > 200 && mousePressed( sf::Mouse::Left ) && Tab::tabsOpen[index]->isXHovered( referTo ) ) {
+		if ( tabCloseWait.getElapsedTime().asMilliseconds() > 200 && sf::Mouse::isButtonPressed( sf::Mouse::Left ) && Tab::tabsOpen[index]->isXHovered( referTo ) ) {
 			Tab::tabsOpen[index]->closeTab();
 
 			tabCloseWait.restart();

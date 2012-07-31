@@ -33,7 +33,7 @@ DropDown::~DropDown() {
 }
 
 bool DropDown::headerClicked( sf::Window& referTo ) {
-	return mousePressed( sf::Mouse::Left ) && menu[0]->isHovered( referTo );
+	return sf::Mouse::isButtonPressed( sf::Mouse::Left ) && menu[0]->isHovered( referTo );
 }
 
 const sf::Vector2f& DropDown::getPosition() {

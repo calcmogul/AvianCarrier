@@ -35,6 +35,7 @@
 #include "GUI/InputBox.h"
 #include "GUI/ChatWindow.h"
 #include "GUI/Editor.h"
+#include "GUI/Cursor.hpp"
 #include "DirList.h"
 #include "MenuSelect.h"
 #include "dtl/dtl.hpp"
@@ -201,6 +202,8 @@ INT WINAPI WinMain( HINSTANCE Instance , HINSTANCE , LPSTR , INT ) {
 	/* ==================================== */
 
 	sf::Event event;
+	sf::Cursor normalCursor( sf::Cursor::Normal );
+	sf::Cursor textCursor( sf::Cursor::Text );
 
 	Button* currentButtonHovered = NULL;
 
@@ -288,6 +291,17 @@ INT WINAPI WinMain( HINSTANCE Instance , HINSTANCE , LPSTR , INT ) {
 				}
 
 				TextReceiver::checkSwitchReceiver( mainWin );
+
+				bool isText = false;
+				for ( unsigned int index = 0 ; !isText && index < TextReceiver::textInterfaces.size() ; index++ ) {
+					if ( Window == GetActiveWindow() && DropDown::currentOpen == NULL && TextReceiver::textInterfaces[index]->isHovered( mainWin ) && TextReceiver::textInterfaces[index]->isActive() ) { // FIXME win32 use of HWND and GetActiveWindow()
+						textCursor.set( mainWin );
+						isText = true;
+					}
+				}
+
+				if ( !isText )
+					normalCursor.set( mainWin );
 
 				if ( TextReceiver::currentReceiver != NULL )
 					TextReceiver::currentReceiver->handleEvent( event );
