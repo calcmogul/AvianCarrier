@@ -938,7 +938,7 @@ void buildEXE() {
 }
 
 void displayAbout() {
-	sf::SplashScreen splash( 400 , 250 , "" , sf::Style::Titlebar , "Pigeot Splash.png" );
+	sf::SplashScreen splash( 400 , 250 , "" , sf::Style::Titlebar , "PigeotSplash.png" );
 
 	sf::Texture sfmlLogo;
 	if ( sfmlLogo.loadFromFile( "Resource/sfml.png" ) ) {
