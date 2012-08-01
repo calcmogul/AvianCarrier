@@ -42,7 +42,6 @@
 
 void closeProgram();
 void openFile();
-void pullFile();
 void copyText();
 void pasteText();
 void buildEXE();
@@ -100,8 +99,7 @@ void syncServer() {
 Button file( "File" , "" , "" , -1 , 30 , []{} );
 Button newFile( "New" , "Ctrl + N" , "Control N" , -1 , 40 , []{ Tab::newTab( sf::IpAddress( 127 , 0 , 0 , 1 ) , 50001 ); } );
 Button open( "Open" , "Ctrl + O" , "Control O" , -1 , 40 , []{ openThread.launch(); } );
-Button save( "Save" , "Ctrl + S" , "Control S" , -1 , 40 , []{ Tab::current->saveLocal(); } , false );
-Button pull( "Pull" , "Ctrl + P" , "Control P" , -1 , 40 , []{ pullFile(); } , false );
+Button save( "Save Local" , "Ctrl + S" , "Control S" , -1 , 40 , []{ Tab::current->saveLocal(); } , false );
 Button exitButton( "Exit" , " " , "" , -1 , 40 , []{ closeProgram(); } );
 
 Button edit( "Edit" , "" , "" , -1 , 30 , []{} );
@@ -122,7 +120,7 @@ Button options( "Options" , "" , "" , -1 , 30 , []{} );
 Button settings( "Settings..." , " " , "" , -1 , 40 , []{} , false );
 Button about( "About" , " " , "" , -1 , 40 , []{ aboutThread.launch(); } );
 
-DropDown fileMenu( 0 , 4 , { &file , &newFile , &open , &save , &pull , &exitButton } );
+DropDown fileMenu( 0 , 4 , { &file , &newFile , &open , &save , &exitButton } );
 DropDown editMenu( 0 , 4 , { &edit , &undo , &redo , &cut , &copy , &paste } );
 DropDown buildMenu( 0 , 4 , { &build , &buildDebug , &buildRelease } );
 DropDown collaborateMenu( 0 , 4 , { &collaborate , &chat } );
@@ -269,7 +267,6 @@ INT WINAPI WinMain( HINSTANCE Instance , HINSTANCE , LPSTR , INT ) {
 
 				if ( Tab::tabsOpen.size() > 0 ) {
 					save.setUseable( true );
-					pull.setUseable( true );
 					undo.setUseable( true );
 					redo.setUseable( true );
 					cut.setUseable( true );
@@ -280,7 +277,6 @@ INT WINAPI WinMain( HINSTANCE Instance , HINSTANCE , LPSTR , INT ) {
 				}
 				else {
 					save.setUseable( false );
-					pull.setUseable( false );
 					undo.setUseable( false );
 					redo.setUseable( false );
 					cut.setUseable( false );
@@ -909,10 +905,6 @@ void openFile() {
 
 	DestroyWindow( openView.getSystemHandle() );
 	DestroyWindow( openHWND );
-}
-
-void pullFile() {
-
 }
 
 void copyText() {

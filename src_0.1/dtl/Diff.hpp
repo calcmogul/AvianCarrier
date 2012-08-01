@@ -482,6 +482,35 @@ namespace dtl {
             return ret;
         }
 
+        friend sf::Packet& operator<<( sf::Packet& fileTransport , const Diff& sendMe ) { // add file data to packet
+        	fileTransport.append( static_cast<void*>( *sendMe ) , sizeof(sendMe) );
+
+        	return fileTransport;
+        }
+
+        friend sf::Packet& operator>>( sf::Packet& fileTransport , Diff& receiveMe ) { // move packet data to file
+        	Diff* netDiff;
+        	//netDiff
+
+        	/*std::string packetOut;
+
+        	fileTransport >> receiveMe.fileName;
+        	receiveMe.bracketMatch = 0;
+        	receiveMe.tabSpaceCount = 0;
+
+        	unsigned int lineCount;
+        	fileTransport >> lineCount;
+
+        	receiveMe.clear();
+        	for ( unsigned int index = 0 ; index < lineCount ; index++ ) {
+        		fileTransport >> packetOut;
+        		receiveMe.input.insert( receiveMe.input.end() , "" );
+        		receiveMe.input[index] = packetOut;
+        	}*/
+
+        	return fileTransport;
+        }
+
     private :
         /**
          * initialize

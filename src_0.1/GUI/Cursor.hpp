@@ -17,7 +17,7 @@
 namespace sf {
 	class Cursor {
 		private:
-			HCURSOR cursor; // type of cursor with Windows
+			HCURSOR cursor; // cursor's type with Windows
 
 		public:
 			enum Type { Wait , Text , Normal , Hand };
