@@ -19,7 +19,6 @@
 #include <SFML/Graphics/ConvexShape.hpp>
 #include <SFML/Graphics/Sprite.hpp>
 #include <SFML/Network/IpAddress.hpp>
-#include <SFML/Network/UdpSocket.hpp>
 #include <SFML/System/Thread.hpp>
 #include <SFML/System/Sleep.hpp>
 
@@ -939,14 +938,7 @@ void buildEXE() {
 
 void displayAbout() {
 	sf::SplashScreen splash( 400 , 250 , "" , sf::Style::Titlebar , "PigeotSplash.png" );
-
-	sf::Texture sfmlLogo;
-	if ( sfmlLogo.loadFromFile( "Resource/sfml.png" ) ) {
-		sf::Sprite sfml( sfmlLogo );
-		sfml.setPosition( sf::Vector2f( splash.getSize().x - sfml.getTexture()->getSize().x - 8.f , splash.getSize().y - sfml.getTexture()->getSize().y - 8.f ) );
-		splash.draw( sfml );
-		splash.display();
-	}
+	splash.display();
 
 	splash.waitForExitClick();
 }
