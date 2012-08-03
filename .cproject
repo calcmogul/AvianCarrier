@@ -56,11 +56,9 @@
 					</folderInfo>
 					<fileInfo id="cdt.managedbuild.config.gnu.mingw.exe.debug.1391821195.954234359" name="serverResources.res" rcbsApplicability="disable" resourcePath="serverResources.res" toolsToInvoke=""/>
 					<fileInfo id="cdt.managedbuild.config.gnu.mingw.exe.debug.1391821195.1942776831" name="serverResources.rc" rcbsApplicability="disable" resourcePath="serverResources.rc" toolsToInvoke=""/>
-					<fileInfo id="cdt.managedbuild.config.gnu.mingw.exe.debug.1391821195.636356798" name="setParameter.inl" rcbsApplicability="disable" resourcePath="src_0.1/setParameter.inl" toolsToInvoke=""/>
 					<fileInfo id="cdt.managedbuild.config.gnu.mingw.exe.debug.1391821195.1445733004" name="clientResources.rc" rcbsApplicability="disable" resourcePath="clientResources.rc" toolsToInvoke=""/>
 					<sourceEntries>
 						<entry excluding="GUI|WindowTests|src_0.1|src_0.1_Server|Other Code Snippets|src_0.1_Console" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
-						<entry excluding="diff_match_patch.h|diff_match_patch.cpp|MainServer.cpp|GUI/mainWin.hpp|serverResources.res|serverResources.rc|GUI/Win32_Window.h" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="src_0.1"/>
 					</sourceEntries>
 				</configuration>
 			</storageModule>
@@ -128,10 +126,8 @@
 					</folderInfo>
 					<fileInfo id="cdt.managedbuild.config.gnu.mingw.exe.release.1372150565.2063736822" name="serverResources.res" rcbsApplicability="disable" resourcePath="serverResources.res" toolsToInvoke=""/>
 					<fileInfo id="cdt.managedbuild.config.gnu.mingw.exe.release.1372150565.1676403872" name="serverResources.rc" rcbsApplicability="disable" resourcePath="serverResources.rc" toolsToInvoke=""/>
-					<fileInfo id="cdt.managedbuild.config.gnu.mingw.exe.release.1372150565.1738735733" name="SplashScreen.h" rcbsApplicability="disable" resourcePath="src_0.1/GUI/SplashScreen.h" toolsToInvoke=""/>
 					<sourceEntries>
 						<entry excluding="GUI|WindowTests|src_0.1|src_0.1_Server|Other Code Snippets|src_0.1_Console" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
-						<entry excluding="diff_match_patch.h|diff_match_patch.cpp|MainServer.cpp|GUI/mainWin.hpp|serverResources.res|serverResources.rc|GUI/Win32_Window.h" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="src_0.1"/>
 					</sourceEntries>
 				</configuration>
 			</storageModule>
@@ -191,17 +187,12 @@
 							</tool>
 						</toolChain>
 					</folderInfo>
-					<fileInfo id="cdt.managedbuild.config.gnu.mingw.exe.debug.1391821195.90150044.2105796644" name="serverResources.res" rcbsApplicability="disable" resourcePath="serverResources.res" toolsToInvoke=""/>
 					<fileInfo id="cdt.managedbuild.config.gnu.mingw.exe.debug.1391821195.90150044.1013494070" name="clientResources.res" rcbsApplicability="disable" resourcePath="clientResources.res" toolsToInvoke=""/>
+					<fileInfo id="cdt.managedbuild.config.gnu.mingw.exe.debug.1391821195.90150044.2105796644" name="serverResources.res" rcbsApplicability="disable" resourcePath="serverResources.res" toolsToInvoke=""/>
 					<fileInfo id="cdt.managedbuild.config.gnu.mingw.exe.debug.1391821195.90150044.95461479" name="serverResources.rc" rcbsApplicability="disable" resourcePath="serverResources.rc" toolsToInvoke=""/>
-					<fileInfo id="cdt.managedbuild.config.gnu.mingw.exe.debug.1391821195.90150044.1933358745" name="SplashScreen.h" rcbsApplicability="disable" resourcePath="src_0.1/GUI/SplashScreen.h" toolsToInvoke=""/>
-					<fileInfo id="cdt.managedbuild.config.gnu.mingw.exe.debug.1391821195.90150044.770087889" name="StatusBar.h" rcbsApplicability="disable" resourcePath="src_0.1/GUI/StatusBar.h" toolsToInvoke=""/>
-					<fileInfo id="cdt.managedbuild.config.gnu.mingw.exe.debug.1391821195.90150044.2085224140" name="MenuSelect.h" rcbsApplicability="disable" resourcePath="src_0.1/MenuSelect.h" toolsToInvoke=""/>
-					<fileInfo id="cdt.managedbuild.config.gnu.mingw.exe.debug.1391821195.90150044.1197766900" name="Base.h" rcbsApplicability="disable" resourcePath="src_0.1/Base.h" toolsToInvoke=""/>
-					<fileInfo id="cdt.managedbuild.config.gnu.mingw.exe.debug.1391821195.90150044.1794709487" name="setParameter.inl" rcbsApplicability="disable" resourcePath="src_0.1/setParameter.inl" toolsToInvoke=""/>
 					<fileInfo id="cdt.managedbuild.config.gnu.mingw.exe.debug.1391821195.90150044.1586793572" name="clientResources.rc" rcbsApplicability="disable" resourcePath="clientResources.rc" toolsToInvoke=""/>
 					<sourceEntries>
-						<entry excluding="src_0.1/Dialog.cpp|src_0.1/AutoResize.cpp|src_0.1/TaperRectangleShape.cpp|src_0.1/TextReceiver.h|src_0.1/TextReceiver.cpp|src_0.1/Clickable.cpp|src_0.1/ChatWindow.cpp|src_0.1/Editor.cpp|src_0.1/SplashScreen.cpp|src_0.1/diff_match_patch.h|src_0.1/diff_match_patch.cpp|src_0.1/setParameter.inl|src_0.1/MenuSelect.h|src_0.1/MenuSelect.cpp|src_0.1/ScrollBar.cpp|src_0.1/insert.inl|src_0.1/Toolbar.cpp|src_0.1/Tab.cpp|src_0.1/StatusBar.cpp|src_0.1/RenderFile.cpp|src_0.1/MainEditor.cpp|src_0.1/InputBox.cpp|src_0.1/InfoWindow.cpp|src_0.1/GUISettings.cpp|src_0.1/DropDown.cpp|src_0.1/CheckBox.cpp|src_0.1/Button.cpp|src_0.1/Base.h|src_0.1/Base.cpp|src_0.1/GUI|src_0.1_SFML/GUI|src_0.1_SFML/Toolbar.cpp|src_0.1_Server|src_0.1_SFML/InfoWindow.cpp|src_0.1_SFML/DropDown.cpp|src_0.1_SFML/RenderFile.cpp|src_0.1_SFML/MainEditor.cpp|src_0.1_SFML/CheckBox.cpp|Other Code Snippets|src_0.1_Console|src_0.1_SFML/StatusBar.cpp|src_0.1_SFML/Button.cpp|GUI|WindowTests|src_0.1_SFML/InputBox.cpp|src_0.1_SFML/Base.cpp|src_0.1_SFML/clientResources.res|src_0.1_SFML/Base.h|src_0.1_SFML/Tab.cpp|src_0.1_SFML/clientResources.rc" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
+						<entry excluding="src_0.1_SFML/CheckBox.cpp|src_0.1_Console|src_0.1_SFML/InputBox.cpp|src_0.1/TextReceiver.cpp|src_0.1_SFML/clientResources.res|src_0.1/Clickable.cpp|src_0.1/ScrollBar.cpp|src_0.1_SFML/Tab.cpp|src_0.1_SFML/GUI|src_0.1/AutoResize.cpp|src_0.1/RenderFile.cpp|src_0.1_SFML/InfoWindow.cpp|src_0.1_SFML/RenderFile.cpp|src_0.1/setParameter.inl|src_0.1/diff_match_patch.cpp|src_0.1/Tab.cpp|src_0.1_SFML/StatusBar.cpp|src_0.1/diff_match_patch.h|GUI|src_0.1/StatusBar.cpp|src_0.1/Base.cpp|src_0.1/insert.inl|src_0.1/CheckBox.cpp|src_0.1_Server|src_0.1/SplashScreen.cpp|src_0.1/Base.h|Other Code Snippets|src_0.1/Editor.cpp|src_0.1/MenuSelect.cpp|WindowTests|src_0.1/Dialog.cpp|src_0.1/TaperRectangleShape.cpp|src_0.1/GUI|src_0.1_SFML/Base.cpp|src_0.1_SFML/Base.h|src_0.1_SFML/clientResources.rc|src_0.1_SFML/Toolbar.cpp|src_0.1_SFML/DropDown.cpp|src_0.1/InputBox.cpp|src_0.1/DropDown.cpp|src_0.1/Button.cpp|src_0.1_SFML/MainEditor.cpp|src_0.1/MenuSelect.h|src_0.1_SFML/Button.cpp|src_0.1/GUISettings.cpp|src_0.1/InfoWindow.cpp|src_0.1/ChatWindow.cpp|src_0.1/MainEditor.cpp|src_0.1/TextReceiver.h|src_0.1/Toolbar.cpp" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
 					</sourceEntries>
 				</configuration>
 			</storageModule>
@@ -259,12 +250,9 @@
 						</toolChain>
 					</folderInfo>
 					<fileInfo id="cdt.managedbuild.config.gnu.mingw.exe.release.1372150565.956275897.552339020" name="clientResources.res" rcbsApplicability="disable" resourcePath="clientResources.res" toolsToInvoke=""/>
-					<fileInfo id="cdt.managedbuild.config.gnu.mingw.exe.release.1372150565.956275897.1449271824" name="MenuSelect.h" rcbsApplicability="disable" resourcePath="src_0.1/MenuSelect.h" toolsToInvoke=""/>
-					<fileInfo id="cdt.managedbuild.config.gnu.mingw.exe.release.1372150565.956275897.1170092960" name="Base.h" rcbsApplicability="disable" resourcePath="src_0.1/Base.h" toolsToInvoke=""/>
-					<fileInfo id="cdt.managedbuild.config.gnu.mingw.exe.release.1372150565.956275897.670714405" name="setParameter.inl" rcbsApplicability="disable" resourcePath="src_0.1/setParameter.inl" toolsToInvoke=""/>
 					<fileInfo id="cdt.managedbuild.config.gnu.mingw.exe.release.1372150565.956275897.2082929197" name="clientResources.rc" rcbsApplicability="disable" resourcePath="clientResources.rc" toolsToInvoke=""/>
 					<sourceEntries>
-						<entry excluding="src_0.1/Dialog.cpp|src_0.1/AutoResize.cpp|src_0.1/TaperRectangleShape.cpp|src_0.1/TextReceiver.h|src_0.1/TextReceiver.cpp|src_0.1/Clickable.cpp|src_0.1/ChatWindow.cpp|src_0.1/Editor.cpp|src_0.1/SplashScreen.cpp|src_0.1/diff_match_patch.h|src_0.1/diff_match_patch.cpp|src_0.1/setParameter.inl|src_0.1/MenuSelect.h|src_0.1/MenuSelect.cpp|src_0.1/ScrollBar.cpp|src_0.1/insert.inl|src_0.1/Toolbar.cpp|src_0.1/Tab.cpp|src_0.1/StatusBar.cpp|src_0.1/RenderFile.cpp|src_0.1/MainEditor.cpp|src_0.1/InputBox.cpp|src_0.1/InfoWindow.cpp|src_0.1/GUISettings.cpp|src_0.1/DropDown.cpp|src_0.1/CheckBox.cpp|src_0.1/Button.cpp|src_0.1/Base.h|src_0.1/Base.cpp|src_0.1/GUI|src_0.1_SFML/GUI|src_0.1_SFML/Toolbar.cpp|src_0.1_Server|src_0.1_SFML/InfoWindow.cpp|src_0.1_SFML/DropDown.cpp|src_0.1_SFML/RenderFile.cpp|src_0.1_SFML/MainEditor.cpp|src_0.1_SFML/CheckBox.cpp|Other Code Snippets|src_0.1_Console|src_0.1_SFML/StatusBar.cpp|src_0.1_SFML/Button.cpp|GUI|WindowTests|src_0.1_SFML/InputBox.cpp|src_0.1_SFML/Base.cpp|src_0.1_SFML/clientResources.res|src_0.1_SFML/Base.h|src_0.1_SFML/Tab.cpp|src_0.1_SFML/clientResources.rc" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
+						<entry excluding="src_0.1_SFML/CheckBox.cpp|src_0.1_Console|src_0.1_SFML/InputBox.cpp|src_0.1/TextReceiver.cpp|src_0.1_SFML/clientResources.res|src_0.1/Clickable.cpp|src_0.1/ScrollBar.cpp|src_0.1_SFML/Tab.cpp|src_0.1_SFML/GUI|src_0.1/AutoResize.cpp|src_0.1/RenderFile.cpp|src_0.1_SFML/InfoWindow.cpp|src_0.1_SFML/RenderFile.cpp|src_0.1/setParameter.inl|src_0.1/diff_match_patch.cpp|src_0.1/Tab.cpp|src_0.1_SFML/StatusBar.cpp|src_0.1/diff_match_patch.h|GUI|src_0.1/StatusBar.cpp|src_0.1/Base.cpp|src_0.1/insert.inl|src_0.1/CheckBox.cpp|src_0.1_Server|src_0.1/SplashScreen.cpp|src_0.1/Base.h|Other Code Snippets|src_0.1/Editor.cpp|src_0.1/MenuSelect.cpp|WindowTests|src_0.1/Dialog.cpp|src_0.1/TaperRectangleShape.cpp|src_0.1/GUI|src_0.1_SFML/Base.cpp|src_0.1_SFML/Base.h|src_0.1_SFML/clientResources.rc|src_0.1_SFML/Toolbar.cpp|src_0.1_SFML/DropDown.cpp|src_0.1/InputBox.cpp|src_0.1/DropDown.cpp|src_0.1/Button.cpp|src_0.1_SFML/MainEditor.cpp|src_0.1/MenuSelect.h|src_0.1_SFML/Button.cpp|src_0.1/GUISettings.cpp|src_0.1/InfoWindow.cpp|src_0.1/ChatWindow.cpp|src_0.1/MainEditor.cpp|src_0.1/TextReceiver.h|src_0.1/Toolbar.cpp" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
 					</sourceEntries>
 				</configuration>
 			</storageModule>
