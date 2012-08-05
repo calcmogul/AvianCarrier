@@ -52,7 +52,7 @@ public:
 	void waitForExit();
 };
 
-#include "../setParameter.inl"
+#include "setShaderParam.inl"
 
 }
 

@@ -1,6 +1,6 @@
 //=============================================================================
 //File Name: setParameter.inl
-//Description: Holds definition for template function "setParameter" from
+//Description: Holds definition for template function "setShaderParam" from
 //             InfoWindow class
 //Author: Tyler Veness
 //=============================================================================
