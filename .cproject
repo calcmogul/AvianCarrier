@@ -193,7 +193,7 @@
 					<fileInfo id="cdt.managedbuild.config.gnu.mingw.exe.debug.1391821195.90150044.95461479" name="serverResources.rc" rcbsApplicability="disable" resourcePath="serverResources.rc" toolsToInvoke=""/>
 					<fileInfo id="cdt.managedbuild.config.gnu.mingw.exe.debug.1391821195.90150044.1586793572" name="clientResources.rc" rcbsApplicability="disable" resourcePath="clientResources.rc" toolsToInvoke=""/>
 					<sourceEntries>
-						<entry excluding="Pigeot.ico|clientResources.res|clientResources.rc|src/setParameter.inl|src/insert.inl|src/TextReceiver.h|src/TextReceiver.cpp|src/MenuSelect.h|src/MenuSelect.cpp|src/MainEditor.cpp|src/Base.h|src/Base.cpp|src/GUI" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
+						<entry excluding="Pigeot.ico|clientResources.res|clientResources.rc|src/insert.inl|src/TextReceiver.h|src/TextReceiver.cpp|src/MenuSelect.h|src/MenuSelect.cpp|src/MainEditor.cpp|src/Base.h|src/Base.cpp|src/GUI" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
 					</sourceEntries>
 				</configuration>
 			</storageModule>
@@ -254,7 +254,7 @@
 					<fileInfo id="cdt.managedbuild.config.gnu.mingw.exe.release.1372150565.956275897.552339020" name="clientResources.res" rcbsApplicability="disable" resourcePath="clientResources.res" toolsToInvoke=""/>
 					<fileInfo id="cdt.managedbuild.config.gnu.mingw.exe.release.1372150565.956275897.2082929197" name="clientResources.rc" rcbsApplicability="disable" resourcePath="clientResources.rc" toolsToInvoke=""/>
 					<sourceEntries>
-						<entry excluding="Pigeot.ico|clientResources.res|clientResources.rc|src/setParameter.inl|src/insert.inl|src/TextReceiver.h|src/TextReceiver.cpp|src/MenuSelect.h|src/MenuSelect.cpp|src/MainEditor.cpp|src/Base.h|src/Base.cpp|src/GUI" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
+						<entry excluding="Pigeot.ico|clientResources.res|clientResources.rc|src/insert.inl|src/TextReceiver.h|src/TextReceiver.cpp|src/MenuSelect.h|src/MenuSelect.cpp|src/MainEditor.cpp|src/Base.h|src/Base.cpp|src/GUI" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
 					</sourceEntries>
 				</configuration>
 			</storageModule>
