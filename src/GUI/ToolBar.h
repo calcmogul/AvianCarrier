@@ -1,5 +1,5 @@
 //=============================================================================
-//File Name: Toolbar.h
+//File Name: ToolBar.h
 //Description: Holds declarations of Toolbar GUI class
 //Author: Tyler Veness
 //=============================================================================
@@ -14,7 +14,7 @@
 #include "AutoResize.h"
 #include "DropDown.h"
 
-class Toolbar : public Clickable , public AutoResize {
+class ToolBar : public Clickable , public AutoResize {
 private:
 	float yPos;
 
@@ -24,7 +24,7 @@ private:
 	void draw( sf::RenderTarget& target , sf::RenderStates states = sf::RenderStates::Default ) const;
 
 public:
-	Toolbar( float x , float y , float width , float height , std::vector<DropDown*> );
+	ToolBar( float x , float y , float width , float height , std::vector<DropDown*> );
 
 	void setVisible( bool visible );
 	void updateSize( sf::Window& target );
