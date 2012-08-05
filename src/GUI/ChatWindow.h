@@ -11,7 +11,7 @@
 
 #include <SFML/Graphics/RenderTarget.hpp>
 #include <SFML/Window/Window.hpp>
-#include "../TextReceiver.h"
+#include "TextReceiver.h"
 #include "AutoResize.h"
 #include "InputBox.h"
 

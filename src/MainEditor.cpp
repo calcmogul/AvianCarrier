@@ -35,8 +35,8 @@
 #include "GUI/ChatWindow.h"
 #include "GUI/Editor.h"
 #include "GUI/Cursor.hpp"
+#include "GUI/MenuSelect.h"
 #include "DirList.h"
-#include "MenuSelect.h"
 #include "dtl/dtl.hpp"
 
 void closeProgram();

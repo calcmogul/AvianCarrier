@@ -8,7 +8,7 @@
 #define EDITOR_H_
 
 #include <SFML/Graphics/RenderTarget.hpp>
-#include "../TextReceiver.h"
+#include "TextReceiver.h"
 #include "AutoResize.h"
 #include "ScrollBar.h"
 
