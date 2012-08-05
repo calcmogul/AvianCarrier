@@ -125,7 +125,7 @@ DropDown buildMenu( 0 , 4 , { &build , &buildDebug , &buildRelease } );
 DropDown collaborateMenu( 0 , 4 , { &collaborate , &chat } );
 DropDown optionMenu( 0 , 4 , { &options , &settings , &about } );
 
-Toolbar mainTools( 0.f , 0.f , mainWin.getSize().x , 24.f , { &fileMenu , &editMenu , &buildMenu , &collaborateMenu , &optionMenu } );
+ToolBar mainTools( 0.f , 0.f , mainWin.getSize().x , 24.f , { &fileMenu , &editMenu , &buildMenu , &collaborateMenu , &optionMenu } );
 
 Editor editBackground;
 

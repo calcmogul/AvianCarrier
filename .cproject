@@ -58,7 +58,7 @@
 					<fileInfo id="cdt.managedbuild.config.gnu.mingw.exe.debug.1391821195.1942776831" name="serverResources.rc" rcbsApplicability="disable" resourcePath="serverResources.rc" toolsToInvoke=""/>
 					<fileInfo id="cdt.managedbuild.config.gnu.mingw.exe.debug.1391821195.1445733004" name="clientResources.rc" rcbsApplicability="disable" resourcePath="clientResources.rc" toolsToInvoke=""/>
 					<sourceEntries>
-						<entry excluding="GUI|WindowTests|src_0.1|src_0.1_Server|Other Code Snippets|src_0.1_Console" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
+						<entry excluding="serverResources.res|serverResources.rc|src/MainServer.cpp" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
 					</sourceEntries>
 				</configuration>
 			</storageModule>
@@ -127,7 +127,7 @@
 					<fileInfo id="cdt.managedbuild.config.gnu.mingw.exe.release.1372150565.2063736822" name="serverResources.res" rcbsApplicability="disable" resourcePath="serverResources.res" toolsToInvoke=""/>
 					<fileInfo id="cdt.managedbuild.config.gnu.mingw.exe.release.1372150565.1676403872" name="serverResources.rc" rcbsApplicability="disable" resourcePath="serverResources.rc" toolsToInvoke=""/>
 					<sourceEntries>
-						<entry excluding="GUI|WindowTests|src_0.1|src_0.1_Server|Other Code Snippets|src_0.1_Console" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
+						<entry excluding="serverResources.res|serverResources.rc|src/MainServer.cpp" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
 					</sourceEntries>
 				</configuration>
 			</storageModule>
@@ -187,12 +187,12 @@
 							</tool>
 						</toolChain>
 					</folderInfo>
-					<fileInfo id="cdt.managedbuild.config.gnu.mingw.exe.debug.1391821195.90150044.1013494070" name="clientResources.res" rcbsApplicability="disable" resourcePath="clientResources.res" toolsToInvoke=""/>
 					<fileInfo id="cdt.managedbuild.config.gnu.mingw.exe.debug.1391821195.90150044.2105796644" name="serverResources.res" rcbsApplicability="disable" resourcePath="serverResources.res" toolsToInvoke=""/>
+					<fileInfo id="cdt.managedbuild.config.gnu.mingw.exe.debug.1391821195.90150044.1013494070" name="clientResources.res" rcbsApplicability="disable" resourcePath="clientResources.res" toolsToInvoke=""/>
 					<fileInfo id="cdt.managedbuild.config.gnu.mingw.exe.debug.1391821195.90150044.95461479" name="serverResources.rc" rcbsApplicability="disable" resourcePath="serverResources.rc" toolsToInvoke=""/>
 					<fileInfo id="cdt.managedbuild.config.gnu.mingw.exe.debug.1391821195.90150044.1586793572" name="clientResources.rc" rcbsApplicability="disable" resourcePath="clientResources.rc" toolsToInvoke=""/>
 					<sourceEntries>
-						<entry excluding="src_0.1_SFML/CheckBox.cpp|src_0.1_Console|src_0.1_SFML/InputBox.cpp|src_0.1/TextReceiver.cpp|src_0.1_SFML/clientResources.res|src_0.1/Clickable.cpp|src_0.1/ScrollBar.cpp|src_0.1_SFML/Tab.cpp|src_0.1_SFML/GUI|src_0.1/AutoResize.cpp|src_0.1/RenderFile.cpp|src_0.1_SFML/InfoWindow.cpp|src_0.1_SFML/RenderFile.cpp|src_0.1/setParameter.inl|src_0.1/diff_match_patch.cpp|src_0.1/Tab.cpp|src_0.1_SFML/StatusBar.cpp|src_0.1/diff_match_patch.h|GUI|src_0.1/StatusBar.cpp|src_0.1/Base.cpp|src_0.1/insert.inl|src_0.1/CheckBox.cpp|src_0.1_Server|src_0.1/SplashScreen.cpp|src_0.1/Base.h|Other Code Snippets|src_0.1/Editor.cpp|src_0.1/MenuSelect.cpp|WindowTests|src_0.1/Dialog.cpp|src_0.1/TaperRectangleShape.cpp|src_0.1/GUI|src_0.1_SFML/Base.cpp|src_0.1_SFML/Base.h|src_0.1_SFML/clientResources.rc|src_0.1_SFML/Toolbar.cpp|src_0.1_SFML/DropDown.cpp|src_0.1/InputBox.cpp|src_0.1/DropDown.cpp|src_0.1/Button.cpp|src_0.1_SFML/MainEditor.cpp|src_0.1/MenuSelect.h|src_0.1_SFML/Button.cpp|src_0.1/GUISettings.cpp|src_0.1/InfoWindow.cpp|src_0.1/ChatWindow.cpp|src_0.1/MainEditor.cpp|src_0.1/TextReceiver.h|src_0.1/Toolbar.cpp" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
+						<entry excluding="clientResources.res|clientResources.rc|src/setParameter.inl|src/insert.inl|src/TextReceiver.h|src/TextReceiver.cpp|src/MenuSelect.h|src/MenuSelect.cpp|src/MainEditor.cpp|src/Base.h|src/Base.cpp|src/GUI" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
 					</sourceEntries>
 				</configuration>
 			</storageModule>
@@ -252,7 +252,7 @@
 					<fileInfo id="cdt.managedbuild.config.gnu.mingw.exe.release.1372150565.956275897.552339020" name="clientResources.res" rcbsApplicability="disable" resourcePath="clientResources.res" toolsToInvoke=""/>
 					<fileInfo id="cdt.managedbuild.config.gnu.mingw.exe.release.1372150565.956275897.2082929197" name="clientResources.rc" rcbsApplicability="disable" resourcePath="clientResources.rc" toolsToInvoke=""/>
 					<sourceEntries>
-						<entry excluding="src_0.1_SFML/CheckBox.cpp|src_0.1_Console|src_0.1_SFML/InputBox.cpp|src_0.1/TextReceiver.cpp|src_0.1_SFML/clientResources.res|src_0.1/Clickable.cpp|src_0.1/ScrollBar.cpp|src_0.1_SFML/Tab.cpp|src_0.1_SFML/GUI|src_0.1/AutoResize.cpp|src_0.1/RenderFile.cpp|src_0.1_SFML/InfoWindow.cpp|src_0.1_SFML/RenderFile.cpp|src_0.1/setParameter.inl|src_0.1/diff_match_patch.cpp|src_0.1/Tab.cpp|src_0.1_SFML/StatusBar.cpp|src_0.1/diff_match_patch.h|GUI|src_0.1/StatusBar.cpp|src_0.1/Base.cpp|src_0.1/insert.inl|src_0.1/CheckBox.cpp|src_0.1_Server|src_0.1/SplashScreen.cpp|src_0.1/Base.h|Other Code Snippets|src_0.1/Editor.cpp|src_0.1/MenuSelect.cpp|WindowTests|src_0.1/Dialog.cpp|src_0.1/TaperRectangleShape.cpp|src_0.1/GUI|src_0.1_SFML/Base.cpp|src_0.1_SFML/Base.h|src_0.1_SFML/clientResources.rc|src_0.1_SFML/Toolbar.cpp|src_0.1_SFML/DropDown.cpp|src_0.1/InputBox.cpp|src_0.1/DropDown.cpp|src_0.1/Button.cpp|src_0.1_SFML/MainEditor.cpp|src_0.1/MenuSelect.h|src_0.1_SFML/Button.cpp|src_0.1/GUISettings.cpp|src_0.1/InfoWindow.cpp|src_0.1/ChatWindow.cpp|src_0.1/MainEditor.cpp|src_0.1/TextReceiver.h|src_0.1/Toolbar.cpp" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
+						<entry excluding="clientResources.res|clientResources.rc|src/setParameter.inl|src/insert.inl|src/TextReceiver.h|src/TextReceiver.cpp|src/MenuSelect.h|src/MenuSelect.cpp|src/MainEditor.cpp|src/Base.h|src/Base.cpp|src/GUI" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
 					</sourceEntries>
 				</configuration>
 			</storageModule>
@@ -279,79 +279,30 @@
 	<storageModule moduleId="org.eclipse.cdt.core.LanguageSettingsProviders"/>
 	<storageModule moduleId="org.eclipse.cdt.make.core.buildtargets">
 		<buildTargets>
-			<target name="File.o" path="" targetID="org.eclipse.cdt.build.MakeTargetBuilder">
-				<buildCommand>make</buildCommand>
-				<buildArguments/>
-				<buildTarget>File.o</buildTarget>
-				<stopOnError>true</stopOnError>
-				<useDefaultCommand>true</useDefaultCommand>
-				<runAllBuilders>true</runAllBuilders>
-			</target>
-			<target name="Tab.o" path="" targetID="org.eclipse.cdt.build.MakeTargetBuilder">
-				<buildCommand>make</buildCommand>
-				<buildTarget>Tab.o</buildTarget>
-				<stopOnError>true</stopOnError>
-				<useDefaultCommand>true</useDefaultCommand>
-				<runAllBuilders>true</runAllBuilders>
-			</target>
 			<target name="Base.o" path="" targetID="org.eclipse.cdt.build.MakeTargetBuilder">
 				<buildCommand>make</buildCommand>
-				<buildArguments/>
 				<buildTarget>Base.o</buildTarget>
 				<stopOnError>true</stopOnError>
 				<useDefaultCommand>true</useDefaultCommand>
 				<runAllBuilders>true</runAllBuilders>
 			</target>
-			<target name="Button.o" path="" targetID="org.eclipse.cdt.build.MakeTargetBuilder">
+			<target name="DirList.o" path="" targetID="org.eclipse.cdt.build.MakeTargetBuilder">
 				<buildCommand>make</buildCommand>
-				<buildArguments/>
-				<buildTarget>Button.o</buildTarget>
+				<buildTarget>DirList.o</buildTarget>
 				<stopOnError>true</stopOnError>
 				<useDefaultCommand>true</useDefaultCommand>
 				<runAllBuilders>true</runAllBuilders>
 			</target>
-			<target name="Toolbar.o" path="" targetID="org.eclipse.cdt.build.MakeTargetBuilder">
+			<target name="File.o" path="" targetID="org.eclipse.cdt.build.MakeTargetBuilder">
 				<buildCommand>make</buildCommand>
-				<buildArguments/>
-				<buildTarget>Toolbar.o</buildTarget>
-				<stopOnError>true</stopOnError>
-				<useDefaultCommand>true</useDefaultCommand>
-				<runAllBuilders>true</runAllBuilders>
-			</target>
-			<target name="InfoWindow.o" path="" targetID="org.eclipse.cdt.build.MakeTargetBuilder">
-				<buildCommand>make</buildCommand>
-				<buildArguments/>
-				<buildTarget>InfoWindow.o</buildTarget>
-				<stopOnError>true</stopOnError>
-				<useDefaultCommand>true</useDefaultCommand>
-				<runAllBuilders>true</runAllBuilders>
-			</target>
-			<target name="DropDown.o" path="" targetID="org.eclipse.cdt.build.MakeTargetBuilder">
-				<buildCommand>make</buildCommand>
-				<buildArguments/>
-				<buildTarget>DropDown.o</buildTarget>
-				<stopOnError>true</stopOnError>
-				<useDefaultCommand>true</useDefaultCommand>
-				<runAllBuilders>true</runAllBuilders>
-			</target>
-			<target name="Settings.o" path="" targetID="org.eclipse.cdt.build.MakeTargetBuilder">
-				<buildCommand>make</buildCommand>
-				<buildTarget>Settings.o</buildTarget>
+				<buildTarget>File.o</buildTarget>
 				<stopOnError>true</stopOnError>
 				<useDefaultCommand>true</useDefaultCommand>
 				<runAllBuilders>true</runAllBuilders>
 			</target>
 			<target name="MainEditor.o" path="" targetID="org.eclipse.cdt.build.MakeTargetBuilder">
 				<buildCommand>make</buildCommand>
-				<buildArguments/>
 				<buildTarget>MainEditor.o</buildTarget>
-				<stopOnError>true</stopOnError>
-				<useDefaultCommand>true</useDefaultCommand>
-				<runAllBuilders>true</runAllBuilders>
-			</target>
-			<target name="InputBox.o" path="" targetID="org.eclipse.cdt.build.MakeTargetBuilder">
-				<buildCommand>make</buildCommand>
-				<buildTarget>InputBox.o</buildTarget>
 				<stopOnError>true</stopOnError>
 				<useDefaultCommand>true</useDefaultCommand>
 				<runAllBuilders>true</runAllBuilders>
@@ -363,24 +314,117 @@
 				<useDefaultCommand>true</useDefaultCommand>
 				<runAllBuilders>true</runAllBuilders>
 			</target>
-			<target name="StatusBar.o" path="" targetID="org.eclipse.cdt.build.MakeTargetBuilder">
+			<target name="MenuSelect.o" path="" targetID="org.eclipse.cdt.build.MakeTargetBuilder">
+				<buildCommand>make</buildCommand>
+				<buildTarget>MenuSelect.o</buildTarget>
+				<stopOnError>true</stopOnError>
+				<useDefaultCommand>true</useDefaultCommand>
+				<runAllBuilders>true</runAllBuilders>
+			</target>
+			<target name="TextReceiver.o" path="" targetID="org.eclipse.cdt.build.MakeTargetBuilder">
+				<buildCommand>make</buildCommand>
+				<buildTarget>TextReceiver.o</buildTarget>
+				<stopOnError>true</stopOnError>
+				<useDefaultCommand>true</useDefaultCommand>
+				<runAllBuilders>true</runAllBuilders>
+			</target>
+			<target name="AutoResize.o" path="" targetID="org.eclipse.cdt.build.MakeTargetBuilder">
+				<buildCommand>make</buildCommand>
+				<buildTarget>AutoResize.o</buildTarget>
+				<stopOnError>true</stopOnError>
+				<useDefaultCommand>true</useDefaultCommand>
+				<runAllBuilders>true</runAllBuilders>
+			</target>
+			<target name="Button.o" path="" targetID="org.eclipse.cdt.build.MakeTargetBuilder">
+				<buildCommand>make</buildCommand>
+				<buildTarget>Button.o</buildTarget>
+				<stopOnError>true</stopOnError>
+				<useDefaultCommand>true</useDefaultCommand>
+				<runAllBuilders>true</runAllBuilders>
+			</target>
+			<target name="ChatWindow.o" path="" targetID="org.eclipse.cdt.build.MakeTargetBuilder">
+				<buildCommand>make</buildCommand>
+				<buildTarget>ChatWindow.o</buildTarget>
+				<stopOnError>true</stopOnError>
+				<useDefaultCommand>true</useDefaultCommand>
+				<runAllBuilders>true</runAllBuilders>
+			</target>
+			<target name="CheckBox.o" path="" targetID="org.eclipse.cdt.build.MakeTargetBuilder">
+				<buildCommand>make</buildCommand>
+				<buildTarget>CheckBox.o</buildTarget>
+				<stopOnError>true</stopOnError>
+				<useDefaultCommand>true</useDefaultCommand>
+				<runAllBuilders>true</runAllBuilders>
+			</target>
+			<target name="Clickable.o" path="" targetID="org.eclipse.cdt.build.MakeTargetBuilder">
+				<buildCommand>make</buildCommand>
+				<buildTarget>Clickable.o</buildTarget>
+				<stopOnError>true</stopOnError>
+				<useDefaultCommand>true</useDefaultCommand>
+				<runAllBuilders>true</runAllBuilders>
+			</target>
+			<target name="Cursor.o" path="" targetID="org.eclipse.cdt.build.MakeTargetBuilder">
+				<buildCommand>make</buildCommand>
+				<buildTarget>Cursor.o</buildTarget>
+				<stopOnError>true</stopOnError>
+				<useDefaultCommand>true</useDefaultCommand>
+				<runAllBuilders>true</runAllBuilders>
+			</target>
+			<target name="Dialog.o" path="" targetID="org.eclipse.cdt.build.MakeTargetBuilder">
+				<buildCommand>make</buildCommand>
+				<buildTarget>Dialog.o</buildTarget>
+				<stopOnError>true</stopOnError>
+				<useDefaultCommand>true</useDefaultCommand>
+				<runAllBuilders>true</runAllBuilders>
+			</target>
+			<target name="DropDown.o" path="" targetID="org.eclipse.cdt.build.MakeTargetBuilder">
+				<buildCommand>make</buildCommand>
+				<buildTarget>DropDown.o</buildTarget>
+				<stopOnError>true</stopOnError>
+				<useDefaultCommand>true</useDefaultCommand>
+				<runAllBuilders>true</runAllBuilders>
+			</target>
+			<target name="Editor.o" path="" targetID="org.eclipse.cdt.build.MakeTargetBuilder">
 				<buildCommand>make</buildCommand>
 				<buildArguments/>
-				<buildTarget>StatusBar.o</buildTarget>
+				<buildTarget>Editor.o</buildTarget>
+				<stopOnError>true</stopOnError>
+				<useDefaultCommand>true</useDefaultCommand>
+				<runAllBuilders>true</runAllBuilders>
+			</target>
+			<target name="GUISettings.o" path="" targetID="org.eclipse.cdt.build.MakeTargetBuilder">
+				<buildCommand>make</buildCommand>
+				<buildTarget>GUISettings.o</buildTarget>
+				<stopOnError>true</stopOnError>
+				<useDefaultCommand>true</useDefaultCommand>
+				<runAllBuilders>true</runAllBuilders>
+			</target>
+			<target name="InfoWindow.o" path="" targetID="org.eclipse.cdt.build.MakeTargetBuilder">
+				<buildCommand>make</buildCommand>
+				<buildTarget>InfoWindow.o</buildTarget>
+				<stopOnError>true</stopOnError>
+				<useDefaultCommand>true</useDefaultCommand>
+				<runAllBuilders>true</runAllBuilders>
+			</target>
+			<target name="InputBox.o" path="" targetID="org.eclipse.cdt.build.MakeTargetBuilder">
+				<buildCommand>make</buildCommand>
+				<buildArguments/>
+				<buildTarget>InputBox.o</buildTarget>
+				<stopOnError>true</stopOnError>
+				<useDefaultCommand>true</useDefaultCommand>
+				<runAllBuilders>true</runAllBuilders>
+			</target>
+			<target name="RenderFile.o" path="" targetID="org.eclipse.cdt.build.MakeTargetBuilder">
+				<buildCommand>make</buildCommand>
+				<buildTarget>RenderFile.o</buildTarget>
 				<stopOnError>true</stopOnError>
 				<useDefaultCommand>true</useDefaultCommand>
 				<runAllBuilders>true</runAllBuilders>
 			</target>
 			<target name="ScrollBar.o" path="" targetID="org.eclipse.cdt.build.MakeTargetBuilder">
 				<buildCommand>make</buildCommand>
+				<buildArguments/>
 				<buildTarget>ScrollBar.o</buildTarget>
-				<stopOnError>true</stopOnError>
-				<useDefaultCommand>true</useDefaultCommand>
-				<runAllBuilders>true</runAllBuilders>
-			</target>
-			<target name="MenuSelect.o" path="" targetID="org.eclipse.cdt.build.MakeTargetBuilder">
-				<buildCommand>make</buildCommand>
-				<buildTarget>MenuSelect.o</buildTarget>
 				<stopOnError>true</stopOnError>
 				<useDefaultCommand>true</useDefaultCommand>
 				<runAllBuilders>true</runAllBuilders>
@@ -393,39 +437,34 @@
 				<useDefaultCommand>true</useDefaultCommand>
 				<runAllBuilders>true</runAllBuilders>
 			</target>
-			<target name="Editor.o" path="" targetID="org.eclipse.cdt.build.MakeTargetBuilder">
-				<buildCommand>make</buildCommand>
-				<buildTarget>Editor.o</buildTarget>
-				<stopOnError>true</stopOnError>
-				<useDefaultCommand>true</useDefaultCommand>
-				<runAllBuilders>true</runAllBuilders>
-			</target>
-			<target name="ChatWindow.o" path="" targetID="org.eclipse.cdt.build.MakeTargetBuilder">
-				<buildCommand>make</buildCommand>
-				<buildTarget>ChatWindow.o</buildTarget>
-				<stopOnError>true</stopOnError>
-				<useDefaultCommand>true</useDefaultCommand>
-				<runAllBuilders>true</runAllBuilders>
-			</target>
-			<target name="Clickable.o" path="" targetID="org.eclipse.cdt.build.MakeTargetBuilder">
+			<target name="StatusBar.o" path="" targetID="org.eclipse.cdt.build.MakeTargetBuilder">
 				<buildCommand>make</buildCommand>
 				<buildArguments/>
-				<buildTarget>Clickable.o</buildTarget>
+				<buildTarget>StatusBar.o</buildTarget>
+				<stopOnError>true</stopOnError>
+				<useDefaultCommand>true</useDefaultCommand>
+				<runAllBuilders>true</runAllBuilders>
+			</target>
+			<target name="Tab.o" path="" targetID="org.eclipse.cdt.build.MakeTargetBuilder">
+				<buildCommand>make</buildCommand>
+				<buildArguments/>
+				<buildTarget>Tab.o</buildTarget>
 				<stopOnError>true</stopOnError>
 				<useDefaultCommand>true</useDefaultCommand>
 				<runAllBuilders>true</runAllBuilders>
 			</target>
 			<target name="TaperRectangleShape.o" path="" targetID="org.eclipse.cdt.build.MakeTargetBuilder">
 				<buildCommand>make</buildCommand>
+				<buildArguments/>
 				<buildTarget>TaperRectangleShape.o</buildTarget>
 				<stopOnError>true</stopOnError>
 				<useDefaultCommand>true</useDefaultCommand>
 				<runAllBuilders>true</runAllBuilders>
 			</target>
-			<target name="AutoResize.o" path="" targetID="org.eclipse.cdt.build.MakeTargetBuilder">
+			<target name="Toolbar.o" path="" targetID="org.eclipse.cdt.build.MakeTargetBuilder">
 				<buildCommand>make</buildCommand>
 				<buildArguments/>
-				<buildTarget>AutoResize.o</buildTarget>
+				<buildTarget>Toolbar.o</buildTarget>
 				<stopOnError>true</stopOnError>
 				<useDefaultCommand>true</useDefaultCommand>
 				<runAllBuilders>true</runAllBuilders>

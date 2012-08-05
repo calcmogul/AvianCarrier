@@ -1,5 +1,5 @@
 //=============================================================================
-//File Name: Toolbar.cpp
+//File Name: ToolBar.cpp
 //Description: Holds definitions of Toolbar GUI class
 //Author: Tyler Veness
 //=============================================================================
@@ -7,7 +7,7 @@
 #include <SFML/Graphics/RenderTarget.hpp>
 #include "Toolbar.h"
 
-Toolbar::Toolbar( float x , float y , float width , float height , std::vector<DropDown*> bar ) : Clickable( sf::Vector2f( width , height ) ) , backgroundEdge( sf::Vector2f( width , height ) ) , tools( bar ) {
+ToolBar::ToolBar( float x , float y , float width , float height , std::vector<DropDown*> bar ) : Clickable( sf::Vector2f( width , height ) ) , backgroundEdge( sf::Vector2f( width , height ) ) , tools( bar ) {
 	yPos = y;
 
 	backgroundEdge.setPosition( x , y );
@@ -20,7 +20,7 @@ Toolbar::Toolbar( float x , float y , float width , float height , std::vector<D
 	setOutlineColor( sf::Color( 30 , 30 , 30 ) );
 }
 
-void Toolbar::draw( sf::RenderTarget& target , sf::RenderStates states ) const {
+void ToolBar::draw( sf::RenderTarget& target , sf::RenderStates states ) const {
 	target.draw( backgroundEdge , states );
 	target.draw( static_cast<sf::RectangleShape>(*this) , states );
 
@@ -34,12 +34,12 @@ void Toolbar::draw( sf::RenderTarget& target , sf::RenderStates states ) const {
 	}
 }
 
-void Toolbar::setVisible( bool visible ) {
+void ToolBar::setVisible( bool visible ) {
 	for ( unsigned int index = 0 ; index < tools.size() ; index++ )
 		tools[index]->menu[0]->setVisible( visible );
 }
 
-void Toolbar::updateSize( sf::Window& target ) {
+void ToolBar::updateSize( sf::Window& target ) {
 	backgroundEdge.setSize( sf::Vector2f( target.getSize().x , 24 ) );
 	setSize( sf::Vector2f( target.getSize().x , 24 ) );
 }
