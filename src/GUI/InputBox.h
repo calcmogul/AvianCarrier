@@ -11,8 +11,8 @@
 
 #include <SFML/Graphics/RenderTarget.hpp>
 #include <SFML/Graphics/Text.hpp>
-#include "../MenuSelect.h"
-#include "../TextReceiver.h"
+#include "MenuSelect.h"
+#include "TextReceiver.h"
 
 class InputBox : public TextReceiver {
 private:

@@ -9,7 +9,7 @@
 
 #include <SFML/Graphics/Text.hpp>
 #include <SFML/Window/Keyboard.hpp>
-#include "../MenuSelect.h"
+#include "MenuSelect.h"
 #include "Clickable.h"
 
 class Button : public Clickable {

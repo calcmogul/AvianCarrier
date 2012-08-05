@@ -8,7 +8,7 @@
 #define TEXT_RECEIVER_H_
 
 #include <vector>
-#include "GUI/Clickable.h"
+#include "Clickable.h"
 
 class TextReceiver : public Clickable {
 protected:
