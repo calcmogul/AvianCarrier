@@ -1,0 +1,5 @@
+syntax: glob
+**.txt
+**.log
+**.o
+**.exe
