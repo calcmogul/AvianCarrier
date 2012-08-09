@@ -680,6 +680,8 @@ void openFile() {
 
 	std::vector<sf::Text>* fileList = getTextList( searchDir ); // gets list of files in directory and prepares them for drawing
 
+	// TODO ask for file list from server
+
 	int selection = 0;
 	int lastSelection = 0;
 
