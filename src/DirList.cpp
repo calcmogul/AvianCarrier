@@ -5,7 +5,11 @@
 //=============================================================================
 
 #include "DirList.h"
+#ifdef __WIN32__ || defined(_WIN32) || defined(__MINGW32__)
+#include "dirent.h"
+#else
 #include <dirent.h>
+#endif
 
 FileList* dirList( const char* path ) {
 	DIR* directory;
