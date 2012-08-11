@@ -10,6 +10,9 @@
 //TODO: Save Dialog
 //TODO: Ability to tab through buttons (button outline will be blue)
 
+//FIXME: Adjust restore feature so that it will open files on server upon restart
+//FIXME: Files won't save locally unless all of its parent directories already exist
+
 #include <iostream>//FIXME
 
 #define _WIN32_WINNT 0x0501
@@ -96,7 +99,7 @@ void syncServer() {
 }
 
 Button file( "File" , "" , "" , -1 , 30 , []{} );
-Button newFile( "New" , "Ctrl + N" , "Control N" , -1 , 40 , []{ Tab::newTab( sf::IpAddress( 127 , 0 , 0 , 1 ) , 50001 ); } );
+Button newFile( "New" , "Ctrl + N" , "Control N" , -1 , 40 , []{ Tab::newTab( sf::IpAddress( 127 , 0 , 0 , 1 ) , File::serverSync ); } );
 Button open( "Open" , "Ctrl + O" , "Control O" , -1 , 40 , []{ openThread.launch(); } );
 Button save( "Save Local" , "Ctrl + S" , "Control S" , -1 , 40 , []{ Tab::current->saveLocal(); } , false );
 Button exitButton( "Exit" , " " , "" , -1 , 40 , []{ closeProgram(); } );
@@ -580,14 +583,92 @@ std::string changeExtension( std::string file , std::string extension ) {
 	return file.substr( 0 , file.rfind( "." ) ) + "." + extension;
 }
 
-void selectFileIMG( sf::Sprite& spriteOut , std::string name ) {
+void closeProgram() {
+	Tab::tabMutex.unlock();
+	CLOSE_THREADS = true;
+
+	mainWin.close();
+}
+
+std::vector<sf::Text>* getTextList( std::vector<std::string>* fileList ) {
+	std::vector<sf::Text>* textList = new std::vector<sf::Text>;
+
+	if ( fileList != NULL ) {
+		for ( unsigned int index = 0 ; index < fileList->size() ; index++ ) {
+			textList->push_back( sf::Text( (*fileList)[index] , Base::segoeUI , 12 ) );
+
+			(*textList)[textList->size() - 1].setPosition( sf::Vector2f( 18 , 18.f * (textList->size() - 1) + 1 ) );
+			(*textList)[textList->size() - 1].setColor( sf::Color( 0 , 0 , 0 ) );
+		}
+
+		return textList;
+	}
+	else
+		return NULL;
+}
+
+std::vector<sf::Text>* getLocalTextList( std::string path ) {
+	return getTextList( getList( path ) ); // gets list of files in directory and prepares them for drawing
+}
+
+std::vector<std::string>* getServerList( std::string path , int& serverErrno ) {
+	sf::Packet fileNames;
+
+	fileNames << "dirList" << path; // add data to packet
+	if ( File::openSocket.send( fileNames , "127.0.0.1" , File::serverOpen ) == sf::Socket::Done ) {
+		std::cout << "sent dirList\n";
+		sf::IpAddress returnIP;
+		unsigned short returnPort;
+		sf::Socket::Status temp = File::openSocket.receive( fileNames , returnIP , returnPort );
+		std::cout << "received dirList\n";
+		if ( temp == sf::Socket::Done ) {
+			std::string command;
+			fileNames >> command;
+			std::cout << "received data\n";
+
+			if ( command == "dirList" ) {
+				std::cout << "making list\n";
+				std::string name;
+				std::vector<std::string>* tempList = new std::vector<std::string>;
+
+				while ( !fileNames.endOfPacket() ) {
+					fileNames >> name;
+					tempList->push_back( name );
+				}
+
+				serverErrno = 0; // success
+				return tempList;
+			}
+		}
+		else
+			serverErrno = 1; // receive failed, most likely from disconnect
+	}
+
+	return NULL;
+}
+
+std::vector<sf::Text>* getServerTextList( std::string path , int& serverErrno ) {
+	return getTextList( getServerList( path , serverErrno ) );
+}
+
+void selectFileIMG( sf::Sprite& spriteOut , std::string name , bool onServer = false ) {
 	std::string extension = getExtension( name );
 
 	if ( extension == "" ) {
-		if ( getList( searchDir + "/" + name ) != NULL )
-			spriteOut.setTexture( Base::fileImages[fileIMG::folder] );
-		else
-			spriteOut.setTexture( Base::fileImages[fileIMG::unknownFile] );
+		int errNo = 0;
+
+		if ( onServer ) {
+			if ( getServerList( searchDir + "/" + name , errNo ) != NULL )
+				spriteOut.setTexture( Base::fileImages[fileIMG::folder] );
+			else
+				spriteOut.setTexture( Base::fileImages[fileIMG::unknownFile] );
+		}
+		else {
+			if ( getServerList( searchDir + "/" + name , errNo ) != NULL )
+				spriteOut.setTexture( Base::fileImages[fileIMG::folder] );
+			else
+				spriteOut.setTexture( Base::fileImages[fileIMG::unknownFile] );
+		}
 	}
 
 	else if ( extension == "c" )
@@ -608,28 +689,10 @@ void selectFileIMG( sf::Sprite& spriteOut , std::string name ) {
 		spriteOut.setTexture( Base::fileImages[fileIMG::unknownFile] );
 }
 
-std::vector<sf::Text>* getTextList( std::string path ) {
-	std::vector<std::string>* fileListTemp = getList( path ); // gets list of files in directory and prepares them for drawing
-	std::vector<sf::Text>* fileList = new std::vector<sf::Text>;
-	for ( unsigned int index = 0 ; index < fileListTemp->size() ; index++ ) {
-		fileList->push_back( sf::Text( (*fileListTemp)[index] , Base::segoeUI , 12 ) );
-
-		(*fileList)[fileList->size() - 1].setPosition( sf::Vector2f( 18 , 18.f * (fileList->size() - 1) + 1 ) );
-		(*fileList)[fileList->size() - 1].setColor( sf::Color( 0 , 0 , 0 ) );
-	}
-
-	return fileList;
-}
-
-void closeProgram() {
-	Tab::tabMutex.unlock();
-	CLOSE_THREADS = true;
-
-	mainWin.close();
-}
-
 // FIXME win32 openFile uses child window
 void openFile() {
+	File::bindSockets();
+
 	HWND openHWND = CreateWindow( mainClassName , "Browse For File" , WS_SYSMENU | WS_VISIBLE , mainWin.getPosition().x + ( mainWin.getSize().x - 322 ) / 2 , mainWin.getPosition().y + ( mainWin.getSize().y - 332 ) / 2 , 322 , 332 , mainWin.getSystemHandle() , NULL , globalInstance , NULL );
 
 	sf::RenderWindow openBox( openHWND );
@@ -678,9 +741,10 @@ void openFile() {
 
 	sf::Sprite imageSprite;
 
-	std::vector<sf::Text>* fileList = getTextList( searchDir ); // gets list of files in directory and prepares them for drawing
+	std::vector<sf::Text>* fileList;
 
-	// TODO ask for file list from server
+	int serverErrno = 0;
+	fileList = getTextList( getServerList( searchDir , serverErrno ) );
 
 	int selection = 0;
 	int lastSelection = 0;
@@ -723,7 +787,7 @@ void openFile() {
 				for ( unsigned int index = 0 ; index < fileList->size() ; index++ ) {
 					imageSprite.setPosition( sf::Vector2f( 1 , ( hilight.getSize().y + 2 ) * index + 1 ) );
 
-					selectFileIMG( imageSprite , (*fileList)[index].getString() );
+					selectFileIMG( imageSprite , (*fileList)[index].getString() , true );
 					openView.draw( imageSprite );
 
 					if ( sf::Mouse::getPosition( openView ).y > (*fileList)[index].getPosition().y - 3 && sf::Mouse::getPosition( openView ).y < (*fileList)[index].getPosition().y + hilight.getSize().y ) {
@@ -755,10 +819,17 @@ void openFile() {
 							if ( clickCount == 2 ) {
 								std::string temp = searchDir + "/" + (*fileList)[selection].getString();
 
-								if ( getExtension( (*fileList)[selection].getString() ) == "" && getList( temp ) != NULL ) {
-									delete fileList;
+								std::vector<std::string>* tempServerList = getServerList( temp , serverErrno );
+								if ( getExtension( (*fileList)[selection].getString() ) == "" && tempServerList != NULL ) {
+									std::cout << "extof(" << std::string((*fileList)[selection].getString()) << ") && " << tempServerList << "\n";//FIXME
+									delete fileList; // clean up fileList so it can store new data
 									searchDir = temp; // update search directory to within folder
-									fileList = getTextList( temp ); // gets list of files in directory and prepares them for drawing
+									fileList = getTextList( tempServerList ); // gets list of files in directory and prepares them for drawing
+
+									// clean up tempServerList before it goes out of scope
+									delete tempServerList;
+									tempServerList = NULL;
+
 									break; // exits for loop so entire vector redraws from beginning
 
 									if ( fileList->size() == 0 )
@@ -766,12 +837,14 @@ void openFile() {
 									else
 										selection = 0;
 								}
-								else {
+								else if ( serverErrno == 0 ) { // if server returned empty list for child directory and connection isn't down (also causes empty directory)
 									searchDir = searchDir.substr( 9/* length of "Documents" */ ); //eliminates "Documents" from beginning of file directory because all files are there anyway
 
 									if ( searchDir.substr( 0 , 1 ) == "/" )
 										searchDir = searchDir.substr( 1 );
-									Tab::newTab( sf::IpAddress( 127 , 0 , 0 , 1 ) , 50001 , searchDir + "/" + (*fileList)[selection].getString() );
+
+									searchDir = "server:" + searchDir;
+									Tab::newTab( sf::IpAddress( 127 , 0 , 0 , 1 ) , File::serverSync , searchDir + "/" + (*fileList)[selection].getString() );
 									openBox.close();
 								}
 
@@ -832,24 +905,29 @@ void openFile() {
 				if ( selection >= 0 ) {
 					std::string temp = searchDir + "/" + (*fileList)[selection].getString();
 
-					if ( getExtension( (*fileList)[selection].getString() ) == "" && getList( temp ) != NULL ) {
-						delete fileList;
+					std::vector<std::string>* tempServerList = getServerList( temp , serverErrno );
+					if ( getExtension( (*fileList)[selection].getString() ) == "" && tempServerList != NULL ) {
+						delete fileList; // clean up fileList so it can store new data
 						searchDir = temp; // update search directory with extra folder
-						fileList = getTextList( temp ); // gets list of files in directory and prepares them for drawing
+						fileList = getTextList( tempServerList ); // gets list of files in directory and prepares them for drawing
 
 						if ( fileList->size() == 0 )
 							selection = -1;
 						else
 							selection = 0;
 					}
-					else {
+					else if ( serverErrno == 0 ) { // if server returned empty list for child directory and connection isn't down (also causes empty directory)
 						searchDir = searchDir.substr( 9/* length of "Documents" */ ); //eliminates "Documents" from beginning of file directory because all files are there anyway
 
 						if ( searchDir.substr( 0 , 1 ) == "/" )
 							searchDir = searchDir.substr( 1 );
-						Tab::newTab( sf::IpAddress( 127 , 0 , 0 , 1 ) , 50001 , searchDir + "/" + (*fileList)[selection].getString() );
+
+						searchDir = "server:" + searchDir;
+						Tab::newTab( sf::IpAddress( 127 , 0 , 0 , 1 ) , File::serverSync , searchDir + "/" + (*fileList)[selection].getString() );
 						openBox.close();
 					}
+
+					delete tempServerList; // clean up tempServerList before it goes out of scope
 				}
 			}
 
@@ -858,9 +936,12 @@ void openFile() {
 
 			if ( newEvent && ( (prevDir.isHovered( openBox ) && mouseButtonReleased( event , sf::Mouse::Left )) || keyReleased( event , sf::Keyboard::BackSpace ) ) ) {
 				if ( searchDir != "Documents" ) {
-					delete fileList;
+					delete fileList; // clean up fileList so it can store new data
 					searchDir = searchDir = searchDir.substr( 0 , searchDir.rfind( "/" ) ); // update search directory to parent folder
-					fileList = getTextList( searchDir ); // gets list of files in directory and prepares them for drawing
+					std::vector<std::string>* tempServerList = getServerList( searchDir , serverErrno );
+					fileList = getTextList( tempServerList ); // gets list of files in directory and prepares them for drawing
+
+					delete tempServerList; // clean up tempServerList before it goes out of scope
 
 					selection = 0;
 				}
@@ -871,8 +952,16 @@ void openFile() {
 					openBox.close();
 			}
 
-			keySelect.setSize( fileList->size() );
-			arrowSelect.setSize( fileList->size() );
+			if ( fileList == NULL ) { // if couldn't retrieve a file list from the server
+				sf::Text serverError( sf::String( "<Cannot connect to server>" ) , Base::segoeUI , 12 );
+				serverError.setPosition( sf::Vector2f( 18.f , 1.f ) );
+				serverError.setColor( sf::Color( 0 , 0 , 0 ) );
+				openView.draw( serverError );
+			}
+			else {
+				keySelect.setSize( fileList->size() );
+				arrowSelect.setSize( fileList->size() );
+			}
 
 			keySelect.setSelection( selection );
 			arrowSelect.setSelection( selection );

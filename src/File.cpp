@@ -6,6 +6,10 @@
 
 #include "File.h"
 
+sf::UdpSocket File::syncSocket;
+sf::UdpSocket File::openSocket;
+bool File::areSocketsBound = false;
+
 File::File( sf::IpAddress address , unsigned short port , std::string path ) : serverIP( address ) , serverPort( port ) {
 	fullPath = path;
 
@@ -14,10 +18,24 @@ File::File( sf::IpAddress address , unsigned short port , std::string path ) : s
 	else
 		fileName = path;
 
-	if ( fileName != "" && fileName != "Untitled" )
-		loadFromFile( fullPath );
-	else
-		input.push_back( "" );
+	if ( fullPath.substr( 0 , 7 ) == "server:" ) {
+		if ( bindSockets() == sf::Socket::Done ) {
+			sf::Packet retrievePacket;
+			retrievePacket << "openFile" << fullPath.substr( 7 );
+
+			openSocket.send( retrievePacket , address , serverOpen );
+
+			retrievePacket.clear();
+			if ( openSocket.receive( retrievePacket , address , port ) == sf::Socket::Done )
+				retrievePacket >> *this;
+		}
+	}
+	else {
+		if ( fileName != "" && fileName != "Untitled" )
+			loadFromFile( fullPath );
+		else
+			input.push_back( "" );
+	}
 
 	cursorPos = { 0 , 0 };
 	allSelected = false;
@@ -26,7 +44,32 @@ File::File( sf::IpAddress address , unsigned short port , std::string path ) : s
 }
 
 File::~File() {
+	syncSocket.unbind();
+	openSocket.unbind();
 
+	areSocketsBound = false;
+}
+
+sf::Socket::Status File::bindSockets() {
+	if ( !areSocketsBound ) {
+#ifdef SERVER_BUILD
+		if ( syncSocket.bind( serverSync ) == sf::Socket::Done && openSocket.bind( serverOpen ) == sf::Socket::Done ) {
+			areSocketsBound = true;
+			return sf::Socket::Done;
+		}
+		else
+			return sf::Socket::NotReady;
+#else
+		if ( syncSocket.bind( clientSync ) == sf::Socket::Done && openSocket.bind( clientOpen ) == sf::Socket::Done ) {
+			areSocketsBound = true;
+			return sf::Socket::Done;
+		}
+		else
+			return sf::Socket::NotReady;
+#endif
+	}
+
+	return sf::Socket::Done;
 }
 
 unsigned int File::size() {
@@ -178,10 +221,10 @@ unsigned char File::sendToIP() {
 	fileTransport << *this;
 
 	// Set socket for communicating with the server
-	serverSocket.setBlocking( false );
+	syncSocket.setBlocking( false );
 
 	// Send a message to the server
-	if ( serverSocket.send( fileTransport , serverIP , serverPort ) != sf::Socket::Done )
+	if ( syncSocket.send( fileTransport , serverIP , serverPort ) != sf::Socket::Done )
 		return status;
 	else
 		status |= File::sent;
@@ -196,9 +239,9 @@ unsigned char File::receiveFromAny() {
 	sf::IpAddress recvIP;
 	unsigned short recvPort;
 
-	serverSocket.setBlocking( false );
+	syncSocket.setBlocking( false );
 
-	if ( serverSocket.receive( fileTransport , recvIP , recvPort ) != sf::Socket::Done )
+	if ( syncSocket.receive( fileTransport , recvIP , recvPort ) != sf::Socket::Done )
 		return status;
 	else
 		status |= File::received;

@@ -13,6 +13,7 @@
 #include <SFML/Network/Packet.hpp>
 #include "File.h"
 #include "DirList.h"
+#include <iostream> //FIXME
 
 class Client {
 private:
@@ -34,6 +35,7 @@ public:
 };
 
 int main() {
+#if 0
 	// Create a socket to listen to new connections
 	sf::TcpListener listener;
 	listener.listen( 50001 );
@@ -80,19 +82,18 @@ int main() {
 	}
 
 	// ====================================================
-
-	sf::UdpSocket syncSocket; // handles file syncing with clients
-	syncSocket.bind( 50001 );
-
-	sf::UdpSocket openSocket; // handles sending file list to clients
-	openSocket.bind( 50002 );
+#endif
 
 	sf::IpAddress senderIP;
 	unsigned short senderPort;
 	sf::Packet packet;
 
+	File::bindSockets();
+	File::syncSocket.setBlocking( false );
+	File::openSocket.setBlocking( false );
+
 	while ( 1 ) {
-		if ( syncSocket.receive( packet , senderIP , senderPort ) == sf::Socket::Done ) {
+		if ( File::syncSocket.receive( packet , senderIP , senderPort ) == sf::Socket::Done ) {
 			File temp( senderIP , senderPort );
 			packet >> temp;
 
@@ -102,11 +103,43 @@ int main() {
 
 			packet << temp;
 
-			syncSocket.send( packet , senderIP , senderPort );
+			File::syncSocket.send( packet , senderIP , senderPort );
 		}
 
-		if ( openSocket.receive( packet , senderIP , senderPort ) == sf::Socket::Done ) {
+		if ( File::openSocket.receive( packet , senderIP , senderPort ) == sf::Socket::Done ) {
+			std::string command;
+			packet >> command;
 
+			if ( command == "dirList" ) {
+				std::string searchDirectory;
+				packet >> searchDirectory;
+				std::cout << "dirList: " << searchDirectory << "\n";
+
+				std::vector<std::string>* tempList = getList( searchDirectory );
+
+				packet.clear();
+				packet << "dirList";
+				if ( tempList != NULL ) { // may be NULL if the user sent a filename to list instead of a directory
+					for ( unsigned int index = 0 ; index < tempList->size() ; index++ ) {
+						packet << (*tempList)[index];
+					}
+				}
+
+				File::openSocket.send( packet , senderIP , senderPort );
+			}
+
+			if ( command == "openFile" ) {
+				std::string fileName;
+				packet >> fileName;
+				std::cout << "openFile: " << fileName << "\n";
+
+				File fileToSend( senderIP , senderPort );
+				fileToSend.loadFromFile( fileName );
+
+				packet.clear();
+				packet << fileToSend;
+				File::openSocket.send( packet , senderIP , senderPort );
+			}
 		}
 	}
 

@@ -24,10 +24,23 @@ struct Edit {
 };
 
 class File {
+private:
+	static bool areSocketsBound;
+
 protected:
 	//std::vector<std::string> input;
 
 public:
+	static sf::UdpSocket syncSocket; // handles file syncing with others
+	static sf::UdpSocket openSocket; // handles sending and receiving file list between client and server
+
+	enum socketLabel {
+		clientSync = 50001,
+		clientOpen = 50002,
+		serverSync = 50003,
+		serverOpen = 50004
+	};
+
 	enum netStatus {
 		fail,
 		sent,
@@ -48,13 +61,14 @@ public:
 	int bracketMatch;
 	unsigned int tabSpaceCount;
 
-	sf::UdpSocket serverSocket;
 	sf::Packet fileTransport;
 	sf::IpAddress serverIP;
 	unsigned short serverPort;
 
 	explicit File( sf::IpAddress address , unsigned short port , std::string path = "" );
 	virtual ~File();
+
+	static sf::Socket::Status bindSockets();
 
 	template <typename T>
 	void insert( T newchar );

@@ -13,7 +13,7 @@ BEGIN
       VALUE "InternalName", "AvianServer"
       VALUE "LegalCopyright", "None"
       VALUE "OriginalFilename", "AvianServer.exe"
-      VALUE "ProductName", "AvianCarrier"
+      VALUE "ProductName", "AvianServer"
       VALUE "ProductVersion", "0.1"
     END
   END
