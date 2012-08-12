@@ -10,7 +10,7 @@ sf::UdpSocket File::syncSocket;
 sf::UdpSocket File::openSocket;
 bool File::areSocketsBound = false;
 
-File::File( sf::IpAddress address , unsigned short port , std::string path ) : serverIP( address ) , serverPort( port ) {
+File::File( sf::IpAddress address , std::string path ) : serverIP( address ) {
 	fullPath = path;
 
 	if ( path.rfind( "/" ) < path.length() )
@@ -24,10 +24,17 @@ File::File( sf::IpAddress address , unsigned short port , std::string path ) : s
 			retrievePacket << "openFile" << fullPath.substr( 7 );
 
 			openSocket.send( retrievePacket , address , serverOpen );
+			std::cout << "sent openFile packet\n";
 
 			retrievePacket.clear();
-			if ( openSocket.receive( retrievePacket , address , port ) == sf::Socket::Done )
-				retrievePacket >> *this;
+			unsigned short port;
+			if ( openSocket.receive( retrievePacket , address , port ) == sf::Socket::Done ) {
+				std::cout << "received openFile packet\n";
+				std::string command;
+				retrievePacket >> command;
+				if ( command == "openFile" )
+					retrievePacket >> *this;
+			}
 		}
 	}
 	else {
@@ -44,10 +51,7 @@ File::File( sf::IpAddress address , unsigned short port , std::string path ) : s
 }
 
 File::~File() {
-	syncSocket.unbind();
-	openSocket.unbind();
 
-	areSocketsBound = false;
 }
 
 sf::Socket::Status File::bindSockets() {
@@ -70,6 +74,15 @@ sf::Socket::Status File::bindSockets() {
 	}
 
 	return sf::Socket::Done;
+}
+
+void File::unbindSockets() {
+	if ( areSocketsBound ) {
+		syncSocket.unbind();
+		openSocket.unbind();
+
+		areSocketsBound = false;
+	}
 }
 
 unsigned int File::size() {
@@ -169,7 +182,13 @@ void File::addTabSpace() {
 }
 
 bool File::save( std::string fileName ) {
-	std::ofstream localFile( fileName );
+	std::string tempPath;
+	if ( fullPath.substr( 0 , 7 ) == "server:" )
+		tempPath = fullPath.substr( 7 );
+	else
+		tempPath = fullPath;
+
+	std::ofstream localFile( "Documents/" + fullPath );
 
 	if ( localFile.is_open() ) {
 		for ( unsigned int index = 0 ; index < size() ; index++ ) {
@@ -181,8 +200,10 @@ bool File::save( std::string fileName ) {
 
 		localFile.close();
 	}
-	else
+	else {
+		std::cout << "Failed to save file to local directory: Documents/" << tempPath << "\n";
 		return false;
+	}
 
 	return true;
 }
@@ -224,7 +245,7 @@ unsigned char File::sendToIP() {
 	syncSocket.setBlocking( false );
 
 	// Send a message to the server
-	if ( syncSocket.send( fileTransport , serverIP , serverPort ) != sf::Socket::Done )
+	if ( syncSocket.send( fileTransport , serverIP , serverSync ) != sf::Socket::Done )
 		return status;
 	else
 		status |= File::sent;

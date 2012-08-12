@@ -7,6 +7,7 @@
 #include "SplashScreen.h"
 #include "../Base.h"
 #include <SFML/Window/Mouse.hpp>
+#include <SFML/System/Sleep.hpp>
 
 namespace sf {
 
@@ -55,9 +56,18 @@ void SplashScreen::drawAll() {
 }
 
 void SplashScreen::waitForExitClick() {
+	sf::Event event;
+
 	while ( isOpen() ) {
-		if ( sf::Mouse::isButtonPressed( sf::Mouse::Left ) )
-			close();
+		while ( pollEvent( event ) ) {
+			if ( event.type == sf::Event::Closed )
+				close();
+
+			if ( event.type == sf::Event::MouseButtonReleased && event.mouseButton.button == sf::Mouse::Button::Left )
+					close();
+		}
+
+		sf::sleep( sf::milliseconds( 10 ) );
 	}
 }
 

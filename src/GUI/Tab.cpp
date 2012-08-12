@@ -18,8 +18,8 @@ TaperRectangleShape Tab::tabBase( sf::Vector2f() , std::vector<sf::Color>({ sf::
 bool Tab::baseInit = false;
 unsigned int Tab::tabIndex = 0;
 
-Tab::Tab( sf::IpAddress address , unsigned short port , std::string fileName ) : Button( fileName.substr( fileName.rfind( "/" ) + 1 ) , "" , "" , BUTTON_SPACING / 2 , 15 , []{} ) , title( fileName , Base::segoeUI , 12 ) , closeX( "x" , Base::segoeUI , 13 ) {
-	file = new RenderFile( address , port , fileName );
+Tab::Tab( sf::IpAddress address , std::string fileName ) : Button( fileName.substr( fileName.rfind( "/" ) + 1 ) , "" , "" , BUTTON_SPACING / 2 , 15 , []{} ) , title( fileName , Base::segoeUI , 12 ) , closeX( "x" , Base::segoeUI , 13 ) {
+	file = new RenderFile( address , fileName );
 	closeX.setColor( sf::Color( 30 , 30 , 30 ) );
 
 	setSize( sf::Vector2f( getSize().x + BUTTON_SPACING / 2 + 7 , getSize().y - 1 ) );
@@ -57,10 +57,10 @@ void Tab::updateSize( sf::Window& referTo ) {
 	tabBase.setSize( sf::Vector2f( referTo.getSize().x , Tab::tabBase.getSize().y ) );
 }
 
-void Tab::newTab( sf::IpAddress address , unsigned short port , std::string fileName ) {
+void Tab::newTab( sf::IpAddress address , std::string fileName ) {
 	tabMutex.lock();
 
-	tabsOpen.push_back( new Tab( address , port , fileName ) );
+	tabsOpen.push_back( new Tab( address , fileName ) );
 	current = tabsOpen.at( tabsOpen.size() - 1 );
 	current->setVisible( true );
 

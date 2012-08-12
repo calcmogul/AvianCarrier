@@ -89,59 +89,67 @@ int main() {
 	sf::Packet packet;
 
 	File::bindSockets();
-	File::syncSocket.setBlocking( false );
-	File::openSocket.setBlocking( false );
+
+	sf::SocketSelector commandSockets;
+	commandSockets.add( File::syncSocket );
+	commandSockets.add( File::openSocket );
 
 	while ( 1 ) {
-		if ( File::syncSocket.receive( packet , senderIP , senderPort ) == sf::Socket::Done ) {
-			File temp( senderIP , senderPort );
-			packet >> temp;
+		if ( commandSockets.wait( sf::milliseconds( 1000 ) ) ) {
+			if ( commandSockets.isReady( File::syncSocket ) ) {
+				File::syncSocket.receive( packet , senderIP , senderPort );
+				File temp( senderIP );
+				packet >> temp;
 
-			temp.clear();
-			packet.clear();
-			temp.insert( "The server says hello!" );
-
-			packet << temp;
-
-			File::syncSocket.send( packet , senderIP , senderPort );
-		}
-
-		if ( File::openSocket.receive( packet , senderIP , senderPort ) == sf::Socket::Done ) {
-			std::string command;
-			packet >> command;
-
-			if ( command == "dirList" ) {
-				std::string searchDirectory;
-				packet >> searchDirectory;
-				std::cout << "dirList: " << searchDirectory << "\n";
-
-				std::vector<std::string>* tempList = getList( searchDirectory );
-
+				temp.clear();
 				packet.clear();
-				packet << "dirList";
-				if ( tempList != NULL ) { // may be NULL if the user sent a filename to list instead of a directory
-					for ( unsigned int index = 0 ; index < tempList->size() ; index++ ) {
-						packet << (*tempList)[index];
-					}
-				}
+				temp.insert( "The server says hello!" );
 
-				File::openSocket.send( packet , senderIP , senderPort );
+				packet << temp;
+
+				File::syncSocket.send( packet , senderIP , senderPort );
 			}
 
-			if ( command == "openFile" ) {
-				std::string fileName;
-				packet >> fileName;
-				std::cout << "openFile: " << fileName << "\n";
+			if ( commandSockets.isReady( File::openSocket ) ) {
+				File::openSocket.receive( packet , senderIP , senderPort );
+				std::string command;
+				packet >> command;
 
-				File fileToSend( senderIP , senderPort );
-				fileToSend.loadFromFile( fileName );
+				if ( command == "dirList" ) {
+					std::string searchDirectory;
+					packet >> searchDirectory;
+					std::cout << "dirList  @ " << senderIP << " : " << searchDirectory << "\n";
 
-				packet.clear();
-				packet << fileToSend;
-				File::openSocket.send( packet , senderIP , senderPort );
+					std::vector<std::string>* tempList = getList( searchDirectory );
+
+					packet.clear();
+					packet << "dirList";
+					if ( tempList != NULL ) { // may be NULL if the user sent a filename to list instead of a directory
+						for ( unsigned int index = 0 ; index < tempList->size() ; index++ ) {
+							packet << (*tempList)[index];
+						}
+					}
+
+					File::openSocket.send( packet , senderIP , senderPort );
+				}
+
+				if ( command == "openFile" ) {
+					std::string fileName;
+					packet >> fileName;
+					std::cout << "openFile @ " << senderIP << " : " << fileName << "\n";
+
+					File fileToSend( senderIP );
+					fileToSend.loadFromFile( fileName );
+
+					packet.clear();
+					packet << "openFile" << fileToSend << "\n";
+					File::openSocket.send( packet , senderIP , senderPort );
+				}
 			}
 		}
 	}
+
+	File::unbindSockets();
 
 	return 0;
 }
