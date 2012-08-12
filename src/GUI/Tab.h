@@ -32,7 +32,7 @@ private:
 	static short tabPos;
 	static bool baseInit;
 
-	Tab( sf::IpAddress address , unsigned short port , std::string fileName );
+	Tab( sf::IpAddress address , std::string fileName );
 
 	void drawTab( sf::RenderTarget& target );
 
@@ -55,7 +55,7 @@ public:
 
 	void updateSize( sf::Window& referTo );
 
-	static void newTab( sf::IpAddress address , unsigned short port , std::string fileName = "Untitled" ); // uses tabMutex; can block
+	static void newTab( sf::IpAddress address , std::string fileName = "Untitled" ); // uses tabMutex; can block
 
 	static void draw( sf::RenderTarget& target ); // uses tabMutex; can block
 

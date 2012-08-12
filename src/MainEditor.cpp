@@ -99,7 +99,7 @@ void syncServer() {
 }
 
 Button file( "File" , "" , "" , -1 , 30 , []{} );
-Button newFile( "New" , "Ctrl + N" , "Control N" , -1 , 40 , []{ Tab::newTab( sf::IpAddress( 127 , 0 , 0 , 1 ) , File::serverSync ); } );
+Button newFile( "New" , "Ctrl + N" , "Control N" , -1 , 40 , []{ Tab::newTab( sf::IpAddress( 127 , 0 , 0 , 1 ) ); } );
 Button open( "Open" , "Ctrl + O" , "Control O" , -1 , 40 , []{ openThread.launch(); } );
 Button save( "Save Local" , "Ctrl + S" , "Control S" , -1 , 40 , []{ Tab::current->saveLocal(); } , false );
 Button exitButton( "Exit" , " " , "" , -1 , 40 , []{ closeProgram(); } );
@@ -187,8 +187,9 @@ INT WINAPI WinMain( HINSTANCE Instance , HINSTANCE , LPSTR , INT ) {
 			if ( !sessionStore.eof() ) { // if number extracted for current tab isn't bogus
 				while ( !sessionStore.eof() ) { // while there are still saved tabs to open
 					std::getline( sessionStore , temp );
+
 					if ( temp != "" )
-						Tab::newTab( sf::IpAddress( 127 , 0 , 0 , 1 ) , 50001 , temp );
+						Tab::newTab( sf::IpAddress( temp.substr( temp.find( "@" ) + 1 ) ) , temp.substr( 0 , temp.find( "@" ) ) );
 				}
 
 				Tab::tabMutex.lock();
@@ -243,7 +244,7 @@ INT WINAPI WinMain( HINSTANCE Instance , HINSTANCE , LPSTR , INT ) {
 							sessionStore << index << "\n"; // store position of current tab once found
 
 							while ( Tab::tabsOpen.size() > 0 ) {
-								sessionStore << Tab::tabsOpen[0]->file->fullPath << "\n";
+								sessionStore << Tab::tabsOpen[0]->file->fullPath << "@" << Tab::tabsOpen[0]->file->serverIP << "\n";
 								Tab::tabsOpen[0]->closeTab();
 							}
 						}
@@ -496,6 +497,8 @@ INT WINAPI WinMain( HINSTANCE Instance , HINSTANCE , LPSTR , INT ) {
 		sf::sleep( sf::milliseconds( 0 ) );
 	}
 
+	File::unbindSockets();
+
 	// Clean up window
 	DestroyWindow( Window );
 	UnregisterClass( "AvianCarrier" , Instance );
@@ -590,8 +593,13 @@ void closeProgram() {
 	mainWin.close();
 }
 
-std::vector<sf::Text>* getTextList( std::vector<std::string>* fileList ) {
+void selectFileIMG( sf::Sprite& spriteOut , std::string name , bool onServer = false );
+
+std::vector<sf::Text>* getTextList( std::vector<std::string>* fileList , std::vector<sf::Sprite>& spriteList , bool onServer = false ) {
 	std::vector<sf::Text>* textList = new std::vector<sf::Text>;
+
+	while ( spriteList.size() > 0 )
+		spriteList.erase( spriteList.begin() );
 
 	if ( fileList != NULL ) {
 		for ( unsigned int index = 0 ; index < fileList->size() ; index++ ) {
@@ -599,6 +607,10 @@ std::vector<sf::Text>* getTextList( std::vector<std::string>* fileList ) {
 
 			(*textList)[textList->size() - 1].setPosition( sf::Vector2f( 18 , 18.f * (textList->size() - 1) + 1 ) );
 			(*textList)[textList->size() - 1].setColor( sf::Color( 0 , 0 , 0 ) );
+
+			spriteList.push_back( sf::Sprite() );
+			selectFileIMG( spriteList.back() , (*fileList)[index] , onServer );
+			spriteList.back().setPosition( sf::Vector2f( 1 , ( 16 /*hilight.getSize().y*/ + 2 ) * index + 1 ) );
 		}
 
 		return textList;
@@ -607,8 +619,8 @@ std::vector<sf::Text>* getTextList( std::vector<std::string>* fileList ) {
 		return NULL;
 }
 
-std::vector<sf::Text>* getLocalTextList( std::string path ) {
-	return getTextList( getList( path ) ); // gets list of files in directory and prepares them for drawing
+std::vector<sf::Text>* getLocalTextList( std::string path , std::vector<sf::Sprite>& spriteList ) {
+	return getTextList( getList( path ) , spriteList ); // gets list of files in directory and prepares them for drawing
 }
 
 std::vector<std::string>* getServerList( std::string path , int& serverErrno ) {
@@ -616,18 +628,14 @@ std::vector<std::string>* getServerList( std::string path , int& serverErrno ) {
 
 	fileNames << "dirList" << path; // add data to packet
 	if ( File::openSocket.send( fileNames , "127.0.0.1" , File::serverOpen ) == sf::Socket::Done ) {
-		std::cout << "sent dirList\n";
 		sf::IpAddress returnIP;
 		unsigned short returnPort;
 		sf::Socket::Status temp = File::openSocket.receive( fileNames , returnIP , returnPort );
-		std::cout << "received dirList\n";
 		if ( temp == sf::Socket::Done ) {
 			std::string command;
 			fileNames >> command;
-			std::cout << "received data\n";
 
 			if ( command == "dirList" ) {
-				std::cout << "making list\n";
 				std::string name;
 				std::vector<std::string>* tempList = new std::vector<std::string>;
 
@@ -647,11 +655,11 @@ std::vector<std::string>* getServerList( std::string path , int& serverErrno ) {
 	return NULL;
 }
 
-std::vector<sf::Text>* getServerTextList( std::string path , int& serverErrno ) {
-	return getTextList( getServerList( path , serverErrno ) );
+std::vector<sf::Text>* getServerTextList( std::string path , int& serverErrno , std::vector<sf::Sprite>& spriteList ) {
+	return getTextList( getServerList( path , serverErrno ) , spriteList , true );
 }
 
-void selectFileIMG( sf::Sprite& spriteOut , std::string name , bool onServer = false ) {
+void selectFileIMG( sf::Sprite& spriteOut , std::string name , bool onServer ) {
 	std::string extension = getExtension( name );
 
 	if ( extension == "" ) {
@@ -664,7 +672,7 @@ void selectFileIMG( sf::Sprite& spriteOut , std::string name , bool onServer = f
 				spriteOut.setTexture( Base::fileImages[fileIMG::unknownFile] );
 		}
 		else {
-			if ( getServerList( searchDir + "/" + name , errNo ) != NULL )
+			if ( getList( searchDir + "/" + name ) != NULL )
 				spriteOut.setTexture( Base::fileImages[fileIMG::folder] );
 			else
 				spriteOut.setTexture( Base::fileImages[fileIMG::unknownFile] );
@@ -739,12 +747,11 @@ void openFile() {
 	sf::Event event;
 	bool newEvent;
 
-	sf::Sprite imageSprite;
-
 	std::vector<sf::Text>* fileList;
+	std::vector<sf::Sprite> spriteList;
 
 	int serverErrno = 0;
-	fileList = getTextList( getServerList( searchDir , serverErrno ) );
+	fileList = getTextList( getServerList( searchDir , serverErrno ) , spriteList , true );
 
 	int selection = 0;
 	int lastSelection = 0;
@@ -785,10 +792,7 @@ void openFile() {
 			// draw contents of view
 			if ( fileList != NULL ) { // don't draw anything if there is no list
 				for ( unsigned int index = 0 ; index < fileList->size() ; index++ ) {
-					imageSprite.setPosition( sf::Vector2f( 1 , ( hilight.getSize().y + 2 ) * index + 1 ) );
-
-					selectFileIMG( imageSprite , (*fileList)[index].getString() , true );
-					openView.draw( imageSprite );
+					openView.draw( spriteList[index] );
 
 					if ( sf::Mouse::getPosition( openView ).y > (*fileList)[index].getPosition().y - 3 && sf::Mouse::getPosition( openView ).y < (*fileList)[index].getPosition().y + hilight.getSize().y ) {
 						if ( sf::Mouse::getPosition( openView ).x >= (*fileList)[index].getPosition().x - 2 && sf::Mouse::getPosition( openView ).x < (*fileList)[index].getPosition().x + hilight.getSize().x ) {
@@ -821,10 +825,9 @@ void openFile() {
 
 								std::vector<std::string>* tempServerList = getServerList( temp , serverErrno );
 								if ( getExtension( (*fileList)[selection].getString() ) == "" && tempServerList != NULL ) {
-									std::cout << "extof(" << std::string((*fileList)[selection].getString()) << ") && " << tempServerList << "\n";//FIXME
 									delete fileList; // clean up fileList so it can store new data
 									searchDir = temp; // update search directory to within folder
-									fileList = getTextList( tempServerList ); // gets list of files in directory and prepares them for drawing
+									fileList = getTextList( tempServerList , spriteList , true ); // gets list of files in directory and prepares them for drawing
 
 									// clean up tempServerList before it goes out of scope
 									delete tempServerList;
@@ -844,7 +847,7 @@ void openFile() {
 										searchDir = searchDir.substr( 1 );
 
 									searchDir = "server:" + searchDir;
-									Tab::newTab( sf::IpAddress( 127 , 0 , 0 , 1 ) , File::serverSync , searchDir + "/" + (*fileList)[selection].getString() );
+									Tab::newTab( sf::IpAddress( 127 , 0 , 0 , 1 ) , searchDir + "/" + (*fileList)[selection].getString() );
 									openBox.close();
 								}
 
@@ -909,7 +912,7 @@ void openFile() {
 					if ( getExtension( (*fileList)[selection].getString() ) == "" && tempServerList != NULL ) {
 						delete fileList; // clean up fileList so it can store new data
 						searchDir = temp; // update search directory with extra folder
-						fileList = getTextList( tempServerList ); // gets list of files in directory and prepares them for drawing
+						fileList = getTextList( tempServerList , spriteList , true ); // gets list of files in directory and prepares them for drawing
 
 						if ( fileList->size() == 0 )
 							selection = -1;
@@ -923,7 +926,7 @@ void openFile() {
 							searchDir = searchDir.substr( 1 );
 
 						searchDir = "server:" + searchDir;
-						Tab::newTab( sf::IpAddress( 127 , 0 , 0 , 1 ) , File::serverSync , searchDir + "/" + (*fileList)[selection].getString() );
+						Tab::newTab( sf::IpAddress( 127 , 0 , 0 , 1 ) , searchDir + "/" + (*fileList)[selection].getString() );
 						openBox.close();
 					}
 
@@ -939,7 +942,7 @@ void openFile() {
 					delete fileList; // clean up fileList so it can store new data
 					searchDir = searchDir = searchDir.substr( 0 , searchDir.rfind( "/" ) ); // update search directory to parent folder
 					std::vector<std::string>* tempServerList = getServerList( searchDir , serverErrno );
-					fileList = getTextList( tempServerList ); // gets list of files in directory and prepares them for drawing
+					fileList = getTextList( tempServerList , spriteList , true ); // gets list of files in directory and prepares them for drawing
 
 					delete tempServerList; // clean up tempServerList before it goes out of scope
 

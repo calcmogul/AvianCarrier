@@ -63,12 +63,12 @@ public:
 
 	sf::Packet fileTransport;
 	sf::IpAddress serverIP;
-	unsigned short serverPort;
 
-	explicit File( sf::IpAddress address , unsigned short port , std::string path = "" );
+	explicit File( sf::IpAddress address , std::string path = "" );
 	virtual ~File();
 
 	static sf::Socket::Status bindSockets();
+	static void unbindSockets();
 
 	template <typename T>
 	void insert( T newchar );

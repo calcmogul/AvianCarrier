@@ -9,7 +9,7 @@
 #include "RenderFile.h"
 #include "Tab.h"
 
-RenderFile::RenderFile( sf::IpAddress address , unsigned short port , std::string path ) : File( address , port , path ) {
+RenderFile::RenderFile( sf::IpAddress address , std::string path ) : File( address , path ) {
 	lineRenderStart = 0;
 }
 
