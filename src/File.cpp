@@ -120,6 +120,9 @@ const std::string File::convertToString() {
 void File::convertToFile( std::string& fileString ) {
 	input = {};
 
+	if ( fileString.find( "\n" ) > fileString.length() )
+		fileString += "\n";
+
 	unsigned int index = 0;
 	while ( index < fileString.length() ) {
 		input.push_back( fileString.substr( index , fileString.find( "\n" , index ) - index ) ); // fills vector with substrings using newlines as delimiter (newline non-inclusive)
@@ -234,12 +237,12 @@ unsigned char File::sendToIP() {
 
 	// Compute diff
 	inputString = convertToString();
-	dtl::Diff<char , std::string> fileDiff( inputStringShadow , inputString );
+	dtl::Diff<unsigned char , std::string> fileDiff( inputStringShadow , inputString );
 	fileDiff.compose();
 
 	// Put file into packet for transmission over network
 	fileTransport.clear();
-	fileTransport << *this;
+	fileTransport << fileDiff;
 
 	// Set socket for communicating with the server
 	syncSocket.setBlocking( false );
@@ -259,6 +262,7 @@ unsigned char File::receiveFromAny() {
 	// Receive an answer
 	sf::IpAddress recvIP;
 	unsigned short recvPort;
+	dtl::Diff<unsigned char , std::string> fileDiff;
 
 	syncSocket.setBlocking( false );
 
@@ -267,8 +271,10 @@ unsigned char File::receiveFromAny() {
 	else
 		status |= File::received;
 
-	input = { "" };
-	fileTransport >> *this;
+	fileTransport >> fileDiff;
+	inputString = convertToString();
+	fileDiff.patch( inputString );
+	convertToFile( inputString );
 
 	return status;
 }

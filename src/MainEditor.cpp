@@ -40,7 +40,6 @@
 #include "GUI/Cursor.hpp"
 #include "GUI/MenuSelect.h"
 #include "DirList.h"
-#include "dtl/dtl.hpp"
 
 void closeProgram();
 void openFile();
@@ -66,30 +65,13 @@ std::string searchDir;
 
 LRESULT CALLBACK OnEvent( HWND Handle , UINT Message , WPARAM WParam , LPARAM LParam );
 
-struct fileData {
-	std::string file;
-	unsigned long long clientVersion;
-	unsigned long long serverVersion;
-};
-
 void syncServer() {
-	fileData myData;
-	fileData myDataShadow;
-	myData.clientVersion = 0;
-	myData.serverVersion = 0;
-	myDataShadow = myData;
-
 	while ( !CLOSE_THREADS ) {
 		Tab::tabMutex.lock();
 
-		if ( Tab::current != NULL ) {
-			myData.file = Tab::current->file->convertToString();
-
-			dtl::Diff<char , std::string> fileDiff( myDataShadow.file , myData.file );
-			fileDiff.compose();
-
-			Tab::current->file->sendToIP();
-			Tab::current->file->receiveFromAny();
+		for ( unsigned int index = 0 ; index < Tab::tabsOpen.size() ; index++ ) {
+			Tab::tabsOpen[index]->file->sendToIP();
+			Tab::tabsOpen[index]->file->receiveFromAny();
 		}
 
 		Tab::tabMutex.unlock();
