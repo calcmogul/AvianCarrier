@@ -91,13 +91,13 @@ namespace dtl {
      * cordinate for registering route
      */
     typedef struct Point {
-        long long x;                         // x cordinate
-        long long y;                         // y cordinate
+        long long x;                         // x coordinate
+        long long y;                         // y coordinate
         long long k;                         // vertex
     } P;
     
     /**
-     * limit of cordinate size
+     * limit of coordinate size
      */
     const unsigned long long MAX_CORDINATES_SIZE = 2000000;
     
@@ -112,7 +112,7 @@ namespace dtl {
         long long a, b, c, d;        // @@ -a,b +c,d @@
         vector< sesElem > common[2]; // anteroposterior commons on changes
         vector< sesElem > change;    // changes
-        long long inc_dec_count;     // count of increace and decrease
+        long long inc_dec_count;     // count of increase and decrease
     };
 
 #define dtl_typedefs(elem, sequence)                                    \

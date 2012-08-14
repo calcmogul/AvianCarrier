@@ -38,6 +38,8 @@
 #ifndef DTL_DIFF_H
 #define DTL_DIFF_H
 
+#include <SFML/Network/Packet.hpp>
+
 namespace dtl {
     
     /**
@@ -60,7 +62,7 @@ namespace dtl {
         Lcs< elem >        lcs;
         Ses< elem >        ses;
         editPath           path;
-        editPathCordinates pathCordinates;
+        editPathCordinates pathCoordinates;
         bool               reverse;
         bool               huge;
         bool               unserious;
@@ -93,7 +95,7 @@ namespace dtl {
         }
         
         ~Diff() {}
-        
+
         long long getEditDistance () const {
             return editDistance;
         }
@@ -226,7 +228,7 @@ namespace dtl {
         void compose() {
             
             if (isHuge()) {
-                pathCordinates.reserve(MAX_CORDINATES_SIZE);
+                pathCoordinates.reserve(MAX_CORDINATES_SIZE);
             }
             
             long long p = -1;
@@ -244,7 +246,7 @@ namespace dtl {
                     fp[k+offset] = snake(k, fp[k-1+offset]+1, fp[k+1+offset]);
                 }
                 fp[delta+offset] = snake(static_cast<long long>(delta), fp[delta-1+offset]+1, fp[delta+1+offset]);
-            } while (fp[delta+offset] != static_cast<long long>(N) && pathCordinates.size() < MAX_CORDINATES_SIZE);
+            } while (fp[delta+offset] != static_cast<long long>(N) && pathCoordinates.size() < MAX_CORDINATES_SIZE);
             
             editDistance += static_cast<long long>(delta) + 2 * p;
             long long r = path[delta+offset];
@@ -258,15 +260,15 @@ namespace dtl {
             }
             
             while(r != -1) {
-                cordinate.x = pathCordinates[(size_t)r].x;
-                cordinate.y = pathCordinates[(size_t)r].y;
+                cordinate.x = pathCoordinates[(size_t)r].x;
+                cordinate.y = pathCoordinates[(size_t)r].y;
                 epc.push_back(cordinate);
-                r = pathCordinates[(size_t)r].k;
+                r = pathCoordinates[(size_t)r].k;
             }
             
             // record Longest Common Subsequence & Shortest Edit Script
             if (!recordSequence(epc)) {
-                pathCordinates.resize(0);
+                pathCoordinates.resize(0);
                 epc.resize(0);
                 p = -1;
                 goto ONP;
@@ -482,34 +484,42 @@ namespace dtl {
             return ret;
         }
 
-        friend sf::Packet& operator<<( sf::Packet& fileTransport , const Diff& sendMe ) { // add file data to packet
-        	fileTransport.append( static_cast<void*>( *sendMe ) , sizeof(sendMe) );
+        friend sf::Packet& operator<<( sf::Packet& diffTransport , const Diff<elem, sequence, comparator>& sendMe ) {
+			std::pair<elem , elemInfo> tempPair;
 
-        	return fileTransport;
-        }
+        	diffTransport << sendMe.ses.getSequence().size();
+			for ( unsigned int index = 0 ; index < sendMe.ses.getSequence().size() ; index++ ) {
+				tempPair = sendMe.ses.getSequence()[index];
 
-        friend sf::Packet& operator>>( sf::Packet& fileTransport , Diff& receiveMe ) { // move packet data to file
-        	Diff* netDiff;
-        	//netDiff
+				diffTransport << tempPair.first;
 
-        	/*std::string packetOut;
+				diffTransport << tempPair.second.beforeIdx;
+				diffTransport << tempPair.second.afterIdx;
+				diffTransport << tempPair.second.type;
+			}
 
-        	fileTransport >> receiveMe.fileName;
-        	receiveMe.bracketMatch = 0;
-        	receiveMe.tabSpaceCount = 0;
+			return diffTransport;
+		}
 
-        	unsigned int lineCount;
-        	fileTransport >> lineCount;
+		friend sf::Packet& operator>>( sf::Packet& diffTransport , Diff<elem, sequence, comparator>& receiveMe ) {
+			size_t vectorSize;
 
-        	receiveMe.clear();
-        	for ( unsigned int index = 0 ; index < lineCount ; index++ ) {
-        		fileTransport >> packetOut;
-        		receiveMe.input.insert( receiveMe.input.end() , "" );
-        		receiveMe.input[index] = packetOut;
-        	}*/
+			std::pair<elem, elemInfo> tempPair;
 
-        	return fileTransport;
-        }
+			diffTransport >> vectorSize;
+			receiveMe.ses.getSequence().clear();
+			for ( unsigned int index = 0 ; index < vectorSize ; index++ ) {
+				diffTransport >> tempPair.first;
+
+				diffTransport >> tempPair.second.beforeIdx;
+				diffTransport >> tempPair.second.afterIdx;
+				diffTransport >> tempPair.second.type;
+
+				receiveMe.ses.getSequence().push_back( tempPair );
+			}
+
+			return diffTransport;
+		}
 
     private :
         /**
@@ -545,11 +555,11 @@ namespace dtl {
                 ++x;++y;
             }
             
-            path[(size_t)k+offset] = static_cast<long long>(pathCordinates.size());
+            path[(size_t)k+offset] = static_cast<long long>(pathCoordinates.size());
             if (!onlyEditDistance) {
                 P p;
                 p.x = x;p.y = y;p.k = r;
-                pathCordinates.push_back(p);      
+                pathCoordinates.push_back(p);
             }
             return y;
         }

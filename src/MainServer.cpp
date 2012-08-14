@@ -13,7 +13,7 @@
 #include <SFML/Network/Packet.hpp>
 #include "File.h"
 #include "DirList.h"
-#include <iostream> //FIXME
+#include <fstream>
 
 class Client {
 private:
@@ -94,18 +94,21 @@ int main() {
 	commandSockets.add( File::syncSocket );
 	commandSockets.add( File::openSocket );
 
+	std::fstream log( "serverActivity.log" );
+
 	while ( 1 ) {
 		if ( commandSockets.wait( sf::milliseconds( 1000 ) ) ) {
 			if ( commandSockets.isReady( File::syncSocket ) ) {
 				File::syncSocket.receive( packet , senderIP , senderPort );
-				File temp( senderIP );
+				/*File temp( senderIP );
 				packet >> temp;
 
 				temp.clear();
 				packet.clear();
 				temp.insert( "The server says hello!" );
 
-				packet << temp;
+				packet << temp;*/
+				packet.clear();
 
 				File::syncSocket.send( packet , senderIP , senderPort );
 			}
@@ -118,7 +121,8 @@ int main() {
 				if ( command == "dirList" ) {
 					std::string searchDirectory;
 					packet >> searchDirectory;
-					std::cout << "dirList  @ " << senderIP << " : " << searchDirectory << "\n";
+					log << "dirList  @ " << senderIP << " : " << searchDirectory << "\n";
+					std::flush( log );
 
 					std::vector<std::string>* tempList = getList( searchDirectory );
 
@@ -136,7 +140,8 @@ int main() {
 				if ( command == "openFile" ) {
 					std::string fileName;
 					packet >> fileName;
-					std::cout << "openFile @ " << senderIP << " : " << fileName << "\n";
+					log << "openFile @ " << senderIP << " : " << fileName << "\n";
+					std::flush( log );
 
 					File fileToSend( senderIP );
 					fileToSend.loadFromFile( fileName );
@@ -149,6 +154,7 @@ int main() {
 		}
 	}
 
+	log.close();
 	File::unbindSockets();
 
 	return 0;
