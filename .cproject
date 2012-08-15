@@ -58,7 +58,7 @@
 					<fileInfo id="cdt.managedbuild.config.gnu.mingw.exe.debug.1391821195.1942776831" name="serverResources.rc" rcbsApplicability="disable" resourcePath="serverResources.rc" toolsToInvoke=""/>
 					<fileInfo id="cdt.managedbuild.config.gnu.mingw.exe.debug.1391821195.1445733004" name="clientResources.rc" rcbsApplicability="disable" resourcePath="clientResources.rc" toolsToInvoke=""/>
 					<sourceEntries>
-						<entry excluding="Pigeot.ico|serverResources.res|serverResources.rc|src/MainServer.cpp" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
+						<entry excluding="src/serverCLI|Pigeot.ico|serverResources.res|serverResources.rc|src/MainServer.cpp" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
 					</sourceEntries>
 				</configuration>
 			</storageModule>
@@ -127,7 +127,7 @@
 					<fileInfo id="cdt.managedbuild.config.gnu.mingw.exe.release.1372150565.2063736822" name="serverResources.res" rcbsApplicability="disable" resourcePath="serverResources.res" toolsToInvoke=""/>
 					<fileInfo id="cdt.managedbuild.config.gnu.mingw.exe.release.1372150565.1676403872" name="serverResources.rc" rcbsApplicability="disable" resourcePath="serverResources.rc" toolsToInvoke=""/>
 					<sourceEntries>
-						<entry excluding="Pigeot.ico|serverResources.res|serverResources.rc|src/MainServer.cpp" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
+						<entry excluding="src/serverCLI|Pigeot.ico|serverResources.res|serverResources.rc|src/MainServer.cpp" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
 					</sourceEntries>
 				</configuration>
 			</storageModule>
