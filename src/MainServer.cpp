@@ -4,13 +4,18 @@
 //Author: Tyler Veness
 //=============================================================================
 
-#include <SFML/Network/TcpSocket.hpp>
+#if 0
 #include <SFML/Network/TcpListener.hpp>
-#include <SFML/Network/SocketSelector.hpp>
 #include <list>
+#endif
 
+#include <SFML/Network/TcpSocket.hpp>
+
+#include <SFML/Network/SocketSelector.hpp>
 #include <SFML/Network/UdpSocket.hpp>
 #include <SFML/Network/Packet.hpp>
+#include <SFML/System/Thread.hpp>
+#include "serverCLI/CommandFunctions.h"
 #include "File.h"
 #include "DirList.h"
 #include <fstream>
@@ -34,11 +39,32 @@ public:
 	}
 };
 
+bool CLOSE_THREADS = false;
+
+void serverCLI() {
+	Command cat( "cat" , "concatenate files and print on the standard output" , []{ CmdFunc::cat(); } );
+	Command cd( "cd" , "change the working directory" , []{ CmdFunc::cd(); } );
+	Command exit( "exit" , "exit program" , [] { CmdFunc::exit(); } );
+	Command help( "help" , "list help info for all commands - takes: [opt] command" , [] { CmdFunc::help(); } );
+	Command ls( "ls" , "list files with current filetype - takes: [opt] File name" , [] { CmdFunc::ls(); } );
+	Command mv( "mv" , "rename file - takes: old file name , new file name" , []{ CmdFunc::mv(); } );
+	Command pwd( "pwd" , "print name of current/working directory" , []{ CmdFunc::pwd(); } );
+	Command rm( "rm" , "remove files or directories - takes: File name" , [] { CmdFunc::rm(); } );
+
+	while ( !CLOSE_THREADS ) {
+		Command::getInput( "\nAvianServer>" );
+		Command::interpret();
+
+		if ( Command::exitFlag == true )
+			CLOSE_THREADS = true;
+	}
+}
+
 int main() {
 #if 0
 	// Create a socket to listen to new connections
 	sf::TcpListener listener;
-	listener.listen( 50001 );
+	listener.listen( File::serverSync );
 
 	// Create a list to store the future clients
 	std::list<Client*> clients;
@@ -94,9 +120,13 @@ int main() {
 	commandSockets.add( File::syncSocket );
 	commandSockets.add( File::openSocket );
 
+	freopen( "error.log" , "w+" , stderr );
 	std::fstream log( "serverActivity.log" );
 
-	while ( 1 ) {
+	sf::Thread commandLine( serverCLI );
+	commandLine.launch();
+
+	while ( !CLOSE_THREADS ) {
 		if ( commandSockets.wait( sf::milliseconds( 1000 ) ) ) {
 			if ( commandSockets.isReady( File::syncSocket ) ) {
 				File::syncSocket.receive( packet , senderIP , senderPort );
