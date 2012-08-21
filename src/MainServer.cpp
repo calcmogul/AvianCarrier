@@ -121,23 +121,23 @@ int main() {
 	commandSockets.add( File::openSocket );
 
 	freopen( "error.log" , "w+" , stderr );
-	std::fstream log( "serverActivity.log" );
+	std::ofstream log( "serverActivity.log" , std::ofstream::out | std::ofstream::ate );
 
 	sf::Thread commandLine( serverCLI );
 	commandLine.launch();
 
 	while ( !CLOSE_THREADS ) {
-		if ( commandSockets.wait( sf::milliseconds( 1000 ) ) ) {
+		if ( commandSockets.wait( sf::milliseconds( 500 ) ) ) {
 			if ( commandSockets.isReady( File::syncSocket ) ) {
 				File::syncSocket.receive( packet , senderIP , senderPort );
-				/*File temp( senderIP );
+				File temp( senderIP );
 				packet >> temp;
 
 				temp.clear();
 				packet.clear();
 				temp.insert( "The server says hello!" );
 
-				packet << temp;*/
+				packet << temp;
 				packet.clear();
 
 				File::syncSocket.send( packet , senderIP , senderPort );
@@ -152,7 +152,7 @@ int main() {
 					std::string searchDirectory;
 					packet >> searchDirectory;
 					log << "dirList  @ " << senderIP << " : " << searchDirectory << "\n";
-					std::flush( log );
+					log.flush();
 
 					std::vector<std::string>* tempList = getList( searchDirectory );
 
@@ -171,7 +171,7 @@ int main() {
 					std::string fileName;
 					packet >> fileName;
 					log << "openFile @ " << senderIP << " : " << fileName << "\n";
-					std::flush( log );
+					log.flush();
 
 					File fileToSend( senderIP );
 					fileToSend.loadFromFile( fileName );

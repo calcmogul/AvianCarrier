@@ -13,7 +13,7 @@
 #include <SFML/Graphics/RectangleShape.hpp>
 #include <SFML/Graphics/RenderTarget.hpp>
 #include <SFML/Graphics/Text.hpp>
-#include <SFML/System/Mutex.hpp>
+#include <SFML/System/Thread.hpp>
 
 #include "RenderFile.h"
 #include "Button.h"
@@ -29,6 +29,8 @@ private:
 
 	sf::RectangleShape tabBaseLineEraser;
 
+	sf::Thread syncThread;
+
 	static short tabPos;
 	static bool baseInit;
 
@@ -36,10 +38,15 @@ private:
 
 	void drawTab( sf::RenderTarget& target );
 
+	bool stopThread;
+	void syncFunc(); // syncs tab's file with server
+
 public:
 	RenderFile* file;
+	ReadWriteProtector tabProtect;
 
-	static sf::Mutex tabMutex;
+	static ReadWriteProtector vectorProtect;
+	static ReadWriteProtector currentProtect;
 	static std::vector<Tab*> tabsOpen;
 	static Tab* current;
 	static TaperRectangleShape tabBase;
@@ -55,11 +62,11 @@ public:
 
 	void updateSize( sf::Window& referTo );
 
-	static void newTab( sf::IpAddress address , std::string fileName = "Untitled" ); // uses tabMutex; can block
+	static void newTab( sf::IpAddress address , std::string fileName = "Untitled" ); // uses mutexes; can block
 
-	static void draw( sf::RenderTarget& target ); // uses tabMutex; can block
+	static void draw( sf::RenderTarget& target ); // uses mutexes; can block
 
-	static void checkTabClose( sf::Window& referTo ); // uses tabMutex; can block
+	static void checkTabClose( sf::Window& referTo ); // uses mutexes; can block
 
 	void closeTab(); // uses tabMutex; can block
 };

@@ -18,6 +18,8 @@ public:
 	explicit RenderFile( sf::IpAddress address , std::string path = "" );
 	virtual ~RenderFile();
 
+	void drawCursor();
+
 	int lineRenderStart; // number of first line to display in editor window
 };
 

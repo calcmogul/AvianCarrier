@@ -9,7 +9,7 @@
 #include "StatusBar.h"
 #include "../Base.h"
 
-StatusBar::StatusBar() : messageBuffer( "Done" , Base::segoeUI , 13 ) {
+StatusBar::StatusBar() : messageBuffer( "Done" , Base::segoeUI , 12 ) {
 	statusBackground.pushEdge( sf::Vector2f() , sf::Color( 45 , 45 , 45 ) );
 	statusBackground.setOutlineThickness( 1.f );
 	statusBackground.setFillColor( sf::Color( 100 , 100, 100 ) );
@@ -23,10 +23,10 @@ StatusBar::~StatusBar() {
 }
 
 void StatusBar::updateSize( sf::Window& target ) {
-	statusBackground.setSize( sf::Vector2f( target.getSize().x , 16.f ) );
+	statusBackground.setSize( sf::Vector2f( target.getSize().x , 17.f ) );
 	statusBackground.setPosition( sf::Vector2f( 0 , target.getSize().y - statusBackground.getSize().y ) );
 
-	messageBuffer.setPosition( sf::Vector2f( 2 , statusBackground.getPosition().y - 1 ) );
+	messageBuffer.setPosition( sf::Vector2f( 2 , statusBackground.getPosition().y ) );
 }
 
 std::string StatusBar::getStatus() {
@@ -34,8 +34,7 @@ std::string StatusBar::getStatus() {
 }
 
 void StatusBar::setStatus( std::string message ) {
-	if ( message != "" )
-		messageBuffer.setString( message );
+	messageBuffer.setString( message );
 }
 
 const sf::Vector2f& StatusBar::getSize() {
