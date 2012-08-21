@@ -27,16 +27,21 @@ Editor::~Editor() {
 
 void Editor::draw( sf::RenderTarget& target , sf::RenderStates states ) const {
 	target.draw( static_cast<sf::RectangleShape>(*this) , states );
-	Tab::tabMutex.lock();
+
+	Tab::currentProtect.startReading();
+
 	if ( Tab::current != NULL )
 		target.draw( vScroll , states );
-	Tab::tabMutex.unlock();
+
+	Tab::currentProtect.stopReading();
 }
 
 void Editor::handleEvent( sf::Event& event ) {
-	Tab::tabMutex.lock();
+	Tab::currentProtect.startReading();
 
 	if ( Tab::current != NULL ) {
+		Tab::current->file->fileProtect.startWriting();
+
 		if ( event.type == sf::Event::TextEntered ) {
 			if ( event.text.unicode == 8 ) { //pressed Backspace
 				if ( Tab::current->file->cursorPos.y > 0 || Tab::current->file->cursorPos.x > 0 ) { //and cursor isn't at beginning of doc
@@ -202,9 +207,12 @@ void Editor::handleEvent( sf::Event& event ) {
 			// TODO implement cursor movement with mouse
 
 		}
+
+		if ( Tab::current != NULL )
+			Tab::current->file->fileProtect.stopWriting();
 	}
 
-	Tab::tabMutex.unlock();
+	Tab::currentProtect.stopReading();
 }
 
 void Editor::setPosition( const sf::Vector2f& position ) {

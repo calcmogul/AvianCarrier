@@ -4,11 +4,13 @@
 //Author: Tyler Veness
 //=============================================================================
 
+#include <SFML/System/Sleep.hpp>
 #include "../Base.h"
 #include "Tab.h"
 
-sf::Mutex Tab::tabMutex;
 sf::Clock Tab::tabCloseWait;
+ReadWriteProtector Tab::vectorProtect;
+ReadWriteProtector Tab::currentProtect;
 
 std::vector<Tab*> Tab::tabsOpen;
 Tab* Tab::current = NULL;
@@ -18,7 +20,7 @@ TaperRectangleShape Tab::tabBase( sf::Vector2f() , std::vector<sf::Color>({ sf::
 bool Tab::baseInit = false;
 unsigned int Tab::tabIndex = 0;
 
-Tab::Tab( sf::IpAddress address , std::string fileName ) : Button( fileName.substr( fileName.rfind( "/" ) + 1 ) , "" , "" , BUTTON_SPACING / 2 , 15 , []{} ) , title( fileName , Base::segoeUI , 12 ) , closeX( "x" , Base::segoeUI , 13 ) {
+Tab::Tab( sf::IpAddress address , std::string fileName ) : Button( fileName.substr( fileName.rfind( "/" ) + 1 ) , "" , "" , BUTTON_SPACING / 2 , 15 , []{} ) , title( fileName , Base::segoeUI , 12 ) , closeX( "x" , Base::segoeUI , 13 ) , syncThread( &Tab::syncFunc , this ) {
 	file = new RenderFile( address , fileName );
 	closeX.setColor( sf::Color( 30 , 30 , 30 ) );
 
@@ -28,6 +30,9 @@ Tab::Tab( sf::IpAddress address , std::string fileName ) : Button( fileName.subs
 
 	tabBaseLineEraser.setSize( sf::Vector2f( getSize().x , 1.f ) );
 	tabBaseLineEraser.setFillColor( sf::Color( TAB_FOCUS , TAB_FOCUS , TAB_FOCUS ) );
+
+	stopThread = false;
+	syncThread.launch();
 }
 
 Tab::~Tab() {
@@ -46,7 +51,9 @@ std::string Tab::getTitle() {
 }
 
 void Tab::saveLocal() {
+	file->fileProtect.startWriting();
 	file->save( "Documents/" + file->fullPath );
+	file->fileProtect.stopWriting();
 }
 
 bool Tab::isXHovered( sf::Window& referTo ) {
@@ -58,13 +65,19 @@ void Tab::updateSize( sf::Window& referTo ) {
 }
 
 void Tab::newTab( sf::IpAddress address , std::string fileName ) {
-	tabMutex.lock();
+	vectorProtect.startWriting();
 
 	tabsOpen.push_back( new Tab( address , fileName ) );
+
+	vectorProtect.stopWriting();
+	vectorProtect.startReading();
+
+	currentProtect.startWriting();
 	current = tabsOpen.at( tabsOpen.size() - 1 );
 	current->setVisible( true );
+	currentProtect.stopWriting();
 
-	tabMutex.unlock();
+	vectorProtect.stopReading();
 }
 
 void Tab::drawTab( sf::RenderTarget& target ) {
@@ -88,8 +101,6 @@ void Tab::drawTab( sf::RenderTarget& target ) {
 }
 
 void Tab::draw( sf::RenderTarget& target ) {
-	tabMutex.lock();
-
 	tabPos = TAB_START_X;
 
 	if ( !baseInit ) {
@@ -104,14 +115,14 @@ void Tab::draw( sf::RenderTarget& target ) {
 
 	target.draw( tabBase );
 
+	vectorProtect.startReading();
 	for ( unsigned int index = 0 ; index < tabsOpen.size() ; index++ )
 		tabsOpen.at(index)->drawTab( target );
-
-	tabMutex.unlock();
+	vectorProtect.stopReading();
 }
 
 void Tab::checkTabClose( sf::Window& referTo ) {
-	tabMutex.lock();
+	vectorProtect.startReading();
 
 	// Close any tabs that had their X clicked
 	for ( unsigned int index = 0 ; index < Tab::tabsOpen.size() ; index++ ) {
@@ -123,15 +134,25 @@ void Tab::checkTabClose( sf::Window& referTo ) {
 		}
 	}
 
-	tabMutex.unlock();
+	vectorProtect.stopReading();
 }
 
 void Tab::closeTab() {
-	tabMutex.lock();
+	statusBar.setStatus( "Closing tab(s)..." );
+	mainWin.draw( statusBar );
+	mainWin.display();
+
+	stopThread = true;
+	syncThread.wait();
 
 	for ( unsigned int index = 0 ; index < tabsOpen.size() ; index++ ) {
 		if ( this == tabsOpen.at(index) ) { // have to find current tab first
+			Tab::currentProtect.startReading();
+
 			if ( this == current ) { // change current tab if it is closing
+				Tab::currentProtect.stopReading();
+				Tab::currentProtect.startWriting();
+
 				if ( index < tabsOpen.size() - 1 ) { // if there is tab to right
 					current = tabsOpen.at(index + 1); // make current tab right one
 					tabIndex = index;
@@ -142,7 +163,11 @@ void Tab::closeTab() {
 				}
 				else
 					current = NULL; //else there are no more tabs left
+
+				Tab::currentProtect.stopWriting();
 			}
+			else
+				Tab::currentProtect.stopReading(); // Tab is still set to be read, so stop it
 
 			tabsOpen.at( index )->~Tab();
 
@@ -150,5 +175,16 @@ void Tab::closeTab() {
 		}
 	}
 
-	tabMutex.unlock();
+	statusBar.setStatus( "Done" );
+	mainWin.draw( statusBar );
+	mainWin.display();
+}
+
+void Tab::syncFunc() {
+	while ( !stopThread ) {
+		file->sendToIP();
+		file->receiveFromAny();
+
+		sf::sleep( sf::milliseconds( 500 ) );
+	}
 }

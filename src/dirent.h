@@ -100,6 +100,7 @@
 # define S_IWRITE _S_IWRITE                    /* write permission */
 # define S_IEXEC  _S_IEXEC                     /* execute permission */
 #endif
+#undef S_IFBLK
 #define S_IFBLK   0                            /* block device */
 #define S_IFLNK   0                            /* link */
 #define S_IFSOCK  0                            /* socket */
@@ -138,12 +139,17 @@
  * only defined for compatibility.  These macros should always return false
  * on Windows.
  */
+#undef S_ISFIFO
 #define	S_ISFIFO(mode) (((mode) & S_IFMT) == S_IFFIFO)
+#undef S_ISDIR
 #define	S_ISDIR(mode)  (((mode) & S_IFMT) == S_IFDIR)
+#undef S_ISREG
 #define	S_ISREG(mode)  (((mode) & S_IFMT) == S_IFREG)
 #define	S_ISLNK(mode)  (((mode) & S_IFMT) == S_IFLNK)
 #define	S_ISSOCK(mode) (((mode) & S_IFMT) == S_IFSOCK)
+#undef S_ISCHR
 #define	S_ISCHR(mode)  (((mode) & S_IFMT) == S_IFCHR)
+#undef S_ISBLK
 #define	S_ISBLK(mode)  (((mode) & S_IFMT) == S_IFBLK)
 
 #ifdef __cplusplus
@@ -318,7 +324,7 @@ static struct dirent *readdir(DIR *dirp)
  * directory stream invalidates the DIR structure as well as any previously
  * read directory entry.
  */
-static int closedir(DIR *dirp)
+inline static int closedir(DIR *dirp)
 {
    if (dirp == NULL) {
       /* invalid directory stream */
@@ -345,7 +351,7 @@ static int closedir(DIR *dirp)
  * would have done.  If dirp does not refer to a directory stream, the effect
  * is undefined.
  */
-static void rewinddir(DIR* dirp)
+inline static void rewinddir(DIR* dirp)
 {
    if (dirp != NULL) {
       /* release search handle */

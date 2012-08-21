@@ -16,6 +16,7 @@
 #include <SFML/Network/Packet.hpp>
 #include <SFML/System/Vector2.hpp>
 
+#include "ReadWriteProtector.h"
 #include "dtl/dtl.hpp"
 
 struct Edit {
@@ -26,11 +27,18 @@ struct Edit {
 class File {
 private:
 	static bool areSocketsBound;
+	sf::Packet fileTransport;
+	sf::IpAddress serverIP;
 
-protected:
-	//std::vector<std::string> input;
+	std::string inputString;
+	std::string inputStringShadow;
+	unsigned long long clientVersion;
+	unsigned long long serverVersion;
+	std::queue<Edit> editQueue;
 
 public:
+	ReadWriteProtector fileProtect;
+
 	static sf::UdpSocket syncSocket; // handles file syncing with others
 	static sf::UdpSocket openSocket; // handles sending and receiving file list between client and server
 
@@ -42,16 +50,10 @@ public:
 	};
 
 	enum netStatus {
-		fail,
-		sent,
-		received
+		fail = 0b00,
+		sent = 0b01,
+		received = 0b10
 	};
-
-	std::string inputString;
-	std::string inputStringShadow;
-	unsigned long long clientVersion;
-	unsigned long long serverVersion;
-	std::queue<Edit> editQueue;
 
 	std::string fullPath;
 	std::string fileName;
@@ -61,8 +63,7 @@ public:
 	int bracketMatch;
 	unsigned int tabSpaceCount;
 
-	sf::Packet fileTransport;
-	sf::IpAddress serverIP;
+
 
 	explicit File( sf::IpAddress address , std::string path = "" );
 	virtual ~File();
@@ -96,6 +97,7 @@ public:
 
 	unsigned char sendToIP();
 	unsigned char receiveFromAny();
+	const sf::IpAddress& getServerIP();
 };
 
 #include "insert.inl"

@@ -26,7 +26,7 @@ public:
 	void create( unsigned int modeX , unsigned int modeY , const std::string& title , Uint32 style = Style::Default , const std::string& imageName = "" );
 
 	void drawAll();
-	void waitForExitClick();
+	void checkForExitClick();
 };
 
 }

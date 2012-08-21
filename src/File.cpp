@@ -5,6 +5,7 @@
 //=============================================================================
 
 #include "File.h"
+#include <iostream>//FIXME
 
 sf::UdpSocket File::syncSocket;
 sf::UdpSocket File::openSocket;
@@ -40,8 +41,11 @@ File::File( sf::IpAddress address , std::string path ) : serverIP( address ) {
 	else {
 		if ( fileName != "" && fileName != "Untitled" )
 			loadFromFile( fullPath );
-		else
+		else {
+			if ( fileName != "Untitled" )
+				fileName = "Untitled";
 			input.push_back( "" );
+		}
 	}
 
 	cursorPos = { 0 , 0 };
@@ -58,19 +62,14 @@ sf::Socket::Status File::bindSockets() {
 	if ( !areSocketsBound ) {
 #ifdef SERVER_BUILD
 		if ( syncSocket.bind( serverSync ) == sf::Socket::Done && openSocket.bind( serverOpen ) == sf::Socket::Done ) {
-			areSocketsBound = true;
-			return sf::Socket::Done;
-		}
-		else
-			return sf::Socket::NotReady;
 #else
 		if ( syncSocket.bind( clientSync ) == sf::Socket::Done && openSocket.bind( clientOpen ) == sf::Socket::Done ) {
+#endif
 			areSocketsBound = true;
 			return sf::Socket::Done;
 		}
 		else
 			return sf::Socket::NotReady;
-#endif
 	}
 
 	return sf::Socket::Done;
@@ -233,10 +232,16 @@ void File::loadFromFile( std::string path ) {
 }
 
 unsigned char File::sendToIP() {
+	std::cout << fileName << ": sync start\n";
+	std::cout << "    " << fileName << ": sending file...\n";
 	unsigned char status = 0;
 
-	// Compute diff
+	fileProtect.startWriting();
+
+	// Convert file to string that can be diffed
 	inputString = convertToString();
+
+	// Compute diff
 	dtl::Diff<unsigned char , std::string> fileDiff( inputStringShadow , inputString );
 	fileDiff.compose();
 
@@ -244,19 +249,17 @@ unsigned char File::sendToIP() {
 	fileTransport.clear();
 	fileTransport << fileDiff;
 
-	// Set socket for communicating with the server
-	syncSocket.setBlocking( false );
+	fileProtect.stopWriting();
 
 	// Send a message to the server
-	if ( syncSocket.send( fileTransport , serverIP , serverSync ) != sf::Socket::Done )
-		return status;
+	if ( syncSocket.send( fileTransport , serverIP , serverSync ) == sf::Socket::Done )
+		return status |= File::sent;
 	else
-		status |= File::sent;
-
-	return status;
+		return status;
 }
 
 unsigned char File::receiveFromAny() {
+	std::cout << "    " << fileName << ": waiting for reply...\n";
 	unsigned char status = 0;
 
 	// Receive an answer
@@ -264,17 +267,26 @@ unsigned char File::receiveFromAny() {
 	unsigned short recvPort;
 	dtl::Diff<unsigned char , std::string> fileDiff;
 
-	syncSocket.setBlocking( false );
-
-	if ( syncSocket.receive( fileTransport , recvIP , recvPort ) != sf::Socket::Done )
-		return status;
-	else
+	if ( syncSocket.receive( fileTransport , recvIP , recvPort ) == sf::Socket::Done ) {
 		status |= File::received;
 
-	fileTransport >> fileDiff;
-	inputString = convertToString();
-	fileDiff.patch( inputString );
-	convertToFile( inputString );
+		fileTransport >> fileDiff;
+
+		fileProtect.startWriting();
+
+		inputString = convertToString();
+		fileDiff.patch( inputString );
+
+		convertToFile( inputString );
+
+		fileProtect.stopWriting();
+
+		std::cout << fileName << ": done\n";
+	}
 
 	return status;
+}
+
+const sf::IpAddress& File::getServerIP() {
+	return serverIP;
 }

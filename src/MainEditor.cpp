@@ -65,21 +65,6 @@ std::string searchDir;
 
 LRESULT CALLBACK OnEvent( HWND Handle , UINT Message , WPARAM WParam , LPARAM LParam );
 
-void syncServer() {
-	while ( !CLOSE_THREADS ) {
-		Tab::tabMutex.lock();
-
-		for ( unsigned int index = 0 ; index < Tab::tabsOpen.size() ; index++ ) {
-			Tab::tabsOpen[index]->file->sendToIP();
-			Tab::tabsOpen[index]->file->receiveFromAny();
-		}
-
-		Tab::tabMutex.unlock();
-
-		sf::sleep( sf::milliseconds( 250 ) );
-	}
-}
-
 Button file( "File" , "" , "" , -1 , 30 , []{} );
 Button newFile( "New" , "Ctrl + N" , "Control N" , -1 , 40 , []{ Tab::newTab( sf::IpAddress( 127 , 0 , 0 , 1 ) ); } );
 Button open( "Open" , "Ctrl + O" , "Control O" , -1 , 40 , []{ openThread.launch(); } );
@@ -143,7 +128,7 @@ INT WINAPI WinMain( HINSTANCE Instance , HINSTANCE , LPSTR , INT ) {
 	centerWin.setVisible( false );
 	centerWin.create( sf::VideoMode( 0 , 0 ) , "" , sf::Style::None );
 
-	HWND Window = CreateWindow( mainClassName , "Avian Carrier" , WS_SYSMENU | WS_VISIBLE | WS_MAXIMIZEBOX | WS_MINIMIZEBOX | WS_THICKFRAME , centerWin.getPosition().x - ( 800 - centerWin.getSize().x ) / 2 , centerWin.getPosition().y - ( 600 - centerWin.getSize().y ) / 2 , 800 , 600 , NULL , NULL , Instance , NULL );
+	HWND Window = CreateWindow( mainClassName , "AvianCarrier" , WS_SYSMENU | WS_VISIBLE | WS_MAXIMIZEBOX | WS_MINIMIZEBOX | WS_THICKFRAME , centerWin.getPosition().x - ( 800 - centerWin.getSize().x ) / 2 , centerWin.getPosition().y - ( 600 - centerWin.getSize().y ) / 2 , 800 , 600 , NULL , NULL , Instance , NULL );
 
 	centerWin.close();
 	mainWin.create( Window );
@@ -156,6 +141,8 @@ INT WINAPI WinMain( HINSTANCE Instance , HINSTANCE , LPSTR , INT ) {
 	mainWin.setIcon( appIcon.getSize().x , appIcon.getSize().y , appIcon.getPixelsPtr() );
 
 	searchDir = "Documents";
+
+	File::bindSockets(); // bind sockets to client's ports so server communications will succeed
 
 	/* ===== Restore previous session ===== */
 	std::ifstream sessionStore( "Config/session.txt" );
@@ -174,9 +161,8 @@ INT WINAPI WinMain( HINSTANCE Instance , HINSTANCE , LPSTR , INT ) {
 						Tab::newTab( sf::IpAddress( temp.substr( temp.find( "@" ) + 1 ) ) , temp.substr( 0 , temp.find( "@" ) ) );
 				}
 
-				Tab::tabMutex.lock();
+				// Semaphores aren't needed here because no threads destruct pointers
 				Tab::current = Tab::tabsOpen[currentTabPos]; // restore which tab is current from last session
-				Tab::tabMutex.unlock();
 			}
 		}
 	}
@@ -194,12 +180,9 @@ INT WINAPI WinMain( HINSTANCE Instance , HINSTANCE , LPSTR , INT ) {
 
 	Tab::draw( mainWin );
 
-	sf::Thread networkThread( syncServer );
-	networkThread.launch();
-
 	MSG Message; // FIXME win32 MSG
 
-	PostMessage( Window , WM_SIZE , 0 , 0 ); // Sent resize message to window so all GUI elements draw at least once
+	PostMessage( Window , WM_SIZE , 0 , 0 ); // Send resize message to window so all GUI elements draw at least once
 
 	while ( mainWin.isOpen() ) {
 		// FIXME win32 message handler
@@ -211,14 +194,17 @@ INT WINAPI WinMain( HINSTANCE Instance , HINSTANCE , LPSTR , INT ) {
 		else {
 			while ( mainWin.pollEvent( event ) ) {
 				if ( event.type == sf::Event::Closed ) {
+					// wait for all threads to close before closing the window so it is obvious if they don't respond
+					CLOSE_THREADS = true;
+					openThread.wait();
+					aboutThread.wait();
+
 					delete ChatWindow::getInstance();
 					chatWindow = NULL;
 
 					/* ===== Save current session ===== */
 					std::ofstream sessionStore( "Config/session.txt" , std::ios_base::trunc );
 					if ( sessionStore.is_open() ) {
-						Tab::tabMutex.lock();
-
 						if ( Tab::tabsOpen.size() > 0 ) { // if there is a current tab (which means there are also tabs to save)
 							unsigned int index = 0;
 							while ( Tab::current != Tab::tabsOpen[index] )
@@ -226,19 +212,18 @@ INT WINAPI WinMain( HINSTANCE Instance , HINSTANCE , LPSTR , INT ) {
 							sessionStore << index << "\n"; // store position of current tab once found
 
 							while ( Tab::tabsOpen.size() > 0 ) {
-								sessionStore << Tab::tabsOpen[0]->file->fullPath << "@" << Tab::tabsOpen[0]->file->serverIP << "\n";
+								sessionStore << Tab::tabsOpen[0]->file->fullPath << "@" << Tab::tabsOpen[0]->file->getServerIP() << "\n";
 								Tab::tabsOpen[0]->closeTab();
 							}
 						}
 
-						Tab::tabMutex.unlock();
 						sessionStore.close();
 					}
 					else
 						std::cerr << "failed to save session\n";
 					/* ================================ */
 
-					closeProgram();
+					mainWin.close();
 				}
 
 				else if ( event.type == sf::Event::MouseWheelMoved ) {
@@ -287,17 +272,19 @@ INT WINAPI WinMain( HINSTANCE Instance , HINSTANCE , LPSTR , INT ) {
 				if ( TextReceiver::currentReceiver != NULL )
 					TextReceiver::currentReceiver->handleEvent( event );
 
+				Tab::vectorProtect.startReading();
 				if ( Tab::tabsOpen.size() > 0 ) {
 					/* ===== Switch Tabs If Other Tab Clicked ===== */
 					for ( unsigned int index = 0 ; index < Tab::tabsOpen.size() ; index++ ) {
 						if ( Tab::tabsOpen[index]->isHovered( mainWin ) && mouseButtonReleased( event , sf::Mouse::Button::Left ) ) {
-							Tab::tabMutex.lock();
+							Tab::currentProtect.startWriting();
 							Tab::current = Tab::tabsOpen[index];
-							Tab::tabMutex.unlock();
+							Tab::currentProtect.stopWriting();
 						}
 					}
 					/* ============================================ */
 				}
+				Tab::vectorProtect.stopReading();
 
 				for ( unsigned int index = 0 ; index < Button::allButtons.size() ; index++ ) { // handles all hotkeys that are assigned to buttons
 					if ( Button::allButtons[index]->hotKeyActivated( event ) ) {
@@ -384,32 +371,18 @@ INT WINAPI WinMain( HINSTANCE Instance , HINSTANCE , LPSTR , INT ) {
 
 				mainWin.draw( editBackground );
 
-				Tab::tabMutex.lock();
+				Tab::currentProtect.startReading();
 
 				if ( Tab::current != NULL ) {
+					Tab::current->file->fileProtect.startReading();
 					mainWin.draw( *Tab::current->file );
+					Tab::current->file->fileProtect.stopReading();
 
-					if ( editBackground.isReceiving() ) {
-						sf::Text drawMe( "" , Base::consolas , 12 );
-						drawMe.setColor( sf::Color( 0 , 0 , 0 ) );
-
-						/* ===== Draw cursor ===== */
-						drawMe.setString( "_" );
-
-						unsigned int xPos = 0;
-						for ( unsigned int index = 0 ; index < Tab::current->file->cursorPos.x ; index++ ) {
-							if ( Tab::current->file->input.at(Tab::current->file->cursorPos.y).substr( index , 1 ) == "\t" )
-								xPos += 4;
-							else
-								xPos++;
-						}
-						drawMe.setPosition( 5 + 7 * xPos , Tab::tabBase.getPosition().y + Tab::tabBase.getSize().y + 2 + 12 * (Tab::current->file->cursorPos.y - Tab::current->file->lineRenderStart) );
-						mainWin.draw( drawMe );
-						/* ======================= */
-					}
+					if ( editBackground.isReceiving() ) // if editor window is receiving keyboard input
+						Tab::current->file->drawCursor();
 				}
 
-				Tab::tabMutex.unlock();
+				Tab::currentProtect.stopReading();
 
 				mainWin.draw( mainTools );
 				Tab::draw( mainWin );
@@ -425,58 +398,7 @@ INT WINAPI WinMain( HINSTANCE Instance , HINSTANCE , LPSTR , INT ) {
 				mainWin.display();
 				/* ========================== */
 			}
-
-			Tab::checkTabClose( mainWin );
-			/* ===== Redraw objects ===== */
-			mainWin.clear( sf::Color( BACKGROUND_COLOR , BACKGROUND_COLOR , BACKGROUND_COLOR ) );
-
-			editBackground.activate( Tab::tabsOpen.size() > 0 ); // change background of editor
-
-			mainWin.draw( editBackground );
-
-			Tab::tabMutex.lock();
-
-			if ( Tab::current != NULL ) {
-				mainWin.draw( *Tab::current->file );
-
-				if ( editBackground.isReceiving() ) {
-					sf::Text drawMe( "" , Base::consolas , 12 );
-					drawMe.setColor( sf::Color( 0 , 0 , 0 ) );
-
-					/* ===== Draw cursor ===== */
-					drawMe.setString( "_" );
-
-					unsigned int xPos = 0;
-					for ( unsigned int index = 0 ; index < Tab::current->file->cursorPos.x ; index++ ) {
-						if ( Tab::current->file->input.at(Tab::current->file->cursorPos.y).substr( index , 1 ) == "\t" )
-							xPos += 4;
-						else
-							xPos++;
-					}
-					drawMe.setPosition( 5 + 7 * xPos , Tab::tabBase.getPosition().y + Tab::tabBase.getSize().y + 2 + 12 * (Tab::current->file->cursorPos.y - Tab::current->file->lineRenderStart) );
-					mainWin.draw( drawMe );
-					/* ======================= */
-				}
-			}
-
-			Tab::tabMutex.unlock();
-
-			mainWin.draw( mainTools );
-			Tab::draw( mainWin );
-
-			mainWin.draw( statusBar );
-
-			if ( chatWindow != NULL )
-				mainWin.draw( *chatWindow );
-
-			if ( DropDown::currentOpen != NULL )
-				mainWin.draw( *DropDown::currentOpen ); // draw drop-down menu now that its events are processed
-
-			mainWin.display();
-			/* ========================== */
 		}
-
-		sf::sleep( sf::milliseconds( 0 ) );
 	}
 
 	File::unbindSockets();
@@ -510,12 +432,15 @@ LRESULT CALLBACK OnEvent( HWND Handle , UINT Message , WPARAM WParam , LPARAM LP
 
 			mainWin.draw( editBackground );
 
-			Tab::tabMutex.lock();
+			Tab::currentProtect.startReading();
 
-			if ( Tab::current != NULL )
+			if ( Tab::current != NULL ) {
+				Tab::current->file->fileProtect.startReading();
 				mainWin.draw( *Tab::current->file );
+				Tab::current->file->fileProtect.stopReading();
+			}
 
-			Tab::tabMutex.unlock();
+			Tab::currentProtect.stopReading();
 
 			mainWin.draw( mainTools );
 			Tab::draw( mainWin );
@@ -569,7 +494,6 @@ std::string changeExtension( std::string file , std::string extension ) {
 }
 
 void closeProgram() {
-	Tab::tabMutex.unlock();
 	CLOSE_THREADS = true;
 
 	mainWin.close();
@@ -754,7 +678,7 @@ void openFile() {
 	MenuSelect arrowSelect;
 
 	MSG Message;
-	while ( openBox.isOpen() ) {
+	while ( openBox.isOpen() && !CLOSE_THREADS ) {
 		if ( PeekMessage( &Message , NULL , 0 , 0 , PM_REMOVE ) ) {
 			// If a message was waiting in the message queue, process it
 			TranslateMessage( &Message );
@@ -999,15 +923,16 @@ void pasteText() {
 }
 
 void buildEXE() {
+	Tab::currentProtect.startReading();
 	Tab::current->saveLocal();
+	Tab::currentProtect.stopReading();
 	statusBar.setStatus( "Building..." );
 	mainWin.draw( statusBar );
 	mainWin.display();
 
 	std::string tempDir = searchDir;
-	if ( !sysRun( "C:/Users/Tyler/Downloads/EclipseCDT/mingw/bin/g++.exe" , "-O3 -Wall -c -fmessage-length=0 -std=c++0x -o " + tempDir + "/" + changeExtension( Tab::current->file->fileName , "o" ) + " " + tempDir + "/" + changeExtension( Tab::current->file->fileName , "cpp" ) ) ) {
+	if ( !sysRun( "C:/Users/Tyler/Downloads/EclipseCDT/mingw/bin/g++.exe" , "-O3 -Wall -c -fmessage-length=0 -std=c++0x -o " + tempDir + "/" + changeExtension( Tab::current->file->fileName , "o" ) + " " + tempDir + "/" + changeExtension( Tab::current->file->fileName , "cpp" ) ) )
 		sysRun( "C:/Users/Tyler/Downloads/EclipseCDT/mingw/bin/g++.exe" , "-s -static -o " + tempDir + "/" + changeExtension( Tab::current->file->fileName , "exe" ) + " " + tempDir + "/" + changeExtension( Tab::current->file->fileName , "o" ) );
-	}
 
 	statusBar.setStatus( "Done" );
 }
@@ -1016,7 +941,8 @@ void displayAbout() {
 	sf::SplashScreen splash( 400 , 250 , "" , sf::Style::Titlebar , "PigeotSplash.png" );
 	splash.display();
 
-	splash.waitForExitClick();
+	while ( splash.isOpen() && !CLOSE_THREADS )
+		splash.checkForExitClick();
 }
 
 // FIXME win32 sysRun creates process with Win32 API

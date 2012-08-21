@@ -55,20 +55,18 @@ void SplashScreen::drawAll() {
 	draw( backDraw );
 }
 
-void SplashScreen::waitForExitClick() {
+void SplashScreen::checkForExitClick() {
 	sf::Event event;
 
-	while ( isOpen() ) {
-		while ( pollEvent( event ) ) {
-			if ( event.type == sf::Event::Closed )
+	while ( pollEvent( event ) ) {
+		if ( event.type == sf::Event::Closed )
+			close();
+
+		if ( event.type == sf::Event::MouseButtonReleased && event.mouseButton.button == sf::Mouse::Button::Left )
 				close();
-
-			if ( event.type == sf::Event::MouseButtonReleased && event.mouseButton.button == sf::Mouse::Button::Left )
-					close();
-		}
-
-		sf::sleep( sf::milliseconds( 10 ) );
 	}
+
+	sf::sleep( sf::milliseconds( 10 ) );
 }
 
 }

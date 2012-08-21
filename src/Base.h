@@ -17,9 +17,11 @@
 #include <SFML/Network/IpAddress.hpp>
 
 #include "GUI/GUISettings.h"
+#include "GUI/StatusBar.h"
 
 /* ===== STATIC VAR DECLARATIONS ===== */
 extern sf::RenderWindow mainWin;
+extern StatusBar statusBar;
 /* =================================== */
 
 bool keyPressed( sf::Event& event , sf::Keyboard::Key );
@@ -48,6 +50,8 @@ public:
 
 private:
 	static bool isLoaded;
+
+	void loadResources();
 };
 
 #endif /* GUI_BASE_H_ */

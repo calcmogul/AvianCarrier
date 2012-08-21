@@ -44,6 +44,10 @@ bool pressedAlt( sf::Event& event ) {
 }
 
 Base::Base() {
+	loadResources();
+}
+
+void Base::loadResources() {
 	if ( !isLoaded ) {
 		sf::Image folder;
 		sf::Image cFile;
