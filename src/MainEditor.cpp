@@ -536,8 +536,7 @@ std::vector<std::string>* getServerList( std::string path , int& serverErrno ) {
 	if ( File::openSocket.send( fileNames , "127.0.0.1" , File::serverOpen ) == sf::Socket::Done ) {
 		sf::IpAddress returnIP;
 		unsigned short returnPort;
-		sf::Socket::Status temp = File::openSocket.receive( fileNames , returnIP , returnPort );
-		if ( temp == sf::Socket::Done ) {
+		if ( File::openSocket.receive( fileNames , returnIP , returnPort ) == sf::Socket::Done ) {
 			std::string command;
 			fileNames >> command;
 

@@ -227,6 +227,6 @@ void Editor::setSize( const sf::Vector2f& size ) {
 }
 
 void Editor::updateSize( sf::Window& target ) {
-	setSize( sf::Vector2f( target.getSize().x , target.getSize().y - 16.f - 2.f - (Tab::tabBase.getPosition().y + Tab::tabBase.getSize().y + 1) ) );
+	setSize( sf::Vector2f( target.getSize().x , target.getSize().y - 17.f - 2.f - (Tab::tabBase.getPosition().y + Tab::tabBase.getSize().y + 1) ) );
 	setPosition( sf::Vector2f( 0 , Tab::tabBase.getPosition().y + Tab::tabBase.getSize().y + 2 ) );
 }
