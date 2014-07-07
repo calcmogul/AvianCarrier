@@ -126,6 +126,12 @@ void ls() {
 	}
 	else
 		Command::error( "ls" , Command::currentArg() , "No such file or directory" );
+
+	// Destruct fileList
+	while ( fileList->size() > 0 ) {
+		fileList->erase( fileList->begin() );
+	}
+	delete fileList;
 }
 
 void mv() {

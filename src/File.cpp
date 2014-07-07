@@ -55,7 +55,9 @@ File::File( sf::IpAddress address , std::string path ) : serverIP( address ) {
 }
 
 File::~File() {
-
+	for ( unsigned int index = 0 ; index < editQueue.size() ; index++ ) {
+		delete editQueue[index];
+	}
 }
 
 sf::Socket::Status File::bindSockets() {

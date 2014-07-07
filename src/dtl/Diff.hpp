@@ -39,6 +39,7 @@
 #define DTL_DIFF_H
 
 #include <SFML/Network/Packet.hpp>
+#include "../PacketEtc.hpp"
 
 namespace dtl {
     

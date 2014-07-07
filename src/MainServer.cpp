@@ -20,6 +20,18 @@
 #include "DirList.h"
 #include <fstream>
 
+class Client;
+
+class SyncHub {
+public:
+	static std::vector<Client*> clients;
+
+private:
+	File serverFile;
+};
+
+std::vector<Client*> SyncHub::clients;
+
 class Client {
 private:
 	unsigned long long m_clientVersion;
@@ -75,7 +87,7 @@ int main() {
 	// Add the listener to the selector
 	selector.add( listener );
 
-	while ( 1 ) {
+	while ( !CLOSE_THREADS ) {
 		// Make the selector wait for data on any socket
 		if ( selector.wait() ) {
 			// Test the listener

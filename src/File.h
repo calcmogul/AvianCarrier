@@ -34,7 +34,7 @@ private:
 	std::string inputStringShadow;
 	unsigned long long clientVersion;
 	unsigned long long serverVersion;
-	std::queue<Edit> editQueue;
+	std::deque<Edit*> editQueue;
 
 public:
 	ReadWriteProtector fileProtect;
