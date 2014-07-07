@@ -55,7 +55,7 @@ sf::Thread aboutThread( displayAbout );
 
 sf::RenderWindow mainWin;
 HINSTANCE globalInstance; //FIXME win32 HINSTANCE
-bool CLOSE_THREADS = false;
+volatile bool CLOSE_THREADS = false;
 
 Base temp; //loads all files for base class
 
@@ -100,7 +100,7 @@ ToolBar mainTools( 0.f , 0.f , mainWin.getSize().x , 24.f , { &fileMenu , &editM
 Editor editBackground;
 
 INT WINAPI WinMain( HINSTANCE Instance , HINSTANCE , LPSTR , INT ) {
-	TextReceiver::textInterfaces.push_back( &editBackground ); // add editor back to textReceiver array because it was mysteriously removed after entering Main...
+	TextReceiver::textInterfaces.push_back( &editBackground ); // add editor back to textReceiver array because it was mysteriously removed after entering WinMain...
 
 	std::vector<sf::Color> temp = { sf::Color( 45 , 45 , 45 ) , sf::Color( 100 , 100 , 100 ) , sf::Color( 100 , 100 , 100 ) , sf::Color( 45 , 45 , 45 ) };
 	ChatWindow::createInstance( sf::Vector2f( 200.f , 600.f ) , temp );
@@ -128,14 +128,15 @@ INT WINAPI WinMain( HINSTANCE Instance , HINSTANCE , LPSTR , INT ) {
 	centerWin.setVisible( false );
 	centerWin.create( sf::VideoMode( 0 , 0 ) , "" , sf::Style::None );
 
-	HWND Window = CreateWindow( mainClassName , "AvianCarrier" , WS_SYSMENU | WS_VISIBLE | WS_MAXIMIZEBOX | WS_MINIMIZEBOX | WS_THICKFRAME , centerWin.getPosition().x - ( 800 - centerWin.getSize().x ) / 2 , centerWin.getPosition().y - ( 600 - centerWin.getSize().y ) / 2 , 800 , 600 , NULL , NULL , Instance , NULL );
+	HWND Window = CreateWindow( mainClassName , "AvianCarrier" , WS_SYSMENU | WS_VISIBLE | WS_MAXIMIZEBOX | WS_MINIMIZEBOX | WS_THICKFRAME , ( GetSystemMetrics(SM_CXSCREEN) - 800 ) / 2 , ( GetSystemMetrics(SM_CYSCREEN) - 600 ) / 2 , 800 , 600 , NULL , NULL , Instance , NULL );
 
 	centerWin.close();
 	mainWin.create( Window );
 
 	sf::Image appIcon;
-	if ( !appIcon.loadFromFile( "Resource/Pigeot.png" ) )
+	if ( !appIcon.loadFromFile( "Resource/Pigeot.png" ) ) {
 		return EXIT_FAILURE;
+	}
 	appIcon.createMaskFromColor( sf::Color( 255 , 255 , 255 ) );
 
 	mainWin.setIcon( appIcon.getSize().x , appIcon.getSize().y , appIcon.getPixelsPtr() );
@@ -166,8 +167,9 @@ INT WINAPI WinMain( HINSTANCE Instance , HINSTANCE , LPSTR , INT ) {
 			}
 		}
 	}
-	else
+	else {
 		std::cerr << "'session.txt' failed to open\n";
+	}
 	/* ==================================== */
 
 	sf::Event event;
@@ -266,11 +268,13 @@ INT WINAPI WinMain( HINSTANCE Instance , HINSTANCE , LPSTR , INT ) {
 					}
 				}
 
-				if ( !isText )
+				if ( !isText ) {
 					normalCursor.set( mainWin );
+				}
 
-				if ( TextReceiver::currentReceiver != NULL )
+				if ( TextReceiver::currentReceiver != NULL ) {
 					TextReceiver::currentReceiver->handleEvent( event );
+				}
 
 				Tab::vectorProtect.startReading();
 				if ( Tab::tabsOpen.size() > 0 ) {
@@ -553,8 +557,9 @@ std::vector<std::string>* getServerList( std::string path , int& serverErrno ) {
 				return tempList;
 			}
 		}
-		else
+		else {
 			serverErrno = 1; // receive failed, most likely from disconnect
+		}
 	}
 
 	return NULL;
@@ -940,8 +945,9 @@ void displayAbout() {
 	sf::SplashScreen splash( 400 , 250 , "" , sf::Style::Titlebar , "PigeotSplash.png" );
 	splash.display();
 
-	while ( splash.isOpen() && !CLOSE_THREADS )
+	while ( splash.isOpen() && !CLOSE_THREADS ) {
 		splash.checkForExitClick();
+	}
 }
 
 // FIXME win32 sysRun creates process with Win32 API
@@ -969,12 +975,15 @@ int sysRun( std::string programAndDir , std::string args ) {
 		std::cerr << "CreateProcess failed: ";
 
 		int error = GetLastError();
-		if ( error == 2 )
+		if ( error == 2 ) {
 			std::cerr << "Application '" << programAndDir << "' not found\n";
-		else if ( error == 3 )
+		}
+        else if ( error == 3 ) {
 			std::cerr << "Path not found\n";
-		else
+        }
+        else {
 			std::cerr << "Error " << error << '\n';
+        }
 
 		return EXIT_FAILURE;
 	}

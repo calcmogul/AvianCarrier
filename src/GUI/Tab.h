@@ -38,7 +38,7 @@ private:
 
 	void drawTab( sf::RenderTarget& target );
 
-	bool stopThread;
+	volatile bool stopThread;
 	void syncFunc(); // syncs tab's file with server
 
 public:
